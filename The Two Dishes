@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int testCases;
+    cin >> testCases;
+
+    while (testCases--) {
+        int N, S;
+        cin >> N >> S;
+        int diff, e = 0;
+
+        for (int i = S - N; i <= N; i++) {
+            diff = N - i;
+            if (N + i == S && diff > e)
+                e = diff;
+        }
+
+        if (S < N)
+            e = S;
+
+        cout << e << endl;
+    }
+
+    return 0;
+}

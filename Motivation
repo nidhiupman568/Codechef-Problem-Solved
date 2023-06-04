@@ -1,0 +1,24 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int num_tests;
+    cin >> num_tests;
+
+    while (num_tests--) {
+        int num_elements, target, max_value = 0;
+        cin >> num_elements >> target;
+
+        int arr[num_elements][2];
+        for (int i = 0; i < num_elements; i++) {
+            cin >> arr[i][0] >> arr[i][1];
+            if (arr[i][0] <= target) {
+                if (max_value < arr[i][1])
+                    max_value = arr[i][1];
+            }
+        }
+
+        cout << max_value << "\n";
+    }
+    return 0;
+}

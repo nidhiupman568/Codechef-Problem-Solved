@@ -1,0 +1,22 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	// your code goes here
+	int a;
+	cin>>a;
+	while(a--)
+	{
+	    int b,c;
+	    cin>>b>>c;
+	    if(c==0)
+	    {
+	        cout<<b<<endl;
+	    }
+	    else
+	    {
+	        cout<<b%c<<endl;
+	    }
+	}
+	return 0;
+}

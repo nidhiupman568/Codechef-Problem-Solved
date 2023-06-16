@@ -1,0 +1,24 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+	while(t--)
+	{
+	    double s, a, b, c;
+	    cin >> s >> a >> b >> c;
+	    double per = (s*c)/100;
+	    double num = s + per;
+	    if(num >= a && num <= b)
+	    {
+	        cout << "Yes" << endl;
+	    }
+	    else
+	    {
+	        cout << "No" << endl;
+	    }
+	    
+	}
+	return 0;
+}

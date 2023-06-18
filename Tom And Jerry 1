@@ -1,0 +1,30 @@
+#include <iostream>
+#include <cmath>
+
+typedef long long ll;
+
+int main() {
+    // your code goes here
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+
+    ll t;
+    std::cin >> t;
+
+    while (t--) {
+        int a, b, c, d, K;
+        std::cin >> a >> b >> c >> d >> K;
+
+        int x = std::abs(c - a);
+        int y = std::abs(d - b);
+        int z = x + y;
+
+        if (K >= z && (K - z) % 2 == 0) {
+            std::cout << "YES" << std::endl;
+        } else {
+            std::cout << "NO" << std::endl;
+        }
+    }
+
+    return 0;
+}

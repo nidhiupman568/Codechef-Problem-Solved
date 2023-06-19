@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+
+#define ll long long
+
+int countDigitOccurrence(ll number, int digit) {
+    int count = 0;
+    while (number > 0) {
+        int mod = number % 10;
+        if (mod == digit)
+            count++;
+        number /= 10;
+    }
+    return count;
+}
+
+int main() {
+    ll t, n;
+    cin >> t;
+    while (t--) {
+        cin >> n;
+        int digitToCount = 4;
+        int occurrenceCount = countDigitOccurrence(n, digitToCount);
+        cout << occurrenceCount << '\n';
+    }
+    return 0;
+}

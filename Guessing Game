@@ -1,0 +1,22 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	
+	long T;
+	cin >> T;
+	
+	while(T--)
+	{
+	    long N, M;
+	    cin >> N >> M;
+	    
+	    if ((N % 2 != 0) && (M % 2 != 0))
+	        cout << ((M * N - 1) / 2) << "/" << (M * N) << endl;
+	    else
+	        cout << "1/2" << endl;
+	}
+	
+	return 0;
+}

@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+
+void fasterIO() {
+
+    ios::sync_with_stdio(0);
+
+    cin.tie(0);
+
+}
+
+
+
+void solve() {
+
+    int len; cin >> len;
+
+    map<int, int> freq;
+
+    for (int i = 0; i < len; i++) {
+
+        int x; cin >> x;
+
+        freq[x]++;
+
+    }
+
+    priority_queue<int> pq;
+
+    for (auto& p: freq) pq.push(p.second);
+
+    
+
+    if (pq.size() == 1) {
+
+        cout << ceil(pq.top() / 2.0) << "\n";
+
+        return;
+
+    }
+
+    
+
+    int largest = pq.top();
+
+    pq.pop();
+
+    int secLargest = pq.top();
+
+    pq.pop();
+
+    cout << max((int)ceil(largest / 2.0), secLargest) << "\n";
+
+    
+
+}
+
+
+
+int main() {
+
+    fasterIO();
+
+    int tc;
+
+    cin >> tc;
+
+    while (tc--) solve();
+
+    return 0;
+
+}

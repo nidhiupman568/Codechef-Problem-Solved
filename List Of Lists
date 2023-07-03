@@ -1,0 +1,149 @@
+#include "bits/stdc++.h"
+
+using namespace std;
+
+#define ll long long
+
+#define pb push_back
+
+#define all(_obj) _obj.begin(), _obj.end()
+
+#define F first
+
+#define S second
+
+#define pll pair<ll, ll>
+
+#define vll vector<ll>
+
+const int N = 1e5 + 11, mod = 1e9 + 7;
+
+ll arr[N];
+
+ll max(ll a, ll b) { return ((a > b) ? a : b); }
+
+ll min(ll a, ll b) { return ((a > b) ? b : a); }
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+void sol(void)
+
+{
+
+	ll n; cin >> n;
+
+	// cout  << n << endl;
+
+	map<ll,ll> mp;
+
+	for (int i = 0; i < n; ++i)
+
+	{
+
+		ll x; cin >> x;
+
+		mp[x]++;
+
+	}
+
+	if(n==1)
+
+	{
+
+		cout << 0 << endl;
+
+		return;
+
+	}
+
+	else
+
+	{
+
+		ll ans = 0;
+
+		bool f = false;
+
+		ll maxm = INT_MIN,val = 0;
+
+		for(auto it:mp)
+
+		{
+
+			if (it.second > maxm)
+
+			{
+
+				maxm = it.second;
+
+				val = it.first;
+
+			}
+
+			
+
+		}
+
+		if(maxm > 1) f = true;
+
+		if (mp.size() > 1)
+
+		{
+
+			ans++;
+
+
+
+		}
+
+		for(auto it:mp)
+
+		{
+
+			if (it.first != val)
+
+			{
+
+				ans += it.second;
+
+			}
+
+			
+
+		}
+
+		if (!f)
+
+		{
+
+			cout << -1 << endl;
+
+		}else
+
+			cout << ans << endl;
+
+	}
+
+	return;
+
+    
+
+}
+
+int main()
+
+{
+
+    ios_base::sync_with_stdio(false);
+
+    cin.tie(NULL), cout.tie(NULL);
+
+    int test;
+
+    cin >> test;
+
+    while (test--)
+
+        sol();
+
+}

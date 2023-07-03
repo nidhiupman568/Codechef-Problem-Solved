@@ -1,0 +1,223 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+int main(){
+
+    ll t;
+
+    cin>>t;
+
+    while(t--)
+
+    {
+
+
+
+	    ll n;
+
+
+
+	    cin>>n;
+
+
+
+	    string arr;
+
+
+
+	    cin>>arr;
+
+
+
+	    ll brr[n]={0};
+
+
+
+	    ll i=0;
+
+
+
+	    ll j=n-1;
+
+
+
+	    ll ct=0;
+
+
+
+	    while(i<=j)
+
+
+
+	    {
+
+
+
+	        if(i==j)
+
+
+
+	        {
+
+
+
+	            if(brr[i]!=-1)
+
+
+
+	            {
+
+
+
+	                ct++;
+
+
+
+	                break;
+
+
+
+	            }
+
+
+
+	        }
+
+
+
+	        if(arr[i]=='(' && arr[j]==')')
+
+
+
+	        {
+
+
+
+	            brr[i]=-1;
+
+
+
+	            brr[j]=-1;
+
+
+
+	            i++;
+
+
+
+	            j--;
+
+
+
+	        }
+
+
+
+	        else if(arr[i]==')' && arr[j]=='(')
+
+
+
+	        {
+
+
+
+	            brr[i]=-1;
+
+
+
+	            brr[j]=-1;
+
+
+
+	            ct+=2;
+
+
+
+	            i++;
+
+
+
+	            j--;
+
+
+
+	        }
+
+
+
+	        else if(arr[i]==')')
+
+
+
+	        {
+
+
+
+	            brr[i]=-1;
+
+
+
+	            brr[j]=-1;
+
+
+
+	            ct++;
+
+
+
+	            i++;
+
+
+
+	        }
+
+
+
+	        else
+
+
+
+	        {
+
+
+
+	            brr[i]=-1;
+
+
+
+	            brr[j]=-1;
+
+
+
+	            ct++;
+
+
+
+	            j--;
+
+
+
+	        }
+
+
+
+	    }
+
+
+
+	    cout<<ct<<endl;
+
+
+
+	}
+
+	return 0;
+
+}
+
+
+
+

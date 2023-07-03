@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+
+#define int long long 
+
+#define pb push_back
+
+#define vi vector<int>
+
+#define loop(i,z,n) for(int i=z; i<n; i++)
+
+#define ll cout << endl
+
+#define SpeedIsAllYouNeed ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+
+
+int32_t main() {
+
+    SpeedIsAllYouNeed;
+
+	int t; cin >> t;
+
+	while(t--) {
+
+	    int n; cin >> n;
+
+	    vi a(2*n);
+
+	    loop(i,0,2*n) cin >> a[i];
+
+	    
+
+	    sort(a.begin(),a.end());
+
+	    
+
+	    vi b(2*n);
+
+	    int i = 0,j = 0;
+
+	    while(j<2*n) {
+
+	        b[j] = a[i];
+
+	        j += 2; i++;
+
+	    }
+
+	    
+
+	    i = n,j = 1;
+
+	    while(j<2*n) {
+
+	        b[j] = a[i];
+
+	        j += 2; i++;
+
+	    }
+
+	    
+
+	    cout << b[n]; ll;
+
+	    loop(i,0,2*n) cout << b[i] << " "; ll;
+
+	}
+
+	return 0;
+
+}

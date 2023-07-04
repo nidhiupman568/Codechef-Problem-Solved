@@ -1,0 +1,65 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+
+
+#define int long long int
+
+#define double long double
+
+#define pb push_back
+
+#define min_heap priority_queue <int, vector<int>, greater<int>>
+
+#define max_heap priority_queue<int>
+
+#define arrayInput for(int i=0;i<n;i++) cin>>arr[i]
+
+#define brrayInput for(int i=0;i<n;i++) cin>>brr[i]
+
+#define nahi cout<<"NO"<<endl
+
+#define haan cout<<"YES"<<endl
+
+#define sortArray sort(arr.begin(),arr.end())
+
+
+
+int32_t main()
+
+{
+
+    int t; cin>>t;
+
+    while(t--)
+
+    {
+
+        int n,ans=0; cin>>n;
+
+        int arr[n],brr[n];
+
+        arrayInput;
+
+        brrayInput;
+
+        map<pair<int,int>,int> hash;
+
+        for(int i=0;i<n;i++)
+
+        {
+
+            ans+=hash[{brr[i],arr[i]}];
+
+            hash[{arr[i],brr[i]}]++;
+
+        }
+
+        cout<<ans<<endl;
+
+    }
+
+    return 0;
+
+}

@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using    namespace __gnu_pbds;
+using    namespace std;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
+#define ll long long
+#define pb push_back
+#define IOS ios_base::sync_with_stdio(0);  cin.tie(0); cout.tie(0);
+#define yes cout<<"YES"<<endl
+#define no cout<<"NO"<<endl
+#define vi vector<int>
+#define vll vector<long long>
+#define mp make_pair
+#define SP cout<<fixed<<setprecision(10);
+#define rep(i,inval,n) for(int i = inval; i < n; i++)
+#define all(x) x.begin(),x.end()
+#define N 100005
+#define valid(nx,ny) nx>=1 && nx<=row && ny>=1 && ny<=col
+const int inf = 1e9 + 10;
+const ll INF = 1e18 + 10;
+int fx[]= {+1,-1,+0,+0};
+int fy[]= {+0,+0,+1,-1};
+int ffx[]= {+0,+0,+1,-1,-1,+1,-1,+1};
+int ffy[]= {-1,+1,+0,+0,+1,+1,-1,-1};
+
+
+void upore_dekho()
+{
+   int r,c,k,ans=0;
+   cin>>r>>c>>k;
+   for(int i=1;i<=8;i++)
+   {
+       for(int j=1;j<=8;j++)
+       {
+           int a=abs(r-i);
+           int b=abs(c-j);
+           //cout<<a<<" "<<b<<endl;
+           if(max(a,b)<=k) ans++;
+       }
+   }
+   cout<<ans<<endl;
+}
+int main()
+{
+    IOS;
+
+    int t=1;
+    cin>>t;
+
+    for(int cs=1; cs<=t; cs++)
+    {
+        /// cout<<"Case "<<cs<<": Yes"<<endl;
+        upore_dekho();
+    }
+
+    return 0;
+}
+
+
+
+

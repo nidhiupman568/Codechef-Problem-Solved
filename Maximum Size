@@ -1,0 +1,167 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define endl '\n'
+const int MOD = 1e9 + 7;
+
+#define lower(s) for(int i = 0; i < s.size(); i++)  s[i] = tolower(s[i]);
+#define upper(s) for(int i = 0; i < s.size(); i++)  s[i] = toupper(s[i]);
+
+//time complexcity is :- O(sqrt(N))
+void factors(int num)
+{
+    int ans = 0;
+    for(int i = 1; i * i <= num; i++)
+    {
+        if(num % i == 0) //here i is factor og our prime number
+        { 
+            ans++;
+            if(i != num / i)//here (num / i) is factor of num 
+                ans++;
+        }
+    }
+}
+
+//time complexcity is :- O(sqrt(N))
+bool prime(long long int num)
+{
+    for(long long int i = 2; i * i <= num; i++)
+        if(num % i == 0)
+            return false;
+    
+    return num > 1;
+}
+
+// time complexcity is :- O(N)
+void sieveprime(int num)
+{
+    bool prime[num + 1];
+    
+    fill(prime, prime + num + 1, true);
+    
+    prime[0] = false;
+    prime[1] = false;
+    
+    for(int i = 2; i <= num; i++)
+    {
+        if(prime[i])
+        {
+            cout << i << " ";
+            for(int j = i * 2; j <= num; j += i)
+            {
+                prime[j] = false;
+            }
+        }
+    }
+}
+
+//O(logn)
+int power(int a, int b)
+{
+    if(a == 0)
+        return 1;
+    if(a == 1)
+        return a;
+    
+    int half_power = power(a, b / 2);
+    
+    if(b % 2 == 0)
+        return half_power * half_power;
+    return half_power * half_power * a;
+}
+
+//time complexcity is O(n)
+void prefix_sum(vector<int> vec)
+{
+    int sum = 0;
+    vector<int> prefix;
+    
+    //prefix sum
+    for(auto it : vec)
+    { 
+        sum += it;
+        prefix.push_back(sum);
+    }
+    
+    
+    //sum of intervals given as query
+    int q;
+    cin >> q;
+    
+    while(q--)
+    {
+        int l, r;
+        cin >> l >> r;
+        
+        if(l != 0)
+            cout << prefix[r] - prefix[l - 1] << endl;
+        else
+            cout << prefix[r] << endl;
+    }
+}
+
+void dfs(int i, int j, int n, int m, vector<vector<int>> &visited, 
+vector<vector<char>> &grid, int &count)
+{
+    if(min(i, j) < 0 || i >= n || j >= m || visited[i][j] || grid[i][j] == '0')
+        return ;
+    
+    visited[i][j] = 1;
+    count++;
+    
+    dfs(i + 1, j, n, m, visited, grid, count);
+    dfs(i - 1, j, n, m, visited, grid, count);
+    dfs(i, j + 1, n, m, visited, grid, count);
+    dfs(i, j - 1, n, m, visited, grid, count);
+}
+
+int main() {
+	// your code goes here
+    int tc;
+    cin >> tc;
+    
+    while(tc--)
+    {
+        int n, m;
+        cin >> n >> m;
+        
+        vector<vector<char>> grid(n, vector<char>(m));
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < m; j++)
+            {
+                char temp;
+                cin >> temp;
+                grid[i][j] = temp;
+            }
+        }
+        
+        vector<vector<int>> visited(n, vector<int>(m, 0));
+        int sum = 0;
+        priority_queue<int> pq;
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < m; j++)
+            {
+                if(!visited[i][j] && grid[i][j] == '1')
+                {
+                    int count = 0;
+                    dfs(i, j, n, m, visited, grid, count);
+                    pq.push(count);
+                }
+            }
+        }
+        
+        int k = 0;
+        while(!pq.empty())
+        {
+            if(k % 2)
+                sum += pq.top();
+            pq.pop();
+            k++;
+        }
+        
+        cout << sum << endl;
+    }
+	return 0;
+}

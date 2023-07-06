@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+#include <iostream>
+using namespace std;
+
+
+int main() {
+	// your code goes here
+	int t;
+	cin>>t;
+	while(t--){
+	    
+	    double n ;
+	    cin >> n;
+	    
+	    double root = log2(n);
+	    
+	    if(round(root) == root){
+	        if(root == 0){
+	            cout << 2 << endl;
+	        }else {
+	            cout << 1 << endl;
+	        }
+	    }else{
+	       
+	        double sqrRem = n- pow(2 , floor(root));
+	        if(sqrRem == 2 ||   round(log2(sqrRem)) == log2(sqrRem)){
+	            if(log2(sqrRem) == root){
+	                cout << 1 << endl;
+	            }else 
+	                cout << 0 << endl;
+	        }else{
+	           long long int ret1 = pow(2 , round(log2(sqrRem))) - sqrRem;
+	            if(round(log2(sqrRem)) == floor(root)){
+	                 ++ret1;
+	            }
+	       
+	            long long int ret = sqrRem - pow(2 , floor(log2(sqrRem)));
+	           	if(floor(log2(sqrRem)) == floor(root)){
+	                 ++ret ;
+	            }
+	            
+	            if(ret1 < ret && ret1 >0){
+	                cout << ret1 << endl;
+	            }else{
+	                cout <<  ret <<  endl;
+	            }
+	        }
+	       
+
+  
+	        
+	        
+	    }
+	    
+	    
+	    
+	    
+	    
+	}
+	return 0;
+}

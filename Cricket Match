@@ -1,0 +1,78 @@
+#include <iostream>
+#include <vector>
+#include <bits/stdc++.h>
+using namespace std;
+
+bool dfs(vector<vector<int>>& adj, bool visitedStatus[], bool team[], int v, bool teamToBeAssigned){
+    
+    //visit the node, mark visitedStatus = true;
+    //check whether neighbouring visited teams are same. If yes, return false
+    //Else, dfs & if no contradiction, return true
+    //Check for disconnected components as well
+    
+    visitedStatus[v] = true;
+    team[v] = teamToBeAssigned;
+    
+    for (int neighbour : adj[v])
+    {
+        if (visitedStatus[neighbour] && team[neighbour] == teamToBeAssigned)
+            return false;
+    }
+    
+    for (int neighbour: adj[v]){
+        /*if (visitedStatus[neighbour]){
+            if (team[neighbour] == teamToBeAssigned) 
+                return false;
+        }*/
+        if (!visitedStatus[neighbour]){
+            if (!dfs(adj, visitedStatus, team, neighbour, !teamToBeAssigned))
+                return false;
+        }
+    }
+    
+    
+    return true;
+}
+
+int main() {
+	// your code goes here
+	int t;
+	cin >> t;
+	
+	while(t--){
+	    int n, m;
+	    cin >> n >> m;
+        vector<vector<int>> adj(n);
+        bool visitedStatus[n] = {false};
+        bool team[n];
+	    
+	    while(m--){
+	        int u, v;
+	        cin >> u >> v;
+	        
+	        adj[u-1].push_back(v-1);
+	        adj[v-1].push_back(u-1);
+	    }
+	    
+	    if (!dfs(adj, visitedStatus, team, 0, 0))
+	    {
+	        cout << "NO\n";
+	        continue;
+	    }
+	    
+	    int i;
+	    
+	    for (i = 0; i <n; ++i)
+	    {
+	        if (!visitedStatus[i] && !dfs(adj, visitedStatus, team, i, 0))
+	        {
+	            cout << "NO\n";
+	            break;
+	        }
+	    }
+	    
+	    if (i == n)
+	        cout << "YES" << endl;
+	}
+	return 0;
+}

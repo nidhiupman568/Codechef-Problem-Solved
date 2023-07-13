@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include<set>
+using namespace std;
+
+long long dfs(vector<vector<long long>>& v, long long s, long long prev, vector<long long>& toll, long long k, long long& coupon) {
+    long long a = 0;
+    for (long long j : v[s]) {
+        if (j != prev) {
+            long long temp = dfs(v, j, s, toll, k, coupon);
+            a = max(a, temp);
+        }
+    }
+    a += toll[s];
+    //long long l=0;
+    //long long g = max(l, a - coupon);
+    if (a > k) {
+        coupon += a - k;
+        a=k;
+    }
+    return a;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t > 0) {
+        t--;
+        long long n, x, k;
+        cin >> n >> x >> k;
+        vector<long long> toll;
+        for (long long i = 0; i < n; i++) {
+            int a;
+            cin >> a;
+            toll.push_back(a);
+        }
+        vector<vector<long long>> v(n, vector<long long>());
+        for (long long i = 1; i < n; i++) {
+            long long a, b;
+            cin >> a >> b;
+            v[a - 1].push_back(b - 1);
+            v[b - 1].push_back(a - 1);
+        }
+        long long coupon = 0;
+        dfs(v, x - 1, -1, toll, k, coupon);
+        cout << 2 * coupon << endl;
+    }
+    return 0;
+}

@@ -1,0 +1,97 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <cstring>
+#define NMAX 102936
+using namespace std;
+typedef vector<pair<int,int>> vpii;
+int n, e, edge_cnt = 0; 
+vpii adj[NMAX];
+bool edges_visited[2*NMAX];
+bool visited[NMAX];
+vpii path(2*NMAX);
+void dfs1(int u)
+{
+	if(visited[u])
+		return ;
+	visited[u] = true;
+	for(const auto &p : adj[u])
+		if(!visited[p.first])
+			dfs1(p.first);
+}
+bool connected()
+{
+	memset(visited, false, sizeof(visited));
+	dfs1(0);
+	for(int i=0; i<n; i+=1)
+		if(!visited[i])
+			return false;
+	return true;
+}
+bool eulerian()
+{
+	for(int i=0; i<n; i+=1)
+		if(adj[i].size() & 1)
+			return false;
+	return true;
+}
+void dfs2(int node)
+{
+	visited[node] = true;
+	for(int i=0; i<adj[node].size(); i+=1)
+	{
+		if(edge_cnt == e)
+			break;
+		if(edges_visited[adj[node][i].second])
+		{
+			swap(adj[node][i], adj[node].back());
+			adj[node].pop_back();
+		}
+		if(!edges_visited[adj[node][i].second]) 
+		{
+			path[adj[node][i].second] = make_pair(node, adj[node][i].first);	
+			edges_visited[adj[node][i].second] = true;
+			edge_cnt += 1;
+			if(edge_cnt == e)
+				return;
+			dfs2(adj[node][i].first);
+			continue;
+		}
+	}
+	visited[node] = false;
+	return;
+}
+void walk()
+{
+	memset(visited, false ,sizeof(visited));	
+	dfs2(0);
+	for(int i=n-1; i>=0; i--)
+	{
+		if(edge_cnt == e)
+			break;
+		dfs2(i);
+	}
+}
+
+int main()
+{
+	ios::sync_with_stdio(false);
+	cin >> n >> e;
+	for(int i=0;i<e;i+=1)
+	{
+		int u, v;
+		cin >> u >> v;
+		adj[u-1].push_back(make_pair(v-1, i));
+		adj[v-1].push_back(make_pair(u-1, i));
+	}
+	if(e < n || !connected() || !eulerian())
+	{
+		cout << "NO" << endl;
+		return 0;
+	}
+	walk();
+	cout << "YES" << endl;
+	for(int i=0;i<e;i+=1)
+		cout << path[i].first + 1 << " " << path[i].second + 1 << endl;
+	return 0;
+} 

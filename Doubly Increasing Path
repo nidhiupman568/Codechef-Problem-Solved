@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+
+
+
+#define ll long long
+
+using namespace std;
+const int N = 1e5 + 5;
+vector<pair<ll, int> > g[N];
+ll a[N], weight[N * 2];
+int edgeTo[2 * N], nxt[N * 2];
+int visId = 1, vis[N * 2], dp[N * 2];
+
+int solve(int index) {
+    if (index == -1) return 0;
+    int &ret = dp[index];
+    if (vis[index] == visId) return ret;
+    vis[index] = visId;
+    ret = solve(nxt[index]);
+    int node = edgeTo[index];
+    auto it = upper_bound(g[node].begin(), g[node].end(), make_pair(weight[index], N * 2));
+    if (it != g[node].end()) ret = max(ret, solve((*it).second) + 1);
+    return ret;
+}
+
+void clear(int n) {
+    for (int i = 0; i <= n; i++)g[i].clear();
+    visId++;
+}
+
+int main() {
+
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        for (int i = 1; i <= n; i++) cin >> a[i];
+        int curIndex = 0;
+        for (int i = 0; i < m; i++) {
+            int u, v;
+            cin >> u >> v;
+            edgeTo[curIndex] = v;
+            weight[curIndex] = a[v] - a[u];
+            g[u].emplace_back(a[v] - a[u], curIndex++);
+            swap(u, v);
+            edgeTo[curIndex] = v;
+            weight[curIndex] = a[v] - a[u];
+            g[u].emplace_back(a[v] - a[u], curIndex++);
+        }
+        for (int i = 1; i <= n; i++) {
+            sort(g[i].begin(), g[i].end());
+            int last = -1;
+            for (int j = (int) g[i].size() - 1; j >= 0; j--) {
+                nxt[g[i][j].second] = last;
+                last = g[i][j].second;
+            }
+        }
+        int ans = 1;
+        for (int i = 0; i < curIndex; i++) {
+            if (weight[i] > 0) ans = max(ans, solve(i) + 2);
+        }
+        cout << ans << '\n';
+        clear(n);
+    }
+    return 0;
+}

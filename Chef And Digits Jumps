@@ -1,0 +1,261 @@
+
+//// bohot time lgaa///   
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define mod 1000000007
+ll fact[100000];
+ll totalfact[1000001];
+ vector<bool> boolprime(10000001,false);
+ const int N=1e5;
+ vector<vector<ll> > adj(N+1);
+   vector<ll> vis(N+1);
+   vector<ll> values(N+1);
+   vector<ll> dist(N+1);
+void sieve()
+{    for(ll i=0;i<=10000000;i++)
+ {
+     boolprime[i]=true;
+ }
+ boolprime[0]=false;
+ boolprime[1]=false;
+ for(ll i=2;i<=sqrt(10000000);i++)
+ {
+    if(boolprime[i]==true)
+    {
+        for(ll j=i*i;j<10000001;j+=i)
+        boolprime[j]=false;
+    }
+ }
+}
+void totalfactor()
+{
+    for(ll i=0;i<1000001;i++)
+    totalfact[i]=0;
+    for(ll i=1;i<=sqrt(1000000);i++)
+    {
+        ll j=i*i;
+        for(ll k=j;k<=1000000;k+=i)
+          {
+            if(k==j)
+            totalfact[k]+=1;
+            else
+            totalfact[i]+=2;
+          }
+    }
+}
+
+
+
+
+vector<ll> factor(ll a)
+{
+    vector<ll> ans;
+    for(int i=1;i<=sqrt(a);i++)
+    {
+        if((a%i)==0)
+        {
+            ans.push_back(i);
+            if((i*i)!=a)
+             ans.push_back(a/i);
+        }
+    }
+    return ans;
+}
+vector<ll> primefactors(ll a)
+{
+       vector<ll> ans;
+       vector<ll> t=factor(a);
+       for(ll i=0;i<t.size();i++)
+       {
+          if(boolprime[t[i]])
+          ans.push_back(t[i]);
+       }
+       return ans;
+
+}
+
+ll power(ll a,ll n,ll m)
+{
+    ll ans=1;
+    while(n>0)
+    {
+        if(n%2)
+        ans=((ans%m)*(a%m))%m;
+        a=((a%m)*(a%m))%m;
+        n/=2;
+    }
+    return ans;
+}
+
+
+
+ll fexp(ll a, ll b){
+    ll ans = 1;
+    for(int i = 0; i < 35; i++){
+        if(b&(1LL<<i)){
+            ans *= a;
+        }
+        a *= a;
+        a %= mod;
+        ans %= mod;
+    }
+    return ans;
+}
+
+ll nCr(int N, int K){
+    return fact[N] * fexp(fact[K] * fact[N-K] % mod, mod-2) % mod;
+}
+
+// void dijekstra(ll i,vector<vector<ll> > &cost)
+// {
+//       vis[i]=true;
+//      for(ll j=0;j<adj[i].size();i++)
+//      {
+//         if(vis[adj[i][j]]==false)
+//         {
+//              dist[adj[i][j]]=min(dist[adj[i][j]],dis[i] + cost[i][j]);
+//         }
+//      }
+//      ll minn=INT_MAX;
+//      ll ind=-1;
+//      for(ll i=1;i<dist.size();i++)
+//      {
+//         if(vis[i]==false)
+//         {
+//             if(minn>dist[i])
+//             {
+//               ind=i;
+//               minn=dist[i];
+//             }
+//         }
+//      }
+//      if(ind==-1)
+//      return ;
+//      dijekstra(ind,cost);
+//      return ;
+
+// }
+//  void dfs(ll i,ll par=-1)
+// {    
+//     vis[i]=1;
+//     for(ll j=0;j<v[i].size();j++)
+//     {
+//         if(vis[v[i][j]]==0 && v[i][j]!=par)
+//         {
+//           dfs(v[i][j],i);
+             
+//         }
+//     }
+//     return ;
+// }
+
+
+void solve()
+{
+  string s;
+  cin>>s;
+  ll n=s.size();
+  vector<ll> ans(n,INT_MAX);
+  vector<vector<ll> > t(10);
+  for(ll i=0;i<n;i++)
+  {
+    t[s[i]-'0'].push_back(i);
+  }
+ ans[0]=0;
+//  while(!s.empty())
+//  {
+    // ll ind=s.front();
+    // s.pop();
+//     if(ans[ind+1]!=INT_MAX && s[ind + 1]!=s[ind])
+//     {ans[ind+1]=ans[ind] + 1;
+//     s.push(ind + 1);}
+//     for(ll i=1;i<t[s[ind]-'0'].size();i++)
+//     {
+//         ll j=t[s[ind]-'0'][i];
+//         ans[j]=ans[ind] + 1;
+//           if(j-1>0)
+//           {   if(ans[j-1]!=INT_MAX)
+//               {ans[j-1]=ans[j] + 1;
+//              s.push(j-1);}
+//           }
+//           if(j+1<n)
+//             {    if(ans[j+1]!=INT_MAX && s[j+]!=s[j])
+//                 {ans[j+1]=ans[j]  + 1;
+//               s.push(j+1);}
+//               }
+
+//     }
+//  }
+//  cout<<ans[n-1]<<endl;
+
+vector<ll> vis(10,0);
+ ans[0]=0;
+ queue<ll> l;
+ l.push(0);
+
+ while(!l.empty())
+ {
+       ll ind=l.front();
+    l.pop();
+    if(vis[s[ind]-'0']==0)
+     {vis[s[ind]-'0']=1;
+     if(vis[s[ind+1]-'0']==0 && ind+1<n)
+     {   
+        ans[ind+1]=min(ans[ind+1],ans[ind]+1);
+        l.push(ind+1);
+     }
+      if(vis[s[ind-1]-'0']==0 && ind-1>=0)
+     {   
+        ans[ind-1]=min(ans[ind-1],ans[ind]+1);
+        l.push(ind-1);
+     }
+     
+     for(ll i=0;i<t[s[ind]-'0'].size();i++)
+     {  ll j=t[s[ind]-'0'][i];
+        
+         ans[j]=min(ans[j],ans[ind] + 1);
+         if(j-1>=0 && vis[s[j-1]-'0']==0)
+         { 
+            ans[j-1]=min(ans[j-1],ans[j] + 1);
+             l.push(j-1);
+         }
+         if(j+1<n && vis[s[j+1]-'0']==0)
+         {    
+            ans[j+1]=min(ans[j+1],ans[j]+1);
+            l.push(j+1);
+         }
+     }
+     }
+
+    
+
+ }
+ 
+//  for(ll i=0;i<n;i++)
+//  cout<<ans[i]<<" ";
+cout<<ans[n-1]<<endl;
+
+ }
+
+
+int main()
+{    ios_base::sync_with_stdio(false);
+    cin.tie(NULL); 
+    fact[0] = 1;
+    for(int i = 1; i < 100000; i++){
+        fact[i] = fact[i-1] * i;    
+        fact[i] %= mod;
+    }
+    sieve();
+    totalfactor();
+    ll n=1;
+    // cin>>n;
+    while(n--)
+    {
+        solve();
+      
+    }
+    return 0;
+}

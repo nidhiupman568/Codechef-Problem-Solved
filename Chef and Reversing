@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std ;
+#define ll long long 
+
+int main(){
+    int n , m ; cin >> n >> m ;
+    vector<pair<int,int>>adj[n+1] ;
+    while( m-- ){
+        int u , v ; cin >> u >> v ;
+        adj[u].push_back({v,0}) ;
+        adj[v].push_back({u,1}) ;
+     }
+     
+     deque<int>dq ;
+     vector<int>level(n+1,INT_MAX) ;
+     
+     dq.push_back(1) ;
+     level[1] = 0 ;
+     
+     while( !dq.empty()){
+         int curr_v = dq.front() ;
+         dq.pop_front() ;
+         
+         for( auto child : adj[curr_v]){
+             int v = child.first ;
+             int wt = child.second ;
+             if( level[curr_v] + wt < level[v] ){
+                 //relax it and store it 
+                 level[v] = level[curr_v] + wt  ;
+                 if( wt == 1 ) dq.push_back(v) ;
+                 else dq.push_front(v) ;
+             }
+         }
+         
+     }
+     if( level[n] == INT_MAX ) cout << "-1\n" ;
+     else {cout << level[n] <<"\n";}
+     
+}

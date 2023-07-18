@@ -1,0 +1,113 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+// #define ld long double
+// #define ll long long int 
+ 
+#define int long long
+#define ll int
+
+#define Dd cout<<1;
+#define EE endl
+#define RR return
+#define pb push_back
+
+const int inf= 1e18;
+
+
+void solve()
+{
+    
+    int n,m;
+    cin>>n>>m;
+
+    int height[n];
+    for(int i=0;i<n;i++) cin>>height[i];
+
+    int cost[n];
+    for(int i=0;i<n;i++) cin>>cost[i];
+
+    vector<int> adj[n];
+    for(int i=0;i<m;i++)
+    {
+        int x,y; cin>>x>>y;
+        adj[--x].pb(--y);
+        adj[y].pb(x);
+    }
+
+    vector<vector<int>> dist(n,vector<int>(2,inf));
+    // for(int i=0;i<n;i++) dist[i]=1e9;
+
+    priority_queue< pair<int,pair<int,int>>,
+       vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>> > q;
+
+    dist[0][0]=dist[0][1]=cost[0];
+    q.push({dist[0][0],{0,0}});
+    q.push({dist[0][1],{0,1}});
+
+    while(!q.empty())
+    {
+        int d = q.top().first;
+        int node = q.top().second.first;
+        int mode = q.top().second.second;
+
+        q.pop();
+
+        for(auto ch : adj[node])
+        {
+            if(height[ch]>=height[node])
+            {
+                int sum = dist[node][mode];
+                if(mode!=0)
+                    sum+= cost[node];
+                if(dist[ch][0]>sum)
+                {
+
+                    dist[ch][0]=sum;
+                    q.push({dist[ch][0],{ch,0}});
+                }
+            }
+
+             if(height[ch]<=height[node])
+            {
+                int sum=dist[node][mode];
+                if(mode!=1) sum+= cost[node];
+                if(dist[ch][1]>sum)
+                {
+                    dist[ch][1]=sum;
+                    q.push({dist[ch][1],{ch,1}});
+                }
+            }
+        }
+    }
+
+    int ans = min(dist[n-1][0],dist[n-1][1]);
+    if(ans>=inf) ans=-1;
+
+    cout<<ans<<EE;
+
+
+}
+
+
+signed main()
+// int main()
+{
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    int t=1;
+    // cin>>t; 
+
+    for(int tt=1;tt<=t;tt++)
+    {    
+        solve();
+    }
+    
+  
+      
+    // cout<<"mic_check";
+    return 0;
+}

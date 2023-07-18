@@ -1,0 +1,105 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <queue>
+#include <set>
+#include <cstdio>
+#include <cstdlib>
+#include <stack>
+#include <cstring>
+#include <iomanip>
+#include <cctype>
+#include <map>
+
+using namespace std;
+
+const long long INFY = 10000000000000000LL;
+
+int flag = 0;
+
+long long prim(int n,vector<vector<pair<int,long long> > > &Graph) {
+    vector<int> visited(n,0);
+    vector<long long> key(n,INFY);
+    key[0] = 0;
+    set<pair<long long,int> > q;
+    q.insert(make_pair(0,0));
+    vector<pair<int,long long> > p(n,make_pair(0,0));
+    long long ans = 0;
+    while(!q.empty()) {
+        pair<long long,int> cur = *q.begin();
+        q.erase(q.begin());
+        int u = cur.second;
+        if(!visited[u]) {
+            ans+=cur.first;
+            visited[u] = 1;
+            for(int i = 0;i < Graph[u].size();i++) {
+                if(!visited[Graph[u][i].first] && Graph[u][i].second < key[Graph[u][i].first]) {
+                    key[Graph[u][i].first] = Graph[u][i].second;
+                    q.insert(make_pair(Graph[u][i].second, Graph[u][i].first));
+                    p[Graph[u][i].first].first = u;
+                    p[Graph[u][i].first].second = Graph[u][i].second;
+                }
+            }
+        }
+    }
+    for(int i = 0;i < n;i++) if(!visited[i]) flag = 1;
+    return ans;
+}
+
+
+long long dijkstra(int n, vector<vector<pair<int,long long> > > &Graph,int source ) {
+    vector<pair<long long,int> > d(n,make_pair(INFY,0));
+    vector<long long> pw(n,0);
+    d[source].first = 0;
+    set<pair<long long,int> > q;
+    q.insert(make_pair(0LL,source));
+    long long ans = 0;
+    while(!q.empty()) {
+        pair<long long,int>  cur = *q.begin();
+        q.erase(q.begin());
+        int u = cur.second;
+        long long w = cur.first;
+        if(d[u].first == w) {
+            for(int i = 0;i < Graph[u].size();i++) {
+                int v = Graph[u][i].first;
+                if(w + Graph[u][i].second == d[v].first) {
+                    if(pw[v] > Graph[u][i].second) {
+                        pw[v] = Graph[u][i].second;
+                    }
+                }
+                else if(w + Graph[u][i].second < d[v].first) {
+                    d[v].first = Graph[u][i].second + w;
+                    d[v].second = u;
+                    pw[v] = Graph[u][i].second;
+                    q.insert(make_pair(d[v].first,v));
+                }
+            }
+        }
+    }
+    for(int i = 0;i < n;i++) ans+=pw[i];
+    return ans;
+}
+
+void solve() {
+    int n,m; cin>>n>>m;
+    flag = 0;
+    vector<vector<pair<int,long long> > > Graph(n);
+    for(int i = 0;i < m;i++) {
+        int a = i,b = i + 1; cin>>a>>b;
+        
+        long long w = 1000000000; cin>>w;
+        Graph[a].push_back({b,w});
+        Graph[b].push_back({a,w});
+    }
+    if(dijkstra(n,Graph,0) == prim(n,Graph) && !flag) cout<<"YES"<<endl;
+    else cout<<"NO"<<endl;
+}
+
+
+int main() {
+    int t; cin>>t;
+    while(t--) {
+        solve();
+    }
+}

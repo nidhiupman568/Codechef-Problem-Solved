@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int t, x, y, z;
+int ans;
+
+int main() {
+cin >> t;
+while (t--) {
+cin >> x >> y >> z;
+ans = 0;
+for (int mask = 0; mask < 8; mask++) {
+int nx = 0, ny = 0, nz = 0;
+if (mask & 1) {
+nx++, ny++;
+}
+if (mask & 2) {
+nx++, nz++;
+}
+if (mask & 4) {
+ny++, nz++;
+}
+if (nx > x || ny > y || nz > z) {
+continue;
+}
+int have = __builtin_popcount(mask);
+have += (nx < x) + (ny < y) + (nz < z);
+ans = max(ans, have);
+}
+cout << ans << endl;
+}
+return 0;
+}
+
+
+

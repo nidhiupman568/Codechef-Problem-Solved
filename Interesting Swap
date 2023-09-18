@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+
+using ll = long long;
+using pii = pair <int, int>;
+using vi = vector <int>;
+
+string s;
+void solve() {
+    int n , m;
+    cin >> n >> m;
+    cin >> s;
+    vector <int> p(n) , q(n);
+    vector <pii> ans;
+    for (int i = 0 ; i < n ; i++) p[i] = i;
+    sort(p.begin() , p.end() , [](int l , int r) {
+        return s[l] < s[r];
+    });
+    auto find = [&](int a) -> int {
+        for (int i = 0 ; i < n ; i++) if (q[i] == a) return i;
+        return -1;
+        assert(0);
+    };
+    auto change = [&](int i , int j) -> void {
+        if (min(i , j) == 0 && max(i , j) == n) return;
+        if (max(i , j) == 0) return;
+        if (i == 0) i = n - j;
+        if (j == 0) j = n - i;
+        ans.emplace_back(i , j);
+        vector <int> _q;
+        for (int ii = n - j ; ii < n ; ii++) _q.push_back(q[ii]);
+        for (int ii = i ; ii < n - j ; ii++) _q.push_back(q[ii]);
+        for (int ii = 0 ; ii < i ; ii++) _q.push_back(q[ii]);
+        swap(q , _q);
+    };
+    for (int i = 0 ; i < n ; i++) q[p[i]] = i;
+    int l = (n - 2) / 2 , r = l + 1;
+    for (int i = 0 ; i < n ; i++) {
+        if (i & 1) {
+            int a = find(l);
+            change(i , n - a - 1);
+            l --;
+        }
+        else {
+            int a = find(r);
+            change(a , i);
+            r ++;
+        }
+    }
+    cout << ans.size() << "\n";
+    for (auto [u , v] : ans) cout << u << " " << v << "\n";
+}
+
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+#endif
+    cin.tie(0); cout.tie(0);
+    ios::sync_with_stdio(0);
+
+    int T;
+    cin >> T;
+    while (T --) solve();
+    return 0;
+}

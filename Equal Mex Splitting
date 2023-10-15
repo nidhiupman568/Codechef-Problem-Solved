@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+
+int main() 
+{
+	ll t,n,i,j,k;
+	cin >> t;
+	while(t--)
+	{
+	    cin >> n;
+	    ll ans=0ll;
+	    for(i=0;i<n;i++)
+	    {
+	        cin >> k;
+	        if(k)
+	            ++ans;
+	    }
+	    cout << (ll)max(ans,n-ans) << "\n";
+	}
+	return 0;
+}

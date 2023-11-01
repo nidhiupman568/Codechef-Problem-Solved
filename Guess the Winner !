@@ -1,0 +1,72 @@
+//..............BISMILLAH HIRRAH MANIR RAHIM...................
+#include<bits/stdc++.h>
+using namespace std;
+
+#define IOS ios_base::sync_with_stdio(0);  cin.tie(0); cout.tie(0);
+
+#define ll long long int
+#define ft first
+#define sn second
+#define en "\n"
+#define pb push_back
+#define all(i) i.begin(),i.end()
+#define pr pair<int,int>
+#define yes cout<<"YES"<<endl
+#define no cout<<"NO"<<endl
+#define rev reverse
+#define ub upper_bound
+#define lb lower_bound
+
+#define dbg cout<<"Mehedi\n"
+#define MAXN 200005
+const int mod = 1e9 + 7;
+
+void mehedi()
+{
+//  vector<tuple<int,int,int>>v;
+//  v.pb({100,2,3});
+//  v.pb({3,400,4});
+//  for(int i = 0;i < v.size();i++){
+//    cout<<get<0>(v[i])<<" "<<get<1>(v[i])<<" "<<get<2>(v[i])<<en;
+//  }
+//
+//  string s;
+//  cin >> s;
+//  int _0 = count(all(s),'0');
+//  int _1 = count(all(s),'1');
+//  dbg;
+//  cout<<_0<<" "<<_1<<en;
+//  dbg;
+//   cout<<get<0>(v[0])<<en;
+//   string r = s.substr(3, 2);//here 3 is from position and 2 is size;
+    ll n,i,j,sm=0,k,x,cnt=0,l;
+    cin>>n;
+    if(n==1||n==2) cout<<"Bob"<<en;
+    else{
+        if(n%2==0) cout<<"Bob"<<en;
+        else cout<<"Alice"<<en;
+    }
+
+
+
+
+
+
+}
+
+int main()
+{
+    IOS;
+    int t;
+
+    cin>>t;
+//    t = 1;
+    //int c = 0;
+    while(t--)
+    {
+        // cout<<"Case "<<++c<<": ";
+        mehedi();
+    }
+
+    return 0;
+}

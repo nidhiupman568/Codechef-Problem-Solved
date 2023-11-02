@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+#define ll long long int
+using namespace std;
+vector<ll>v;
+ll mxn=1e7+7;
+bool mp[10000007];
+ll mp1[10000007];
+void seive(){
+  mp1[1]=1;
+  for(ll i=2;i<=mxn;i++){
+    if(mp[i]==0){
+      mp1[i]++;
+      v.push_back(i);
+      for(ll j=i+i;j<=mxn;j+=i){
+        mp[j]=1;
+        mp1[j]++;
+      }
+    }
+  }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int tc=1,tc1=1;
+    cin>>tc;
+    seive();
+    up:
+    while(tc--){
+      ll n;
+      cin>>n;
+      map<ll,ll>seen;
+      for(ll i=0;i<n;i++){
+        ll x;
+        cin>>x;
+        seen[x]++;
+      }
+      for(ll i=1;;i++){
+        if(seen[i]==0&&mp1[i]==1){
+            cout<<i<<'\n';
+            goto up;
+        }
+      }
+    }
+}

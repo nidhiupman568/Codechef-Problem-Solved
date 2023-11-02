@@ -1,0 +1,21 @@
+#include <iostream>
+
+static auto testcase(int N, int X, int D) {
+	return N / (X * 5) + D;
+}
+
+static void testcase() {
+	int N, X, D;
+	std::cin >> N >> X >> D;
+	std::cout << testcase(N, X, D) << '\n';
+}
+
+int main() {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+	std::cin.exceptions(std::ios::failbit | std::ios::badbit);
+	unsigned T;
+	std::cin >> T;
+	while(T--)
+		testcase();
+}

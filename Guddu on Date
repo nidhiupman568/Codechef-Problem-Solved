@@ -1,0 +1,25 @@
+/*  Time: 5:17 AM
+    Date: 30 AUG 2023   */
+#include <bits/stdc++.h>
+#define ll long long int
+using namespace std;
+
+int find(string s){
+    ll sum=0;
+    for(auto x:s)   sum+=(x-'0');
+    return sum%10;
+}
+
+int main() {
+	int t;
+	cin>>t;
+	while(t--)
+	{
+	    string s;
+	    cin>>s;
+	    int x=find(s);
+	    if(x==0)    cout<<s+'0'<<endl;
+	    else    cout<<s+to_string(10-x)<<endl;
+	}
+	return 0;
+}

@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin>>t;
+    while(t--){
+      long long int n,mod=1e9+7,ans=0,sz=1,cnt=1;   
+      cin>>n;
+      int long long a[n];
+      map<int long long,int long long>m;
+      for(int i=0;i<n;i++){
+          cin>>a[i];
+          m[a[i]]++;
+      }
+      while(m[sz]!=0){
+          cnt=(cnt%mod)*(m[sz]%mod);
+          ans=(ans%mod)+(cnt%mod);
+          ans=ans%mod;
+          cnt=(cnt%mod);
+          sz++;
+      }
+      cout<<ans<<endl;
+    }
+	// your code goes here
+	return 0;
+}

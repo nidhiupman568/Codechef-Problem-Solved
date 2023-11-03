@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long 
+#define pb push_back
+#define vi vector<int>
+#define loop(i,z,n) for(int i=z; i<n; i++)
+#define ll cout << endl
+#define SpeedIsAllYouNeed ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+int32_t main() {
+    SpeedIsAllYouNeed;
+	int t; cin >> t;
+	while(t--) {
+	    string s; cin >> s;
+	    
+	   // Converting all three values into integers
+	    int year = stoi(s.substr(0,4));
+	    int month = stoi(s.substr(5,2));
+	    int day = stoi(s.substr(8,2));
+	    
+	   // Checking if the current year is Leap year or not
+	    bool isLeap = false;
+	    if((year%4==0 and year%100!=0) or year%400==0) isLeap = true;
+	    
+	    vi evenDays = {4,6,9,11}; // Month having 30 days
+	    int count = 0;
+	    bool flag = 0;
+	    while(1) {
+	        int days;
+	        if(month==2 and isLeap) days = 29;                                              // If month is leap and february, then no. of days is 29
+	        else if(month==2 and !isLeap) days = 28;                                        // If month is not leap and february, then no. of days is 28
+	        else {
+    	        vector<int>::iterator it = find(evenDays.begin(), evenDays.end(), month);   // If month is not in vector(evenDays), that means it is the month with 31 days
+    	        if(it!=evenDays.end()) days = 30;
+    	        else days = 31;
+	        }
+	        
+	        if(!flag)
+	        count = ((days-day)/2)+1;                                                       // First time we the pills in the remaining days of month
+	        
+	        if(flag) {
+	            if(day%2==0) count += 15;                                                   // Then for the whole month, if first pill was taken on even day then add 15 else 16
+	            else count += 16;
+	        }
+	        
+ 	        flag = 1;
+	        month++;
+
+	        if(days==31 or days==29)                                                        // Every odd month or leap year, the sequence breaks
+	            break;
+	    }
+	    
+	    cout << count << endl;
+	}
+	return 0;
+}

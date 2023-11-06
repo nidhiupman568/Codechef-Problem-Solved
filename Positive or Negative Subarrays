@@ -1,0 +1,97 @@
+#include <bits/stdc++.h>
+#define ll long long int
+using namespace std;
+
+
+/*
+
+2 concept need to be understood
+
+1. if the array of length of n is given;
+
+total number of subarrrays = (n*(n+1))/2;
+
+let say the pow is denoted by i
+
+    i     0  1  2  3  4  5   6
+
+pow(2,i)  1  2  4  8  16  32 64  
+
+
+if you observe that total sum from(0 to i-1) < i always
+
+let say i = 3 
+
+pow(2,3) = 8;
+
+from 0 to i-1 i.e 0 to 2 is 1+2+4=7
+
+7<8 
+
+it is always true
+
+as bi is given and ai is given 
+
+ci = ai*bi
+
+let say b[]= { 1,1,-1,1};
+
+        a[]= {1,2,4,8};
+        
+        c[] = a[]*b[]
+
+c[]  =  {1,2,-4,8};
+
+i=2;
+
+0 to i-1 sum is 3
+
+i is -4 when 1,2,-4 forms subarray it will give neg value
+
+how many such arrays are avaliable {2,-4} {-4} {1,2-4} i.e 3 
+
+neg subarray = i+1 i.e 3 
+
+pos subarray = total subarray - neg subarray;
+
+the difference is = |pos subarray - neg subarray|
+
+
+
+
+*/
+
+void solve() {
+    ll n;
+    cin>>n;
+    vector<ll>v(n);
+    
+    for(ll i =0; i<n; i++) {
+        cin>>v[i];
+    }
+    
+    ll neg_subarray =0;
+    for(ll i =0; i<n; i++) {
+        if(v[i]==-1) {
+          neg_subarray = neg_subarray + i + 1;
+        } 
+    }
+    
+    ll total_subarray = (n*(n+1))/2;
+    
+    ll pos_subarray = total_subarray - neg_subarray;
+    
+    ll ans = abs(pos_subarray-neg_subarray);
+    
+    cout<<ans<<endl;
+    
+    
+}
+
+int main() {
+    ll t=1;
+    cin>>t;
+    while(t--) {
+        solve();
+    }
+}

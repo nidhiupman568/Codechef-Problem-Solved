@@ -1,0 +1,25 @@
+#include "bits/stdc++.h"
+using namespace std;
+int arr[1000055];
+char s[200005][10];
+map<pair<int,int>,int>m;
+int main(){
+    int n;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        cin>>s[i];
+        int l=strlen(s[i]);
+        int a=0;
+        for(int j=0;j<l;j++)a+=s[i][j]-'0';
+        for(int k=0;k<l;k++){
+            arr[i]+=s[i][k]-'0';
+            m[{arr[i]*2-a,2*(k+1)-l}]++;
+        }
+    }
+    long long ans=0;
+    for(int i=0;i<n;i++){
+        int l=strlen(s[i]);
+        ans+=m[{arr[i],l}]+m[{-arr[i],-l}];
+    }
+    cout<<ans;
+}

@@ -1,0 +1,73 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<map>
+using namespace std;
+#define ll long long int
+const unsigned int mod = 1e9+7;
+
+int main(){
+
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    //this is fast I/O (inputput output) use header file <cstdio>
+    ll t;cin>>t;
+    while(t--){
+        ll n; cin>>n;
+        vector<ll>a(n),b(n);
+        ll sum = 0;
+        ll even_a=0, even_b=0;
+        ll odd_a=0, odd_b = 0;
+        ll total_mismatched = 0, ans = 0;
+        for(int i=0; i<n; i++){
+            cin>>a[i];
+            sum+=a[i];
+            if(a[i]%2==0) even_a++;
+            else odd_a++;
+        }
+        for(int i=0; i<n; i++) {
+            cin>>b[i];
+            sum+=b[i];
+            if(b[i]%2==0) even_b++;
+            else odd_b++;
+        }
+        // cout<<sum<<endl;
+        // cout<<even_a<<" "<<even_b<<endl;
+        // cout<<odd_a<<" "<<odd_b<<endl;
+        total_mismatched = n -(min(even_a,even_b) + min(odd_a, odd_b));
+        ans = sum - total_mismatched;
+        cout<<ans/2<<endl;
+        
+    }
+    return 0;
+}
+
+/*
+so what is happening.
+to get maximum of (a+b)/2 both a,b must be even or both must be odd
+if anyone of a or b is either differnt then (a+b)/2 == (a+b-1)/2 since, interger division
+so to make maximum add all the even numbers of a[i] to b[i] and all the odd numbers of a[i] to b[i] to find the maximum.
+but what if there aren't enough pairs to make . then we have to find a number p such a number of pairs where an odd value is paired with an even value,
+and we can see, it subtracts p/2 from (a[i]+b[i])/2 [across n] then the final answers is maximum
+
+eg tc 
+5
+4 8 6 4 1
+2 5 7 4 7
+
+for a => even_a = 4, odd_a = 1, sum = 23
+for b => even_a = 2, odd_a = 3, sum = 25
+total sum = 48(48/2 = 24) and 
+min pairs are (p) => n - min(even_a, even_b) - min(odd_a, odd_b) = 5 - min(4,2) - min(1,3) = 5-2-1 = 2
+and p/2 = 2/2 = 1
+so maximun sum = 24 - 1 = 23
+
+line 61 why min pairs find like that -- min(even_a,even_b) = 2 there are 4 evens in a and 2 in b. so we will make 2 paris from a and b and rest 2 evens from a will stay
+similarly min(odd_a,odd_b) = 1 , there is 1 odd in a and 3 odds in b so we will make 1 pair between a and b and rest 2 odd stayed.
+so total pairs made = 2+1 = 3 and 2 pairs left to make(from total 5 pairs) so 5-3 = 2pairs will be where one of a or b will be different i.e odd/even
+
+ANOTER way to find out is that we can find by max(even_a,even_b) - min(even_a,even_b) = max(4,2)-min(4,2) = 4-2 = 2
+or max(odd_a,odd_b) - min(odd_a,odd_b) = max(1,3) - min(1,3) = 3 -1 = 2 (how this works?) since min we make the pairs from the max and so if we subtract we will get the pairs which will form
+pairs with diff parity , now subtract it to the sum(48-2 = 46) then div by 2  (46/2=23) which is the answer
+
+*/

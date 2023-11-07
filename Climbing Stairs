@@ -1,0 +1,44 @@
+#include <iostream>
+
+static constexpr unsigned popcount(unsigned v) {
+	unsigned r = 0;
+	for(; v; ++r)
+		v &= v - 1;
+	return r;
+}
+
+static_assert(popcount(0) == 0, "");
+static_assert(popcount(1) == 1, "");
+static_assert(popcount(7) == 3, "");
+static_assert(popcount(16) == 1, "");
+
+static constexpr unsigned M = 1000000007;
+static constexpr unsigned maxN = 1000000;
+static unsigned fib[maxN + 1];
+
+static void init() {
+	fib[0] = 1;
+	fib[1] = 1;
+	for(unsigned i = 2; i != maxN + 1; ++i)
+		fib[i] = (fib[i - 1] + fib[i - 2]) % M;
+}
+
+static auto testcase(unsigned N, unsigned G) {
+	return popcount(fib[N]) == G;
+}
+
+static void testcase() {
+	unsigned N, G;
+	std::cin >> N >> G;
+	std::cout << (testcase(N, G) ? "CORRECT\n" : "INCORRECT\n");
+}
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+	init();
+	unsigned T;
+	std::cin >> T;
+	while(T--)
+		testcase();
+}

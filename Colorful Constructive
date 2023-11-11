@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+#define pb push_back
+#define fi first
+#define se second
+using namespace std;
+const int N=2e5+1e3;
+
+int T,n,m,cnt[N],s[N],d[N];
+priority_queue<pair<int,int> > q;
+vector<int> ans[N];		
+
+void solve(){
+	cin>>n>>m;for(int i=1;i<=n;i++) cnt[i]=0;
+	for(int i=1,x;i<=n;i++) cin>>x,cnt[x]++;
+	for(int i=1;i<=m;i++) cin>>s[i];
+	for(int i=1;i<=m;i++) cin>>d[i];
+	while(!q.empty()) q.pop();
+	for(int i=1;i<=n;i++) if(cnt[i]) q.push({cnt[i],i});
+	for(int i=1;i<=m;i++){
+		ans[i].clear();
+		for(int j=0;j<s[i]+d[i]-1;j++){
+			if(j<s[i]){
+				if(q.empty()){cout<<"-1\n";return;}
+				auto u=q.top();q.pop();ans[i].pb(u.se);
+			}
+			if(j>=d[i]-1){
+				int id=ans[i][j-d[i]+1];
+				if(--cnt[id]) q.push({cnt[id],id});
+			}	
+		}
+	}
+	for(int i=1;i<=m;i++){
+		for(auto x:ans[i]) cout<<x<<" ";
+		cout<<'\n';
+	}
+}
+
+int main(){
+	ios::sync_with_stdio(false),cin.tie(0),cout.tie(0);
+	cin>>T;while(T--) solve();
+}

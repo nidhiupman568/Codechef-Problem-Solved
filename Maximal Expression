@@ -1,0 +1,31 @@
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int t;
+    cin >> t;
+    while(t--)
+    {
+        int n, k;
+        cin >> n >> k;
+        if (k == 1)
+        {
+            cout << "0\n";
+            continue;
+        }
+        if (k > (n + 1) / 2)
+        {
+            cout << (n + 1) / 2 << '\n';
+            continue;
+        }
+        if (n % k == 0 || n % k == k - 1)
+        {
+            cout << k / 2 << '\n';
+            continue;
+        }
+        int l = n % k + 1, r = k - 1;
+        cout << l + (r - l) / 2 << '\n';
+    }
+}

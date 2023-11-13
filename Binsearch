@@ -1,0 +1,97 @@
+#include <bits/stdc++.h>
+// #include <DebugTracing.hpp>
+using namespace std;
+
+vector<int> solve(vector<int>& A, int n) {
+    const long long MOD = 1'000'000'007;
+    vector<long long> FS(n + 1, 1), IFS(n + 1, 1), invs(n + 1, 1);
+    for (int i = 2; i <= n; ++i) {
+        invs[i] = MOD - MOD / i * invs[MOD % i] % MOD;
+        FS[i] = FS[i - 1] * i % MOD;
+        IFS[i] = IFS[i - 1] * invs[i] % MOD;
+    };
+
+    auto nAr = [&](int n, int r) {
+        if (r > n || r < 0) {
+            return 0LL;
+        }
+        return FS[n] * IFS[n - r] % MOD;
+    };
+
+    int h = 0;
+    while (1LL << (h + 1) <= n) {
+        ++h;
+    }
+    vector<vector<int>> cnts(h + 1, vector<int>(h + 1, 0));
+    function<void(int,int,int,int)> dfs = [&](int l, int r, int lcnt, int rcnt) {
+        if (l > r) {
+            return;
+        }
+        cnts[lcnt][rcnt] += 1;
+        int mid = (l + r) / 2;
+        dfs(l, mid - 1, lcnt, rcnt + 1);
+        dfs(mid + 1, r, lcnt + 1, rcnt);
+    };
+    dfs(0, n - 1, 0, 0);
+    
+
+    auto calc0 = [&](int n, int lcnt, int rcnt, int x) {
+        if (x - 1 < lcnt || n - x < rcnt) {
+            return 0LL;
+        }
+        long long res = 0;
+
+        long long lsum = (x - 1) * 1LL * x / 2;
+        long long rsum = n * 1LL * (n + 1) / 2 - lsum - x;
+        res += x % MOD * nAr(x - 1, lcnt) % MOD * nAr(n - x, rcnt) % MOD;
+        if (x - 1 > lcnt) {
+            res += lsum % MOD * nAr(x - 1 - 1, lcnt) % MOD * nAr(n - x, rcnt) % MOD;
+        } 
+        if (n - x > rcnt) {
+            res += rsum % MOD * nAr(x - 1, lcnt) % MOD * nAr(n - x - 1, rcnt) % MOD;
+        }
+        res %= MOD;
+        // print(lcnt, rcnt, res);
+        (res *= FS[n - lcnt - rcnt - 1]) %= MOD;
+        return res;
+    };
+    auto calc = [&](int x) {
+        long long res = 0;
+        for (int i = 0; i <= h; ++i) {
+            for (int j = 0; j <= h; ++j) {
+                if (cnts[i][j] == 0) {
+                    continue;
+                }
+                res += calc0(n, i, j, x) * cnts[i][j] % MOD;
+            }
+        }
+        res %= MOD;
+        return res;
+    };
+
+
+    vector<int> res((int) A.size(), 0);
+    for (int i = 0; i < (int) A.size(); ++i) {
+        res[i] = calc(A[i]);
+    }
+    return res;
+}
+
+int main(int argc, char** argv) {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout << fixed << setprecision(12);
+
+
+    int n, m;
+    cin >> n >> m;
+    vector<int> A(m);
+    for (int i = 0; i < m; ++i) {
+        cin >> A[i];
+    }
+    auto res = solve(A, n);
+    for (auto x : res) {
+        cout << x << '\n';
+    }
+    return 0;
+}

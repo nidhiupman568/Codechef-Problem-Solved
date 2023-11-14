@@ -1,0 +1,34 @@
+/* || हरे कृष्णा हरे कृष्णा 
+      कृष्णा कृष्णा हरे हरे 
+                       हरे राम हरे राम 
+                       राम राम हरे हरे || */
+// Author:utkarsh gupta 
+ 
+#include<bits/stdc++.h>
+using namespace std;
+
+# define ll long long int
+const ll mod=998244353;
+ 
+/*-------------------------------------------------------------------------------------------------------------------------------*/
+ 
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int t;
+  cin>>t;
+  while(t--)
+  {
+    int n,k;
+    cin>>n>>k;
+    int a[n];
+    for(int i=0;i<n;i++) cin>>a[i];  
+      sort(a,a+n);
+     int ans=k/a[0];
+     if(k%a[0]) ans++;
+     cout<<max(n,ans)<<endl;
+  }
+    return 0;
+  }

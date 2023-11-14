@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+
+static void fill(std::vector<bool>& b, unsigned n, unsigned pos, unsigned step) {
+	for(; n--; pos += step)
+		b[pos] = true;
+}
+
+static auto odd(unsigned N) {
+	std::vector<bool> b(N * N);
+	b[0] = true; // base case
+	for(unsigned n = 1; n != N; n += 2) {
+		fill(b, n, n, N);
+		fill(b, n + 2, n + 1, N);
+	}
+	return b;
+}
+
+static auto even(unsigned N) {
+	std::vector<bool> b(N * N);
+	b[0] = true; // base case
+	b[N + 1] = true; // base case
+	for(unsigned n = 2; n != N; n += 2) {
+		fill(b, n + 1, n, N);
+		fill(b, n, n + 1, N);
+		b[(n + 1) * (N + 1)] = true;
+	}
+	return b;
+}
+
+static void print(const std::vector<bool>& b, unsigned N) {
+	auto gen_odd = [i = 0]() mutable { return i++ * 2 + 1; };
+	auto gen_even = [i = 0]() mutable { return i++ * 2 + 2; };
+	for(unsigned j = 0, p = 0; j != N; ++j) {
+		std::cout << (b[p++] ? gen_odd() : gen_even());
+		for(unsigned i = 1; i != N; ++i)
+			std::cout << ' ' << (b[p++] ? gen_odd() : gen_even());
+		std::cout << '\n';
+	}
+}
+
+static void testcase() {
+	unsigned N;
+	std::cin >> N;
+	auto b = N % 2 ? odd(N) : even(N);
+	print(b, N);
+}
+
+int main() {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+	std::cin.exceptions(std::ios::failbit | std::ios::badbit);
+	unsigned T;
+	std::cin >> T;
+	while(T--)
+		testcase();
+}

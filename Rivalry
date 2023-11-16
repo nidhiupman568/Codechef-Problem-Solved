@@ -1,0 +1,11 @@
+#include <iostream>
+using namespace std;
+#define ll long long int
+int main() {
+	ll a,b;cin>>a>>b;
+	ll c,d;cin>>c>>d;
+	a+=c,b+=d;
+	if(a>b)cout<<"Dominater"<<endl;
+	else cout<<"Everule"<<endl;
+	return 0;
+}

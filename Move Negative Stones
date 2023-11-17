@@ -1,0 +1,140 @@
+#include<bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+#define yes cout<<"YES"<<endl
+#define no cout<<"NO"<<endl
+#define N 100005
+ll mod=1e9+7;
+/***extended euclidean***/
+ll exgcd(ll a,ll b,ll&x,ll&y)
+{
+    if(a==0)
+    {
+        x=0,y=1;
+        return b;
+    }
+    ll x1,y1;
+    ll ans=exgcd(b%a,a,x1,y1);
+    x=y1-(b/a)*x1;
+    y=x1;
+    return ans; 
+}
+
+/***modulo expo***/
+ll pw(ll x,ll n,ll m)
+{
+    ll res=1;
+    while(n>0)
+    {
+        if(n % 2 ==1)
+        res=(res * x)%m;
+        x=(x*x)%m;
+        n=n/2;
+    }
+    return res;
+}
+/***modular arithmetic***/
+ll modm(ll a,ll b,ll m) {return ((a%m)*(b%m))%m;}
+ll mods(ll a,ll b,ll m) {return (a%m-b%m+m)%m;}
+ll moda(ll a,ll b,ll m) {return (a%m+b%m)%m;}
+ll modinverse(ll A,ll M)
+{
+    return pw(A,M-2,M) % M;
+}
+/***mex of an array***/
+ll mex(vector<ll>&ans,ll n)
+{
+	ll c=0,i;
+	sort(ans.begin(),ans.end());
+	for(i=0;i<n;i++)
+	{
+		if(ans[i]>c)
+		return c;
+		else if(ans[i]==c)
+		c++;
+	}
+	return c;
+}
+
+/***precomputations***/
+ll fact[N],invfact[N];
+/**factorials**/
+void pre1()
+{
+    fact[0]=1;
+    for(ll i=1;i<N;i++)
+    {
+    fact[i]=(fact[i-1]*i);
+    fact[i]%=mod;
+    }
+    invfact[N-1]=modinverse(fact[N-1],mod);
+    for(ll i=N-2;i>=0;i--)
+    {
+        invfact[i]=invfact[i+1]*(i+1);
+        invfact[i]%=mod;
+    }
+}
+
+
+/***fermat's little theorem***/
+ll ncr(ll n,ll r) // % mod;
+{
+    if(n < r) return 0; 
+    ll v  = (fact[n] * invfact[n-r]) % mod;
+    v = (v * invfact[r]) % mod;
+    return v;
+}
+//solving...
+//dhang se likhiyo bsdk
+ll getlis(vector<ll>&v)
+{
+    vector<ll>temp;
+    ll n=v.size();
+    for(ll i=0;i<n;i++)
+    {
+        if(v[i]<0)continue;
+        if(temp.size()==0)
+        {
+            temp.push_back(v[i]);
+            continue;
+        }
+        if(v[i]>=temp.back())
+        temp.push_back(v[i]);
+        else
+        {
+            ll ind=upper_bound(temp.begin(),temp.end(),v[i])-temp.begin();
+            temp[ind]=v[i];
+        }
+    }
+    
+    while(temp.size()&&v[n-1]<temp.back())temp.pop_back();
+    ll sz=temp.size();
+    
+    return sz;
+}
+void solve()
+{
+    ll n;cin>>n;
+    vector<ll>v;
+    ll curr=0;
+    for(ll i=0;i<n;i++)
+    {
+        ll x;cin>>x;
+        curr+=x;
+        v.push_back(curr);
+    }
+    if(curr<0)
+    {
+        cout<<-1<<endl;
+        return;
+    }
+
+    cout<<n-getlis(v)<<endl;
+}
+
+int main()
+{
+    ll t;cin>>t;
+    while(t--)
+    solve();
+}

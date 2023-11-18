@@ -1,0 +1,290 @@
+#ifndef LOCAL
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx,avx2,sse,sse2,sse3,sse4,popcnt,fma")
+#endif
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#ifdef LOCAL
+#include "../debug.h"
+#else
+#define dbg(...) "11-111"
+#endif
+
+struct input_checker {
+	string buffer;
+	int pos;
+
+	const string all = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	const string number = "0123456789";
+	const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const string lower = "abcdefghijklmnopqrstuvwxyz";
+
+	input_checker() {
+		pos = 0;
+		while (true) {
+			int c = cin.get();
+			if (c == -1) {
+				break;
+			}
+			buffer.push_back((char) c);
+		}
+	}
+
+	int nextDelimiter() {
+		int now = pos;
+		while (now < (int) buffer.size() && buffer[now] != ' ' && buffer[now] != '\n') {
+			now++;
+		}
+		return now;
+	}
+
+	string readOne() {
+		assert(pos < (int) buffer.size());
+		int nxt = nextDelimiter();
+		string res;
+		while (pos < nxt) {
+			res += buffer[pos];
+			pos++;
+		}
+		return res;
+	}
+
+	string readString(int minl, int maxl, const string &pattern = "") {
+		assert(minl <= maxl);
+		string res = readOne();
+		assert(minl <= (int) res.size());
+		assert((int) res.size() <= maxl);
+		for (int i = 0; i < (int) res.size(); i++) {
+			assert(pattern.empty() || pattern.find(res[i]) != string::npos);
+		}
+		return res;
+	}
+
+	int readInt(int minv, int maxv) {
+		assert(minv <= maxv);
+		int res = stoi(readOne());
+		assert(minv <= res);
+		assert(res <= maxv);
+		return res;
+	}
+
+	long long readLong(long long minv, long long maxv) {
+		assert(minv <= maxv);
+		long long res = stoll(readOne());
+		assert(minv <= res);
+		assert(res <= maxv);
+		return res;
+	}
+
+	auto readInts(int n, int minv, int maxv) {
+		assert(n >= 0);
+		vector<int> v(n);
+		for (int i = 0; i < n; ++i) {
+			v[i] = readInt(minv, maxv);
+			if (i+1 < n) readSpace();
+		}
+		return v;
+	}
+
+	auto readLongs(int n, long long minv, long long maxv) {
+		assert(n >= 0);
+		vector<long long> v(n);
+		for (int i = 0; i < n; ++i) {
+			v[i] = readLong(minv, maxv);
+			if (i+1 < n) readSpace();
+		}
+		return v;
+	}
+
+	void readSpace() {
+		assert((int) buffer.size() > pos);
+		assert(buffer[pos] == ' ');
+		pos++;
+	}
+
+	void readEoln() {
+		assert((int) buffer.size() > pos);
+		assert(buffer[pos] == '\n');
+		pos++;
+	}
+
+	void readEof() {
+		assert((int) buffer.size() == pos);
+	}
+};
+
+constexpr int mod = (int)1e9 + 7;
+struct mi {
+    int64_t v; explicit operator int64_t() const { return v % mod; }
+    mi() { v = 0; }
+    mi(int64_t _v) {
+        v = (-mod < _v && _v < mod) ? _v : _v % mod;
+        if (v < 0) v += mod;
+    }
+    friend bool operator==(const mi& a, const mi& b) {
+        return a.v == b.v; }
+    friend bool operator!=(const mi& a, const mi& b) {
+        return !(a == b); }
+    friend bool operator<(const mi& a, const mi& b) {
+        return a.v < b.v; }
+
+    mi& operator+=(const mi& m) {
+        if ((v += m.v) >= mod) v -= mod;
+        return *this; }
+    mi& operator-=(const mi& m) {
+        if ((v -= m.v) < 0) v += mod;
+        return *this; }
+    mi& operator*=(const mi& m) {
+        v = v*m.v%mod; return *this; }
+    mi& operator/=(const mi& m) { return (*this) *= inv(m); }
+    friend mi pow(mi a, int64_t p) {
+        mi ans = 1; assert(p >= 0);
+        for (; p; p /= 2, a *= a) if (p&1) ans *= a;
+        return ans;
+    }
+    friend mi inv(const mi& a) { assert(a.v != 0);
+        return pow(a,mod-2); }
+
+    mi operator-() const { return mi(-v); }
+    mi& operator++() { return *this += 1; }
+    mi& operator--() { return *this -= 1; }
+    mi operator++(int32_t) { mi temp; temp.v = v++; return temp; }
+    mi operator--(int32_t) { mi temp; temp.v = v--; return temp; }
+    friend mi operator+(mi a, const mi& b) { return a += b; }
+    friend mi operator-(mi a, const mi& b) { return a -= b; }
+    friend mi operator*(mi a, const mi& b) { return a *= b; }
+    friend mi operator/(mi a, const mi& b) { return a /= b; }
+    friend ostream& operator<<(ostream& os, const mi& m) {
+        os << m.v; return os;
+    }
+    friend istream& operator>>(istream& is, mi& m) {
+        int64_t x; is >> x;
+        m.v = x;
+        return is;
+    }
+    friend void __print(const mi &x) {
+        cerr << x.v;
+    }
+};
+
+constexpr int maxn = 1e5;
+vector<mi> fct(maxn, 1), invf(maxn, 1);
+void calc_fact() {
+    for(int i = 1 ; i < maxn ; i++) {
+        fct[i] = fct[i - 1] * i;
+    }
+    invf.back() = mi(1) / fct.back();
+    for(int i = maxn - 1 ; i ; i--)
+        invf[i - 1] = i * invf[i];
+}
+
+mi choose(int n, int r) { // choose r elements out of n elements
+    if(r > n)   return mi(0);
+    assert(r <= n);
+    return fct[n] * invf[r] * invf[n - r];
+}
+
+mi place(int n, int r) { // x1 + x2 ---- xr = n and limit value of xi >= n
+    assert(r > 0);
+    return choose(n + r - 1, r - 1);
+}
+
+
+int32_t main() {
+    ios_base::sync_with_stdio(0);   cin.tie(0);
+
+    input_checker input;
+
+    int sum_n = 0;
+    calc_fact();
+    auto __solve_testcase = [&](int testcase) -> void {
+        int n = input.readInt(2, 2000); input.readSpace();
+        sum_n += n;
+        string XX = input.readString(1, 1, "&|^");  input.readSpace();
+        string YY = input.readString(1, 1, "&|^");  input.readEoln();
+
+        assert(XX != YY);
+
+        char from = XX[0], to = YY[0];
+        vector<mi> a(n);
+        for(int i = 0 ; i < n ; i++) {
+            a[i] = input.readInt(0, mod - 1);
+            if(i == n - 1)  input.readEoln();
+            else    input.readSpace();
+        }
+
+        auto convert = [&](vector<mi> &a) -> vector<mi> {
+            vector<mi> ans(n);
+            for(int i = 1 ; i <= n ; i++) {
+                for(int j = 1 ; j <= i ; j++) {
+                    mi here = choose(n - j, i - j) * a[j - 1];
+                    if(j & 1)   ans[i - 1] += here;
+                    else    ans[i - 1] -= here;
+                }
+            }
+            return ans;
+        };
+
+        auto convert_AX = [&](vector<mi> &a) -> vector<mi> {
+            vector<mi> ans(n);
+            for(int i = 1 ; i <= n ; i++) {
+                mi e = 1;
+                for(int j = 1 ; j <= i ; j++) {
+                    mi here = e * choose(n - j, i - j) * a[j - 1];
+                    if(j & 1)   ans[i - 1] += here;
+                    else    ans[i - 1] -= here;
+                    e += e;
+                }
+            }
+            return ans;
+        };
+
+        auto convert_XA = [&](vector<mi> &a) -> vector<mi> {
+            vector<mi> ans(n);
+            ans[0] = a[0];
+            for(int i = 2 ; i <= n ; i++) {
+                mi e = 1;
+                for(int j = 1 ; j < i ; j++) {
+                    mi here = e * choose(n - j, i - j) * ans[j - 1];
+                    if(j & 1)   ans[i - 1] += here;
+                    else    ans[i - 1] -= here;
+                    e += e;
+                }
+                if(i & 1)   ans[i - 1] = a[i - 1] - ans[i - 1];
+                else ans[i - 1] -= a[i - 1];
+                ans[i - 1] /= e;
+            }
+            return ans;
+        };
+
+        if(from == '^') {
+            from = '&';
+            a = convert_XA(a);
+        }
+
+        if(from == '|') {
+            from = '&';
+            a = convert(a);
+        }
+
+        if(to == '^')
+            a = convert_AX(a);
+
+        if(to == '|')
+            a = convert(a);
+
+        for(int i = 0 ; i < n ; i++)    cout << a[i] << " \n"[i == n - 1];
+
+    };
+    
+    int no_of_tests = input.readInt(1, 1000);    input.readEoln();
+    for(int test_no = 1 ; test_no <= no_of_tests ; test_no++)
+        __solve_testcase(test_no);
+    
+    assert(sum_n <= 2000);
+    input.readEof();
+
+    return 0;
+}

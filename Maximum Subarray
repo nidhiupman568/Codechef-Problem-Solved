@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define int                 long long
+#define pb                  push_back
+#define ppb                 pop_back
+#define pf                  push_front
+#define ppf                 pop_front
+#define all(x)              (x).begin(),(x).end()
+#define fr                  first
+#define sc                  second
+#define pii                 pair<int,int>
+#define rep(i,a,b)          for(int i=0;i<b;i++)
+#define mem1(a)             memset(a,-1,sizeof(a))
+#define mem0(a)             memset(a,0,sizeof(a))
+#define ppc                 __builtin_popcount
+#define ppcll               __builtin_popcountll
+
+template<typename T, typename T1>T amax(T &a, T1 b){if(b>a)a=b;return a;}
+template<typename T, typename T1>T amin(T &a, T1 b){if(b<a)a=b;return a;}
+
+const int N=1e5+10;
+const long long INF=1e18;
+
+void solve(){
+
+   int n; cin>>n;
+   vector<int> a(n);
+   int sumb=0;
+   rep(i, 0, n) cin>>a[i];
+   int m; cin>>m;
+   vector<int> b(m);
+   rep(i, 0, m) {
+      cin>>b[i];
+      if(b[i]> 0) sumb+=b[i];
+   }
+
+   int sum=0;
+   int sumStart=INT_MIN, sumEnd=INT_MIN;
+   for(int i=0; i<n; i++){
+      sum+=a[i];
+      if(sumStart<sum) sumStart=sum;
+   }
+   // cout<<"sumstart"<<sumStart<<endl;
+   sum=0;
+   for(int i=n-1; i>=0; i--){
+      sum+=a[i];
+      if(sumEnd<sum) sumEnd=sum;
+   }
+   // cout<<"sumend"<<sumEnd<<endl;
+   int ans=0;
+   if(sumStart>sumEnd) ans=sumStart+sumb;
+   else ans = sumEnd+sumb;
+
+   cout<<ans<<endl;
+
+
+
+
+}
+
+signed main(){
+   int t=1;
+   cin>>t;
+   while(t--) solve();
+
+   return 0;
+}

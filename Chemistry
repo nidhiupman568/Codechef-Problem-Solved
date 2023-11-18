@@ -1,0 +1,630 @@
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <vector>
+#include <fstream>
+#include <cmath>
+#include <iomanip>
+#include <set>
+#include <tuple>
+#include <iterator>
+#include <stack>
+#include <stdio.h>
+#include <math.h>
+#include <unistd.h>
+#include <map>
+
+
+using namespace std;
+
+///---------------------------------------------------------------------------DEFINES---------------------------------------------------------------------------///
+
+#define ll long long
+#define ld long double
+#define FOR(a,n) for(long long i=(a);i<(n);i++)
+#define FOR1(n) for(long long i=0;i<(n);i++)
+#define FOR2 for(long long i=0;i<n;i++)
+#define FORJ(a,n) for(long long j=(a);j<(n);j++)
+#define FORJ1(n) for(long long j=0;j<(n);j++)
+#define FORJ2 for(long long j=0;j<n;j++)
+#define vecll vector<long long>
+#define vecll2 vector<pair<long long,long long>>
+#define mp make_pair
+#define pb push_back
+#define CY cout<<"YES"<<endl
+#define CN cout<<"NO"<<endl
+
+///---------------------------------------------------------------------------END OF DEFINES---------------------------------------------------------------------------///
+
+///---------------------------------------------------------------------------GLOBAL VARIABLES---------------------------------------------------------------------------///
+
+const long long MOD=4294967296;
+const long double pi=3.1415926535897932384626433832795;
+vector<vector<ll>> arr;
+vector<bool> used;
+vector<pair<ll,ll>> subtree;
+vector<ll> dist;
+ll s,k;
+
+///---------------------------------------------------------------------------END OF GLOBAL VARIABLES---------------------------------------------------------------------------///
+
+///---------------------------------------------------------------------------BASED FUNCTIONS---------------------------------------------------------------------------///
+
+long long gcd(long long a,long long b){
+    if (b>a){
+        long long tmp=a;
+        a=b;
+        b=tmp;
+    }
+    long long devisor=a%b;
+    while(devisor!=0){
+        long long tmp=devisor;
+        devisor=b%devisor;
+        b=tmp;
+    }
+    return b;
+}
+long long gcd(deque<long long> arr){
+    if (arr.size()==1) return arr[0];
+    if (arr.size()==0) return 0;
+    long long x=gcd(arr[0],arr[1]);
+    for(long long i=2;i<arr.size();i++){
+        x=gcd(x,arr[i]);
+    }
+    return x;
+}
+int gcd(vector <long long> arr){
+    if (arr.size()==1) return arr[0];
+    if (arr.size()==0) return 0;
+    int x=gcd(arr[0],arr[1]);
+    for(int i=2;i<arr.size();i++){
+        x=gcd(x,arr[i]);
+    }
+    return x;
+}
+vector<double> quadratic_equation_solutoin(double a, double b,double c){
+    vector <double> routs(0);
+    if (a==0){
+        if (b==0){
+            if (c==0){
+                routs.pb(1);
+                routs.pb(1);
+                routs.pb(1);
+            }
+        }
+        else{
+            routs.pb(-(c/b));
+        }
+    }
+    else{
+        if (abs(b*b-4*a*c)<0.00000000001){
+            routs.pb(-(b/2/a));
+        }
+        else if (b*b-4*a*c>0){
+            routs.pb((-b-sqrt(b*b-4*a*c))/2/a);
+            routs.pb((-b+sqrt(b*b-4*a*c))/2/a);
+        }
+    }
+    return routs;
+}
+double f(double x,double a,double b,double c,double d){
+    return a*x*x*x+b*x*x+c*x+d;
+}
+void cubic_equation(double aa, double bb, double cc, double dd){
+    double a=aa,b=bb,c=cc,d=dd;
+    if (a==0){
+        vector<double> arr=quadratic_equation_solutoin(b,c,d);
+        if (arr.size()==3) cout<<3<<endl;
+        else if (arr.size()==1) cout<<arr[0];
+        else if (arr.size()==2) cout<<min(arr[0],arr[1])<<" "<<max(arr[0],arr[1]);
+    }
+    else{
+        if (a<0){
+            a*=-1;
+            b*=-1;
+            c*=-1;
+            d*=-1;
+        }
+        vector<double> arr=quadratic_equation_solutoin(3*a,2*b,c);
+        if (arr.size()<2){
+            double l=-10000,r=10000,mid;
+            FOR1(1000){
+                mid=(l+r)/2;
+                if (f(mid,a,b,c,d)>=0) r=mid;
+                else l=mid;
+            }
+            cout<<(l+r)/2;
+        }
+        else{
+            if (arr[0]>arr[1]) swap(arr[0],arr[1]);
+            if (f(arr[0],a,b,c,d)<-0.00001 || f(arr[1],a,b,c,d)>0.00001){
+                double l=-10000,r=10000,mid;
+                FOR1(1000){
+                    mid=(l+r)/2;
+                    if (f(mid,a,b,c,d)>=0) r=mid;
+                    else l=mid;
+                }
+                cout<<(l+r)/2;
+            }
+            else if (abs(f(arr[0],a,b,c,d))<0.00001 && abs(f(arr[1],a,b,c,d))<0.00001){
+                cout<<f(arr[0],a,b,c,d)<<f(arr[1],a,b,c,d);
+            }
+            else if (abs(f(arr[0],a,b,c,d))<0.00001){
+                cout<<arr[0]<<" ";
+                double l=arr[1],r=10000,mid;
+                FOR1(1000){
+                    mid=(l+r)/2;
+                    if (f(mid,a,b,c,d)>=0) r=mid;
+                    else l=mid;
+                }
+                cout<<(l+r)/2;
+
+            }
+            else if (abs(f(arr[1],a,b,c,d))<0.00001){
+                double l=-10000,r=arr[0],mid;
+                FOR1(1000){
+                    mid=(l+r)/2;
+                    if (f(mid,a,b,c,d)>=0) r=mid;
+                    else l=mid;
+                }
+                cout<<(l+r)/2<<" ";
+                cout<<arr[1];
+            }
+            else{
+                double l=-10000,r=arr[0],mid;
+                FOR1(1000){
+                    mid=(l+r)/2;
+                    if (f(mid,a,b,c,d)>=0) r=mid;
+                    else l=mid;
+                }
+                cout<<(l+r)/2<<" ";
+                l=arr[0],r=arr[1];
+                FOR1(1000){
+                    mid=(l+r)/2;
+                    if (f(mid,a,b,c,d)>=0) l=mid;
+                    else r=mid;
+                }
+                cout<<(l+r)/2<<" ";
+                l=arr[1],r=10000;
+                FOR1(1000){
+                    mid=(l+r)/2;
+                    if (f(mid,a,b,c,d)>=0) r=mid;
+                    else l=mid;
+                }
+                cout<<(l+r)/2;
+            }
+        }
+    }
+}
+bool isprime(int x){
+    if (x==1) return false;
+    if (x==2) return true;
+    double l=x;
+    l=sqrt(l);
+    l=ceil(l);
+    int sx=l;
+    bool b=1;
+    for (int i=2;i<=sx;i++){
+        if (x%i==0) b=0;
+    }
+    if (b==1) return true;
+    return false;
+}
+long long big_del(long long x){
+    double l=x;
+    l=sqrt(l);
+    l=floor(l);
+    long long sx=l;
+    for (int i=x-1;i>=l;i--){
+        if (x%i==0) return i;
+    }
+    return 1;
+}
+bool comp(pair<int,int> a, pair<int,int> b){
+    if(a.first!=b.first) return a.first<b.first;
+    return a.second<b.second;
+}
+int st(long long x){
+    int s=0;
+    while(x!=1){
+        x/=2;
+        s++;
+    }
+    return s;
+}
+bool cmp(pair<int,int> a,pair<int,int> b){
+    return a.second<b.second;
+}
+
+///---------------------------------------------------------------------------END OF BASED FUNCTIONS---------------------------------------------------------------------------///
+
+///---------------------------------------------------------------------------GEOMETRY---------------------------------------------------------------------------///
+
+struct Point{
+    ld x,y;
+    Point(ld x=0,ld y=0): x(x), y(y){}
+    Point (Point A,Point B){
+        x=B.x-A.x;
+        y=B.y-A.y;
+    }
+
+    friend istream& operator>>(istream& input,Point& A);
+    friend ostream& operator<<(ostream& output,const Point& A);
+    bool operator==(Point A){
+        return (A.x==x && A.y==y);
+    }
+    bool operator>(Point A){
+        if (x!=A.x) return x>A.x;
+        return y>A.y;
+    }
+    bool operator<(Point A){
+        if (x!=A.x) return x<A.x;
+        return y<A.y;
+    }
+    bool operator>=(Point A){
+        return !(*this<A);
+    }
+    bool operator<=(Point A){
+        return !(*this>A);
+    }
+    ld operator*(Point A){
+        return x*A.x+y*A.y;
+    }
+    ld operator^(Point A){
+        return x*A.y-y*A.x;
+    }
+
+    ld dist_to_point(Point A){
+        return sqrt((x-A.x)*(x-A.x)+(y-A.y)*(y-A.y));
+    }
+    ld angle(Point A){
+        return acos((*this*A)/(sqrt(x*x+y*y)*sqrt(A.x*A.x+A.y*A.y)));
+    }
+    Point mov(Point A){
+        return {x+A.x,y+A.y};
+    }
+
+};
+struct Line{
+    ld a,b,c;
+
+    Line(ld a=0,ld b=0,ld c=0): a(a),b(b),c(c){}
+    Line(Point A,Point B){
+        ld x1=A.x,y1=A.y,x2=B.x,y2=B.y;
+        a=y2-y1;
+        b=x1-x2;
+        c=y1*x2-x1*y2;
+    }
+    Line(Point A){
+        a=A.y;
+        b=-A.x;
+        c=0;
+    }
+
+    friend istream& operator>>(istream& input, Line& A);
+    friend ostream& operator<<(ostream& output,const Line& A);
+
+    ld where_point(Point A){
+        return (A.x*a+A.y*b+c);
+    }
+    ld dist_to_point(Point A){
+        return (abs(A.x*a+A.y*b+c))/(sqrt(a*a+b*b));
+    }
+    Line per_line(){
+        return {Point(a,b)};
+    }
+    Line per_line(Point A){
+        return{b,-a,A.y*a-A.x*b};
+    }
+    Line parallel_line(ld d){
+        return{a,b,c+d*sqrt(a*a+b*b)};
+    }
+    pair<int,Point> crossing(Line l){
+        pair<int,Point> k;
+        ld d,dx,dy;
+        ld a1=a,b1=b,c1=c,a2=l.a,b2=l.b,c2=l.c;
+        d=a1*b2-b1*a2;
+        dx=b1*c2-b2*c1;
+        dy=a2*c1-a1*c2;
+        if (d==0 && dx==0 && dy==0) k={2,{0,0}};
+        else if (d==0) k={0,{0,0}};
+        else k={1,{dx/d,dy/d}};
+        //cout<<k.first<<" "<<k.second<<endl;
+        return k;
+    }
+};
+struct Ray{
+    Line l,perl;
+    Point L,L1;
+
+    Ray(){}
+    Ray(Point A,Point B){
+        L1=B;
+        L=A;
+        l={A,B};
+        perl=l.per_line(A);
+    }
+
+    friend istream& operator>>(istream& input,Ray& AB);
+    friend ostream& operator<<(ostream& output,const Ray& AB);
+
+    ld dist_to_point(Point A){
+        if (perl.where_point(A)*perl.where_point(L)<=0) return A.dist_to_point(L1);
+        else return l.dist_to_point(A);
+    }
+    pair<int,Point> crossing(Ray AB){
+        pair<int,Point> k;
+        if (l.crossing(AB.l).first==0) k={0,{0,0}};
+        else if (l.crossing(AB.l).first==2){
+            if (perl.where_point(L1)*perl.where_point(AB.L)==0){
+                if (AB.perl.where_point(L1)*AB.perl.where_point(AB.L1)<0) k={1,{L.x,L.y}};
+                else k={2,{0,0}};
+            }
+            else if (perl.where_point(L1)*perl.where_point(AB.L)<0 && AB.perl.where_point(AB.L1)*AB.perl.where_point(L)<0) k={0,{0,0}};
+            else k={2,{0,0}};
+        }
+        else{
+            Point pcr=l.crossing(AB.l).second;
+            if (perl.where_point(pcr)*perl.where_point(L1)>=0 && AB.perl.where_point(pcr)*AB.perl.where_point(AB.L1)>=0) k={1,pcr};
+            else k={0,{0,0}};
+        }
+        return k;
+    }
+};
+struct Segment{
+    Line l,perl1,perl2;
+    Point L,R;
+
+    Segment(){}
+    Segment(Point A,Point B){
+        L=A;
+        R=B;
+        l={A,B};
+        perl1=l.per_line(A);
+        perl2=l.per_line(B);
+    }
+
+    friend istream& operator>>(istream& input,Segment& AB);
+    friend ostream& operator<<(ostream& output,const Segment& AB);
+
+    ld dist_to_point(Point A){
+        if (perl1.where_point(A)*perl1.where_point(R)<=0) return A.dist_to_point(L);
+        else if (perl2.where_point(A)*perl2.where_point(L)<=0) return A.dist_to_point(R);
+        else return l.dist_to_point(A);
+    }
+    pair<int,pair<Point,Point>> crossing(Segment AB){
+        bool g=0;
+        if (L>R){
+            swap(R,L);
+            swap(perl1,perl2);
+            g=1;
+        }
+        if (AB.L>AB.R){
+            swap(AB.R,AB.L);
+            swap(AB.perl1,AB.perl2);
+        }
+        pair<int,pair<Point,Point>> k;
+        pair<int,Point> s=l.crossing(AB.l);
+        if (R==L && AB.R==AB.L){
+            if (AB.R==R) k={1,{R,{0,0}}};
+            else k={0,{{0,0},{0,0}}};
+        }
+        else if (R==L){
+            if (AB.l.where_point(R)==0 && AB.L<=R && AB.R>=R) k={1,{R,{0,0}}};
+            else k={0,{{0,0},{0,0}}};
+        }
+        else if (AB.R==AB.L){
+            if (l.where_point(AB.R)==0 && L<=AB.R && R>=AB.R) k={1,{AB.R,{0,0}}};
+            else k={0,{{0,0},{0,0}}};
+        }
+        else if (s.first==0) k={0,{{0,0},{0,0}}};
+        else if (s.first==1){
+            Point O=s.second;
+            if (perl1.where_point(O)*perl1.where_point(R)>=0 && perl2.where_point(O)*perl2.where_point(L)>=0 && AB.perl1.where_point(O)*AB.perl1.where_point(AB.R)>=0 && AB.perl2.where_point(O)*AB.perl2.where_point(AB.L)>=0) k={1,{O,{0,0}}};
+            else k={0,{{0,0},{0,0}}};
+        }
+        else{
+            if (L<AB.R){
+                if (R==AB.L){
+                    k={1,{R,{0,0}}};
+                }
+                else if(R<AB.L){
+                    k={0,{{0,0},{0,0}}};
+                }
+                else if(R>=AB.R){
+                    if(AB.L<=L){
+                        k={2,{L,AB.R}};
+                    }
+                    else{
+                        k={2,{AB.L,AB.R}};
+                    }
+                }
+                else{
+                    if(AB.L<=L){
+                        k={2,{L,R}};
+                    }
+                    else{
+                        k={2,{AB.L,R}};
+                    }
+                }
+
+            }
+            else if (L==AB.R){
+                k={1,{L,{0,0}}};
+            }
+            else{
+                k={0,{{0,0},{0,0}}};
+            }
+        }
+        if (g==1){
+            swap(perl1,perl2);
+            swap(L,R);
+        }
+        return k;
+    }
+    Point segmentation(ld a){
+        return {(L.x+a*R.x)/(1+a),(L.y+a*R.y)/(1+a)};
+    }
+};
+struct Triangle{
+    Point A,B,C;
+    Segment AB{A,B},BC{B,C},AC{A,C};
+    Triangle(){}
+    Triangle(Point A,Point B,Point C): A(A),B(B),C(C){};
+
+    friend istream& operator>>(istream& input,Triangle& ABC);
+    friend ostream& operator<<(ostream& output,const Triangle& ABC);
+
+    ld area(){
+        ld S;
+        Line vys=BC.l.per_line(A);
+        Point H=vys.crossing(BC.l).second;
+        S=H.dist_to_point(A)*B.dist_to_point(C)/2;
+        return S;
+    }
+    Triangle similar(ld k){
+        Point B1={(B.x-A.x)*k+A.x,(B.y-A.y)*k+A.y};
+        Point C1={(C.x-A.x)*k+A.x,(C.y-A.y)*k+A.y};
+        Triangle AB1C1(A,B1,C1);
+        return AB1C1;
+    }
+};
+
+istream& operator>>(istream& input,Point& A){
+    input>>A.x>>A.y;
+    return input;
+}
+istream& operator>>(istream& input, Line& A){
+    input>>A.a>>A.b>>A.c;
+    return input;
+}
+istream& operator>>(istream& input,Segment& AB){
+    input>>AB.L>>AB.R;
+    AB={AB.L,AB.R};
+    return input;
+}
+istream& operator>>(istream& input,Ray& AB){
+    Point A,B;
+    cin>>A>>B;
+    AB={A,B};
+    return input;
+}
+istream& operator>>(istream& input,Triangle& ABC){
+    Point A,B,C;
+    cin>>A>>B>>C;
+    ABC={A,B,C};
+    return input;
+}
+ostream& operator<<(ostream& output,const Point& A){
+    output<<A.x<<" "<<A.y;
+    return output;
+}
+ostream& operator<<(ostream& output,const Line& A){
+    output<<A.a<<" "<<A.b<<" "<<A.c;
+    return output;
+}
+ostream& operator<<(ostream& output,const Segment& AB){
+    cout<<AB.L<<" "<<AB.R;
+    return output;
+}
+ostream& operator<<(ostream& output,const Ray& AB){
+        cout<<AB.L<<" "<<AB.L1;
+        return output;
+}
+ostream& operator<<(ostream& output,const Triangle& ABC){
+    cout<<ABC.A<<" "<<ABC.B<<" "<<ABC.C;
+    return output;
+}
+
+///---------------------------------------------------------------------------END OF GEOMETRY---------------------------------------------------------------------------///
+
+///---------------------------------------------------------------------------SOLUTIONS---------------------------------------------------------------------------///
+
+void DFS1(ll x){
+    used[x]=1;
+    FOR1(arr[x].size()){
+        if (used[arr[x][i]]==0){
+            DFS1(arr[x][i]);
+            subtree[x].first+=subtree[arr[x][i]].first+subtree[arr[x][i]].second;
+            subtree[x].second+=subtree[arr[x][i]].second;
+            s=0;
+        }
+    }
+    subtree[x].second++;
+}
+void DFS2(ll x){
+    used[x]=1;
+    dist[x]=subtree[x].first+s;
+    FOR1(arr[x].size()){
+        if (used[arr[x][i]]==0){
+            s+=subtree[x].first-subtree[arr[x][i]].first-subtree[arr[x][i]].second;
+            k+=subtree[x].second-subtree[arr[x][i]].second;
+            s+=k;
+            DFS2(arr[x][i]);
+            s-=k;
+            k-=subtree[x].second-subtree[arr[x][i]].second;
+            s-=subtree[x].first-subtree[arr[x][i]].first-subtree[arr[x][i]].second;
+        }
+    }
+}
+void tinkoffC(){
+    ll n;
+    cin>>n;
+    arr.resize(n,vector<ll> (0));
+    dist.resize(n,0);
+    used.resize(n,0);
+    subtree.resize(n,mp(0,0));
+    dist.resize(n,0);
+    FOR1(n-1){
+        ll a,b;
+        cin>>a>>b;
+        arr[a-1].pb(b-1);
+        arr[b-1].pb(a-1);
+    }
+    DFS1(0);
+    FOR1(n) used[i]=0;
+    s=0;
+    k=0;
+    DFS2(0);
+//    cout<<endl;
+//    FOR1(n) cout<<subtree[i].first<<" "<<subtree[i].second<<endl;
+//    cout<<endl;
+    FOR1(dist.size()) cout<<dist[i]<<" ";
+
+}
+void geometry(){
+
+}
+
+void solve(){
+    ll n,k;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    vector<ll> arr(26,0);
+    FOR1(s.size()) arr[s[i]-'a']++;
+    ll ss=0;
+    FOR1(arr.size()) if (arr[i]%2==1) ss++;
+    if (k<ss-1) CN;
+    else if (k==ss-1 || k==ss) CY;
+    else CY;
+
+}
+
+///---------------------------------------------------------------------------END OF SOLUTIONS---------------------------------------------------------------------------///
+
+///---------------------------------------------------------------------------MAIN---------------------------------------------------------------------------///
+
+int main()
+{
+    cout.precision(16);
+    int t;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+    return 0;
+
+}
+
+

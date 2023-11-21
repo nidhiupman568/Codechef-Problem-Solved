@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+const ll mod = 1e9+7;
+
+int main(){
+    int n; cin>>n;
+    vector<int>v(n);
+    for(int i=0;i<n;i++) cin>>v[i];
+    int q; cin>>q;
+    vector<int>vq(q);
+    for(int i=0;i<q;i++) cin>>vq[i];
+    
+    long long sum=0;
+    for(int i=0;i<n;i++) sum=((sum%mod)+(v[i]%mod)+mod)%mod;
+    for(int i=0;i<q;i++){
+        sum=(2*sum)%mod;
+        cout<<sum<<"\n";
+    }
+    
+    return 0;
+}

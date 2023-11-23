@@ -1,0 +1,81 @@
+#include "bits/stdc++.h"
+
+#ifdef LOCAL
+#include "F:\CPP\Debug\debug.h" 
+#else
+#define print(...) 1;
+#endif
+
+using i64 = long long;
+
+void read(std::vector<int> &a)
+{
+    for (auto &x : a)
+        std::cin >> x;
+}
+
+void solve()
+{
+    int n;
+    std::cin >> n;
+
+    std::vector<int> a(n), ca(n), b(n), cb(n);
+    read(a); read(ca); read(b); read(cb);
+
+    std::set tb(std::begin(cb), std::end(cb));
+    std::vector<std::multiset<int>> col(2 * n + 1);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (tb.count(ca[i]))
+            col[ca[i]].emplace(a[i]);
+        col[cb[i]].emplace(b[i]);
+    }
+        
+    int prev = -1;
+    for (int i = 0; i < n; i++)
+    {
+        if (!tb.count(ca[i]))
+        {
+            if (a[i] < prev)
+            {
+                std::cout << "No\n";
+                return;
+            }
+        }
+        else
+        {
+            auto &p = col[ca[i]];
+            while (!p.empty() and *std::begin(p) < prev)
+                p.erase(std::begin(p));
+            if (p.empty())
+            {
+                std::cout << "No\n";
+                return;
+            }
+
+            a[i] = *std::begin(p);
+            assert(a[i] >= prev);
+            p.erase(std::begin(p));
+        }
+
+        prev = a[i];
+    }
+
+    assert(std::is_sorted(std::begin(a), std::end(a)));
+    std::cout << "Yes\n";
+}
+
+int main()
+{
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int t;
+    std::cin >> t;
+    
+    while (t--)
+        solve();
+    
+    return 0;
+}

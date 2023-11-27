@@ -1,0 +1,23 @@
+#include <bits/stdc++.h>
+#define ll long long int
+#define nl cout<<endl
+using namespace std;
+
+int main() {
+    int t; cin>>t;
+    while(t--){
+        ll n,y; cin>>n>>y;
+        ll arr[n];
+        ll orr=0;
+        for(ll i=0;i<n;i++){
+            cin>>arr[i];
+            orr|=arr[i];
+        }
+       ll ans=orr^y;
+       if((ans|orr) == y) cout<<ans;
+       else cout<<-1;
+       nl;
+    }
+	// your code goes here
+	return 0;
+}

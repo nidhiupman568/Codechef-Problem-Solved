@@ -1,0 +1,26 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+    double b, m, n, k;
+    cin >> b >> m >> n >> k;
+    if (b == 1) {
+        cout << m << endl;
+        return;
+    }
+    double r = m / (m+n);
+    
+    cout << fixed << setprecision(10);
+    
+    if (k == b) cout << m + r * (b-1) << endl;
+    else cout << m - r << endl;
+}
+
+int main() {
+	int t; cin >> t;
+	while (t--) {
+	    solve();
+	}
+	return 0;
+}

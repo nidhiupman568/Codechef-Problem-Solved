@@ -1,0 +1,75 @@
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
+// #pragma GCC target("avx2,sse4.2,bmi,bmi2,popcnt,lzcnt")
+#include<bits/stdc++.h>
+#define ll long long 
+#define pb push_back
+#define pf push_front
+#define mod 1000000007
+#define mod1 998244353
+#define ainp ll a[n]; for(int i=0;i<n;i++){cin>>a[i];}
+#define aoutp for(int i=0;i<n;i++){cout<<a[i]<<' ';}
+#define fr(i,a,b) for(ll i=a; i<=b; i++)
+#define rev(i,a,b) for(ll i=a; i>=b; i--)
+#define ub upper_bound      
+#define lb lower_bound
+#define ld long double
+#define LL __int128
+#define int long long int
+using namespace std;
+
+const ll INF =1e18;
+const ll N=1e5+5;
+
+void solve(){
+            ll t; cin >> t;
+            ll dp[N][2];
+            fr(i,0,N-1){
+                  fr(j,0,1)
+                        dp[i][j]=0;
+            }
+            dp[1][0]=1;
+            dp[2][0]=1;
+            dp[3][0]=3;
+            dp[4][0]=4;
+            dp[1][1]=0;
+            dp[2][1]=1;
+            dp[3][1]=1;
+            dp[4][1]=4;
+            fr(i,5,N-1){
+                  
+                        fr(j,2,4){
+                              dp[i][0]+=dp[i-j][0];
+                              dp[i][0]%=mod;
+                        }
+                        fr(j,2,4){
+                              dp[i][1]+=dp[i-j][1];
+                              dp[i][1]%=mod;
+                        }
+                        dp[i][0]+=dp[i-1][1];
+                        dp[i][0]%=mod;
+                        dp[i][1]+=dp[i-1][0];
+                        dp[i][1]%=mod;
+            }
+            fr(i,1,t){
+                  ll x; cin >> x;
+                  cout << dp[x][0] << "\n";
+            }
+}
+signed main()
+{
+     #ifndef ONLINE_JUDGE
+                        freopen("Input.txt", "r", stdin);
+                        freopen("Output.txt", "w", stdout);
+     #endif
+     ios_base::sync_with_stdio(false);
+     cin.tie(0);
+     cout.tie(0);
+     
+     ll misery=1;    
+     // cin >> misery;     
+     while(misery--)
+     {
+                   solve();
+     }
+}

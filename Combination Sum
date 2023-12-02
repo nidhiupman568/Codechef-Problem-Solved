@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    //Function to return a list of indexes denoting the required 
+    //combinations whose sum is equal to given number.
+    vector<vector<int> > combinationSum(vector<int> &A, int B) {
+        // Your code here
+        vector<int>vec;
+        vector<vector<int>>ans;
+        
+        sort(A.begin(),A.end());
+        rec(0,B,vec,ans,A);
+        
+        return ans;
+    }
+    
+    void rec(int i,int target,vector<int>&vec,vector<vector<int>>&ans,vector<int> &A)
+    {
+        if(i>=A.size())
+        {
+            if(target==0) {
+                ans.push_back(vec);
+            }
+            return ;
+        }
+        if(A[i]<=target)
+        {
+            vec.push_back(A[i]);
+            rec(i,target-A[i],vec,ans,A);
+            vec.pop_back();
+        }
+        while(i+1<A.size() && A[i]==A[i+1]){i++;}
+        rec(i+1,target,vec,ans,A);
+    }
+};

@@ -1,0 +1,61 @@
+class Solution
+{
+public:
+    int countPairs(Node* root1, Node* root2, int x)
+    {
+       //see as we know the condition can arise when we will be having sum i.e a+b>x || a+b<x
+       //so we should be doing some stuff so that when situation comes we can increase or decrease
+       
+       stack<Node*>s1;
+       stack<Node*>s2;
+       int ans=0;
+       Node*a=root1;
+       Node*b=root2;
+       
+       while(true)
+       {
+           while(a)
+           {
+               s1.emplace(a);
+               a=a->left;
+           }
+           
+           while(b)
+           {
+               s2.emplace(b);
+               b=b->right;
+           }
+           
+           //if at any point the any of the stack is empty then we should break
+           if(s1.empty() || s2.empty())
+           {
+               break;
+           }
+           
+           auto atop=s1.top();
+           auto btop=s2.top();
+           
+           int sum=atop->data+btop->data;
+           if(sum==x)
+           {
+               ans++;
+               s1.pop();
+               s2.pop();
+               a=atop->right;
+               b=btop->left;
+           }
+           else if(sum<x)
+           {
+               //means we should increase the sum which implies should increase the value from that bst from which we were taking small values
+               s1.pop();
+               a=atop->right;
+           }
+           else
+           {
+               s2.pop();
+               b=btop->left;
+           }
+       }
+       return ans;
+    }
+};

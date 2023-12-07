@@ -1,0 +1,83 @@
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#include "bits/stdc++.h"
+using namespace std;
+using ll = long long int;
+mt19937_64 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+struct DSU {
+private:
+	std::vector<int> parent_or_size;
+public:
+	DSU(int n = 1): parent_or_size(n, -1) {}
+	int get_root(int u) {
+		if (parent_or_size[u] < 0) return u;
+		return parent_or_size[u] = get_root(parent_or_size[u]);
+	}
+	int size(int u) { return -parent_or_size[get_root(u)]; }
+	bool same_set(int u, int v) {return get_root(u) == get_root(v); }
+	bool merge(int u, int v) {
+		u = get_root(u), v = get_root(v);
+		if (u == v) return false;
+		if (parent_or_size[u] > parent_or_size[v]) std::swap(u, v);
+		parent_or_size[u] += parent_or_size[v];
+		parent_or_size[v] = u;
+		return true;
+	}
+	std::vector<std::vector<int>> group_up() {
+		int n = parent_or_size.size();
+		std::vector<std::vector<int>> groups(n);
+		for (int i = 0; i < n; ++i) {
+			groups[get_root(i)].push_back(i);
+		}
+		groups.erase(std::remove_if(groups.begin(), groups.end(), [&](auto &s) { return s.empty(); }), groups.end());
+		return groups;
+	}
+};
+
+int main()
+{
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    vector ct(7, vector(7, vector(7, 0)));
+    vector<array<int, 2>> dir = {{0, 1}, {1, 0}, {1, 1}, {-1, 1}};
+    for (int sz = 1; sz <= 6; ++sz) {
+        string s(sz*sz-sz, '0');
+        s += string(sz, '1');
+        do {
+            bool up = false, left = false;
+            for (int i = 0; i < sz; ++i) up |= s[i] == '1';
+            for (int i = 0; i < sz; ++i) left |= s[sz*i] == '1';
+            if (!up or !left) continue;
+            DSU D(sz*sz);
+            int comps = sz;
+            int right = 0, down = 0;
+            for (int i = 0; i < sz*sz; ++i) if (s[i] == '1') {
+                right = max(right, i%sz);
+                down = max(down, i/sz);
+                for (auto [dx, dy] : dir) {
+                    int x = i/sz + dx, y = i%sz + dy;
+                    if (min(x, y) < 0) continue;
+                    if (max(x, y) >= sz) continue;
+                    int pos = sz*x + y;
+                    if (s[pos] == '1') comps -= D.merge(i, pos);
+                }
+            }
+            if (comps > 1) continue;
+            ++ct[sz][right+1][down+1];
+        } while (next_permutation(begin(s), end(s)));
+    }
+
+    int t; cin >> t;
+    while (t--) {
+        int n, m, k; cin >> n >> m >> k;
+        int ans = 0;
+        const int mod = 1e9 + 7;
+        for (int h = 1; h <= min(n, k); ++h) for (int w = 1; w <= min(m, k); ++w) {
+            ll add = 1LL*(n-h+1)*(m-w+1)%mod;
+            add = add*ct[k][h][w];
+            ans = (ans + add) % mod;
+        }
+        cout << ans << '\n';
+    }
+}

@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(i,s,e) for(int i = s; i < e; ++i)  
+#define rep_back(i,s,e) for(int i = s; i >= e; --i)
+#define ll long long
+#define ull unsigned long long
+#define pb push_back
+#define lb lower_bound
+#define ub upper_bound
+#define ar array
+#define F first
+#define S second
+#define sz(x) (int)(x).size()
+#define all(x) (x).begin(),(x).end()
+#define range(x,k) (x).begin(),(x).begin() + (k)
+template<class T>
+void debug__(const T a){cerr << "[";for(auto val : a){cerr << val << ' ';}cerr<<" ]\n";}
+template<class T>
+void print_(T a){cerr << a << '\n';}
+template<class T1, class T2>
+void print_(pair<T1,T2> a){cerr << "["<<a.F<<','<<a.S<<"]\n";}
+#define debug(x) cerr << #x << ": "; debug__((x))
+#define show(x) cerr << #x << ": "; print_((x));
+#define get_(tuple_name,pos) get<(pos)>(tuple_name)
+#define fastio ios::sync_with_stdio(0);cin.tie(0),cout.tie(0);
+
+void solve(){
+  
+  ll L,R,P; cin >> L >> R >> P;
+  ll now = 1LL;
+  const ll INF = 2e18;
+  int j = 0;
+  vector<ll> pw(62);
+  while(now<=R){
+    pw[j] = now;
+    if(now > ( (R + (ll)P - 1LL)/(ll)P) ){
+      j++;
+      break;
+    }
+    now = (now*1LL*P);
+    j++;
+  }
+  ll avail = (R/pw[j-1]) - ((L-1LL)/pw[j-1]);
+  vector<ll> A(j);
+  vector<ll> psum(j);
+  A[j-1] = avail;
+  psum[j-1] = avail;
+  rep_back(i,j-2,1){
+    ll curr = (R/pw[i]) - ((L-1LL)/pw[i]);
+    curr -= (psum[i+1]);
+    A[i] = curr;
+    psum[i] = psum[i+1] + (ll)curr;
+  }
+  // debug(A);          
+  // ll val = 0;
+  // rep(i,1,j) val += (A[i]*1LL*(pw[i]));
+  // show(val);
+  // ll N = 0, cnt = 0;
+  // rep(i,1,j) N += A[i];
+  // rep(i,1,j) cnt += (A[i]*i);
+  // rep(i,1,j) N += (A[i]*1LL*(i-1));
+  // bool win = 0;
+  ll x = 0;
+  rep(i,1,j){
+    if( (A[i]&1LL) ) x ^= (i);
+  }
+  cout<<(x?"First\n":"Second\n");
+}
+
+int main(){
+
+  fastio
+  int T = 1;
+  cin >> T;
+  while(T--) solve();
+  return 0;
+}

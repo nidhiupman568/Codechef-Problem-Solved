@@ -1,0 +1,159 @@
+// Problem: Square Count
+// Contest: CodeChef - START111
+// URL: https://www.codechef.com/problems/SQUARE_COUNT
+// Memory Limit: 256 MB
+// Time Limit: 5000 ms
+// 
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+#define ll long long
+#define pb push_back
+#define ff first
+#define ss second
+#define vi vector <int>
+#define vvi vector <vi>
+#define pii pair<int, int>
+#define ppi pair<pii, int>
+#define vii vector<pii>
+#define mii map<int, int>
+#define miv map<int, vi>
+#define setbits(n) __builtin_popcount(n)
+#define msb(x) 31 - __builtin_clz(x)
+#define lsb(x) __builtin_ctz(x)
+#define sz(b) (int)b.size()
+#define all(v) (v).begin(), (v).end()
+#define yes cout<<"YES"<<endl
+#define no cout<<"NO"<<endl
+#define endl "\n"
+#define in(a,n)	for(int i=0;i<n;i++) cin>>a[i];
+#define show2(a, b) cout<<a<<' '<<b<<endl
+#define show3(a, b, c) cout<<a<<' '<<b<<' '<<c<<endl
+#define show(arr) for (auto i:arr) cout<<i<<' '; 
+#define Endl endl
+const long long N=1e7+5;
+const long long INF= 1e9+5;
+const long long mod=998244353;
+//always use arrays for coordinate compression.
+//never allocate more than 1e8 memory
+// check value of N given in problem
+//check for overflow and mod value
+
+int n;
+vi a;
+vvi pre,suf;
+int spf[N+1];
+void sieve(int n)
+{
+	for(int i=1;i<=n;i++)spf[i]=i;
+	for(int i=2;i*i<=n;++i)
+	{
+		for(int j=i*i;j<=n;j+=i)
+			if(spf[j]==j)spf[j]=i;
+	}
+}
+void cases(){
+	cin>>n;
+	a.clear();a.resize(n);
+	suf.clear();
+	pre.clear();
+	pre.resize(n);suf.resize(n);
+	in(a,n);
+	vi nxt;
+	for(int i=n-1;i>=0;i--)
+	{
+		vi cur;
+		cur.pb(i);
+		int x=a[i];
+		for(int j:nxt)
+		{
+			int y=gcd(a[j],x);
+			if(y!=x)cur.pb(j);
+			x=y;
+			if(x==1)break;
+		}
+		pre[i]=cur;
+		nxt=cur;
+	}
+	nxt.clear();
+	
+	for(int i=0;i<n;i++)
+	{
+		vi cur;
+		cur.pb(i);
+		int x=a[i];
+		for(int j:nxt)
+		{
+			int y=gcd(a[j],x);
+			if(y!=x)cur.pb(j);
+			x=y;
+			if(x==1)break;
+		}
+		suf[i]=cur;
+		nxt=cur;
+	}
+	map<int,ll> mp;
+	long long ans=0;
+	for(int i=n-1;i>=0;i--)
+	{
+		int sz=suf[i].size();
+		suf[i].pb(-1);
+		int g=a[i];
+		for(int j=0;j<sz;j++)	
+		{
+			g=gcd(g,a[suf[i][j]]);
+			int x=g,y=1;
+			while(x!=1)
+			{
+				int t=spf[x],cnt=0;
+				while(x%t==0)
+				{
+					x/=t;cnt++;
+				}
+				if(cnt&1)y*=t;
+			}
+			ans+=(1ll*(suf[i][j]-suf[i][j+1])*mp[y])%mod;
+			if(ans>=mod)ans-=mod;
+		}
+		sz=pre[i].size();
+		pre[i].pb(n);
+		g=a[i];
+		for(int j=0;j<sz;j++)
+		{
+			g=gcd(g,a[pre[i][j]]);
+			int x=g,y=1;
+			while(x!=1)
+			{
+				int t=spf[x],cnt=0;
+				while(x%t==0)
+				{
+					x/=t;cnt++;
+				}
+				if(cnt&1)y*=t;
+			}
+			long long z=mp[y];
+			z+=pre[i][j+1]-pre[i][j];
+			if(z>=mod)z-=mod;
+			mp[y]=z;
+		}
+		// for(pii p:mp)show2(p.ff,p.ss);
+		// cout<<endl;
+	}
+	cout<<ans<<endl;
+	
+}
+
+int32_t main(){
+    std::ios::sync_with_stdio(false);
+    cin.tie(NULL);cout.tie(NULL);
+    int t=1;
+    cin>>t;
+    sieve(N);
+    for (int i=0; i<t; i++){
+    	//cout<<"Case #"<<i+1<<": ";
+		cases();
+    }
+    return 0;
+}

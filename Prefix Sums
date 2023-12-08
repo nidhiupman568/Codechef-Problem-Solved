@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+#define ll long long int
+using namespace std;
+
+int main() 
+{
+	ll t,n,i,j,k;
+	cin >> t;
+	while(t--)
+	{
+	    cin >> n;
+	    if(n%4)
+	        cout << "NO\n";
+	    else
+	    {
+	        vector<ll>a,b;
+	        cout << "YES\n";
+	        i=1ll;
+	        j=n;
+	        while(i<=j)
+	        {
+	           // cout << i << " " << j << " ";
+	            a.push_back(i);
+	            a.push_back(j);
+	            i+=2;
+	            j-=2;
+	        }
+	        sort(a.begin(),a.end());
+	        for(auto x:a)
+	            cout << x << " ";
+	        cout << "\n";
+	        i=2ll;
+	        j=n-1;
+	        while(i<=j)
+	        {
+	           // cout << i << " " << j << " ";
+	            b.push_back(i);
+	            b.push_back(j);
+	            i+=2;
+	            j-=2;
+	        }
+	        sort(b.begin(),b.end());
+	        for(auto x:b)
+	            cout << x << " ";
+	        cout << "\n";
+	    }
+	}
+	return 0;
+}

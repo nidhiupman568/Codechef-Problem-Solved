@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define vll vector<ll>
+#define pii pair<ll, ll>
+#define vb vector<bool>
+#define pub push_back
+#define pob pop_back
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define all(a) a.begin(), a.end()
+#define rall(a) a.rbegin(), a.rend()
+#define rrep(a, b, c, d) for(ll a = b; a > c; a-=d)
+#define rep(a, b, c, d) for(ll a = b; a < c; a+=d)
+#define tests ll t; cin >> t; while(t--)
+const ll md=1e9+7;
+const ll inf=2e18;
+
+void solution(){
+    ll n, k, i, j, m, x, ans=0;
+    cin >> n >> k;
+    if(n==1){
+        cout << "0\n";
+        return;
+    }
+    k=min(k, n/2);
+    cout << (n*k)+((n-1-2*k)*k) << '\n';
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    #ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    #endif
+    tests solution();
+    return 0;
+}

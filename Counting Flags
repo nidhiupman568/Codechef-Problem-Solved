@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+
+
+int main() 
+{
+	ll t,n,i,j,k;
+	cin >> t;
+	while(t--)
+	{
+	    cin >> n;
+	    ll ans=0ll;
+	    ans+=(2ll*n*(n-1)*(n-1));
+	    ans+=(n*(n-1)*(n-2));
+	    ans+=(2ll*n*(n-1)*(n-2)*(n-2));
+	    cout << ans << "\n";
+	}
+	return 0;
+}

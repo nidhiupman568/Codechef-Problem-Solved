@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+#define ll long long int
+using namespace std;
+
+int main() 
+{
+	ll t,n,i,j,k;
+	cin >> t;
+	while(t--)
+	{
+	    cin >> n >> k;
+	    vector<ll>v(k,0ll);
+	    for(i=0;i<k;i++)
+	    {
+	        cin >> v[i];
+	    }
+	    for(i=0;i<n;i++)
+	    {
+	        string s;
+	        cin >> s;
+	        ll ans=0ll;
+	        for(j=0;j<k;j++)
+	        {
+	            if(s[j]=='1')
+	                ans+=v[j];
+	        }
+	        cout << ans << "\n";
+	    }
+	}
+	return 0;
+}

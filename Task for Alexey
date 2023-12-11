@@ -1,0 +1,43 @@
+#include <iostream>
+#include<limits.h>
+using namespace std;
+
+#define ll long long int
+
+ll gcd(ll a, ll b){
+    if(b==0)
+        return a;
+    return gcd(b,a%b);
+}
+
+ll lcm(ll a, ll b){
+    return (a/gcd(a,b))*b;
+}
+
+int main() {
+	// your code goes here
+	int t;
+	cin>>t;
+	while(t--){
+	    int n,i,j;
+	    cin>>n;
+	    
+	    ll a[n];
+	    for(i=0; i<n; i++){
+	        cin>>a[i];
+	    }
+	    
+	    ll min = LLONG_MAX;
+	    
+	    for(i=0; i<n-1; i++){
+	        for(j=i+1; j<n; j++){
+	            ll ans = lcm(a[i],a[j]);
+	            if(ans<min)
+	                min = ans;
+	        }
+	    }
+	    
+	    cout<<min<<endl;
+	}
+	return 0;
+}

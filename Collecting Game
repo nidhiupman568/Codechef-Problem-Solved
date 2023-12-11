@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+int t; cin>>t;
+while(t--){
+int n; cin>>n;
+long long a[n];long long b[n];
+for(int i=0;i<n;i++){
+  cin>>a[i];b[i]=a[i];
+}
+sort(a,a+n);
+long long prefix[n];
+prefix[0]=a[0];
+for(int i=1;i<n;i++){
+  prefix[i]=prefix[i-1]+a[i];
+}
+int i=0;map<long long,long long>mp ;int j=1;
+while(i<n&&j<n){
+while(i<n&&j<n&&prefix[j-1]>=a[j]){
+  j++;
+}
+
+for(int k=i;k<j;k++){
+  mp[a[k]]=j-1;
+}i=j;j++;
+}mp[a[n-1]]=n-1;
+for(auto i:b){
+  cout<<mp[i]<<" ";
+}cout<<endl;
+}}

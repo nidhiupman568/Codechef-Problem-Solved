@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define mod 1000000007
+
+ll pow_mod(ll x,ll n,ll m)
+{
+    ll ans=1ll;
+    x%=m;
+    if(n==0ll)
+        return 0ll;
+    while(n>0)
+    {
+        if(n&1)
+            ans=(ans*x)%m;
+        n/=2ll;
+        x=(x*x)%m;
+    }
+    return ans%m;
+}
+
+int main() 
+{
+	ll t,n,i,j,k;
+	cin >> t;
+	while(t--)
+	{
+	    cin >> n;
+	    if(pow_mod(2ll,n,mod)<0ll)
+	        cout << pow_mod(2ll,n,mod)+mod-1ll << "\n";
+	    else
+	        cout << pow_mod(2ll,n,mod)-1ll << "\n";
+	}
+	return 0;
+}

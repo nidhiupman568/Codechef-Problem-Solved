@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define ll long long int
+
+
+int main() 
+{
+	ll t,n,i,j,k;
+	cin >> t;
+	while(t--)
+	{
+	    ll a,b,c;
+	    cin >> a >> b >> c;
+	    ll maxi=(a*100)+b,ans=0ll,cnt=0ll;
+	    while(a>=0 && cnt<=10000)
+	    {
+	        ++cnt;
+	        if((a==0ll && b<=c)||cnt>=10000)
+	            break;
+	        else if(b<c)
+	        {
+	            a-=1ll;
+	            b+=100;
+	        }
+	        b-=c;
+	        ll t=a;
+	        a=b;
+	        b=t;
+	        ll amt=(a*100)+b;
+	        if(amt>maxi)
+	        {
+	            maxi=amt;
+	            ans=cnt;
+	        }
+	    }
+	    cout << ans << "\n";
+	}
+	return 0;
+}

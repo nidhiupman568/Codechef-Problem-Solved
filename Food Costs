@@ -1,0 +1,12 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+   
+    int X, Y;
+    cin >> X >> Y;
+    int Cost = 6 * X + Y;
+    cout << Cost << endl;
+
+    return 0;
+}

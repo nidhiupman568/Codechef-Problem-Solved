@@ -1,0 +1,128 @@
+                                    //  ॐ
+#include <bits/stdc++.h>
+using namespace std;
+#define PI 3.14159265358979323846
+#define ll long long int
+using ld  = long double;
+
+
+inline vector<ll> f(ll x){
+   vector<ll> ret;
+   ret.push_back(x);
+   int op=10;
+
+   while(op--){
+      if(x&1)
+        x++;
+      else
+        x/=2;
+      ret.push_back(x);
+   }
+   
+   return ret;
+}
+
+int main(){
+   
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+
+    int test =1;
+    cin>>test;
+
+
+    while(test--){
+                     
+                     ll n,k;
+                     cin>>n>>k;
+
+                     ll a[n];
+                     ll s=0;
+                     ll odd=0;
+
+                     for(int i=0;i<n;i++){
+                         cin>>a[i];
+                         s+=a[i];
+                         if(a[i]%2==1){
+                            odd++;
+                         }
+                     }
+
+                     if(odd>=k){
+                        cout<<s+k<<"\n";
+                        continue;
+                     }
+
+                     for(int i=0;i<n;i++){
+                         if(a[i]&1){
+                            a[i]++;
+                            k--;
+                            s++;
+                         }
+                     }
+
+                     if(k>=10){
+
+                     ll ans=0;
+
+                     for(auto u : a){
+                         ll x=u;
+                         ll left=k;
+
+                         while(left>0 && x>1){
+                              left--;
+                              if(x&1){
+                                 x++;
+                              }
+                              else{
+                                 x/=2;
+                              }
+                         }
+
+                         if(left%2==1){
+                              if(x&1){
+                                  x++;
+                              }
+                              else{
+                                 x/=2;
+                              }
+                         }
+                         ans=max(ans,s+x-u);
+                     }
+
+                     cout<<ans;
+
+                   }
+
+                   else{
+                       ll dp[n+1][k+1];
+                       ll inf=-1e18;
+                       for(int i=0;i<=n;i++){
+                          for(int j=0;j<=k;j++){
+                              dp[i][j]=inf;
+                          }
+                       }
+
+                       dp[0][0]=0;
+                       for(int i=1;i<=n;i++){
+                            ll x=a[i-1];
+                            auto curr = f(x);
+                            for(int j=0;j<=k;j++){
+                                 for(int l=0;j+l<=k;l++){
+                                     if(dp[i-1][j]!=inf)
+                                     dp[i][j+l]=max(dp[i][j+l],dp[i-1][j]+curr[l]);
+                                 }
+                            }
+                       }
+
+                       cout<<dp[n][k];
+                   }
+
+                     cout<<'\n';
+
+
+   }
+        return 0;
+}

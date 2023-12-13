@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin>>t;
+    while(t--){
+        int n,m;
+        cin>>n>>m;
+        if(n+1==2*m) cout<<-1<<endl;
+        else{
+            vector<int>ans(n);
+            if(n%2==1){
+                ans.front()=m;
+                ans.back()=n+1-m;
+                int i=1,j=n-2,v=1;
+                while(i<j){
+                    if(v==m||v==n+1-m) v++;
+                    ans[i]=v,ans[j]=n+1-v; 
+                    v++,i++,j--;
+                }
+                ans[n/2]=(n+1)/2;
+            }
+            else if(n%2==0){
+                ans.front()=m;
+                ans.back()=n+1-m;
+                int i=1,j=n-2,v=1;
+                while(i<=j){
+                    if(v==m||v==n+1-m) v++;
+                    ans[i]=v,ans[j]=n+1-v; 
+                    v++,i++,j--;
+                }
+            }
+            for(int i=0;i<n;i++) cout<<ans[i]<<" ";
+            cout<<endl;
+        }
+    }
+	return 0;
+}

@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair <int, bool> ib;
+
+const int Maxn = 752;
+const int nil = Maxn * Maxn;
+const int Maxm = nil * 2 + 5;
+
+int T;
+bool dp[Maxn][Maxm];
+int n;
+int a[Maxn];
+bool flag[Maxn];
+
+int main()
+{
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        for (int i = 0; i <= n; i++)
+            fill(dp[i], dp[i] + Maxm, false);
+        dp[0][nil] = true;
+        for (int i = 0; i < n; i++) {
+            scanf("%d", &a[i]);
+            for (int j = 0; j < Maxm; j++) if (dp[i][j])
+                dp[i + 1][j - a[i]] = dp[i + 1][j + a[i]] = true;
+        }
+        int pnt = nil;
+        while (!dp[n][pnt]) pnt++;
+        for (int i = n - 1; i >= 0; i--) {
+            assert(dp[i + 1][pnt]);
+            if (pnt - a[i] >= 0 && dp[i][pnt - a[i]]) {
+                pnt -= a[i];
+                flag[i] = true;
+            } else {
+                pnt += a[i];
+                flag[i] = false;
+            }
+        }
+        vector <ib> seq(n);
+        for (int i = 0; i < n; i++)
+            seq[i] = ib(a[i], flag[i]);
+        for (int i = 0; i < n - 1; i++) {
+            sort(seq.begin(), seq.end());
+            int p, q; scanf("%d %d", &p, &q);
+            p--; q--;
+            int got = seq[p].second == seq[q].second? seq[p].first + seq[q].first: seq[q].first - seq[p].first;
+            printf("%d\n", got);
+            ib nw = ib(got, seq[q].second);
+            seq.erase(seq.begin() + q);
+            seq.erase(seq.begin() + p);
+            seq.push_back(nw);
+        }
+    }
+    return 0;
+}

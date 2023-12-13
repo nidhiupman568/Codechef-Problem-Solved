@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	int t;
+	cin>>t;
+	while(t--)
+	{
+	    int n,k,count=0;
+	    cin>>n>>k;
+	    string s;
+	    cin>>s;
+	    int i=0,j=n-1;
+	    if(n==1){
+	        cout<<"YES\n";
+	        continue;
+	    }
+	    
+	    while(i<j){
+	        if(s[i]!=s[j]){
+	            if(k!=0)
+	                k--;
+	            else
+	                count=1;
+	        }
+	        if(count==1)
+	            break;
+	        i++;
+	        j--;
+	    }
+	    if(count==1 || (k%2!=0 && n%2==0))
+	        cout<<"NO\n";
+	    else
+	        cout<<"YES\n";
+	}
+	return 0;
+}

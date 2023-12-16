@@ -1,0 +1,44 @@
+#include <iostream>
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes 
+	int t;
+	cin>>t;
+	while(t--){
+	    int n;
+	    cin>>n;
+	   // int * arr = new int [n];
+	   vector<int>arr(n);
+	    long long int prefix=0;
+	    for(int i = 0;i < n;i++){
+	        cin>>arr[i];  
+	    }
+	    vector<int>ans;
+	    vector<bool>checked(n,true);
+	    sort(arr.begin(),arr.end());
+	    ans.push_back(arr[0]);
+	    prefix+=arr[0];
+	    for(int i = 1; i < n;i++){
+	        if(arr[i]>prefix){
+	            prefix+=arr[i];
+	            ans.push_back(arr[i]);
+	            checked[i]=false;
+	        }
+	    }
+	   // for(auto x:ans)cout<<x<<" "<<endl;
+	    int ans1=n-ans.size();
+	    for(int i=1;i<n;i++){
+	        if(checked[i])ans.push_back(arr[i]);
+	    }
+	    cout<<ans1<<endl;
+	    for(auto x:ans){
+	        cout<<x<<" ";
+	    }
+	    cout<<endl;
+	    
+	    
+	}
+	return 0;
+}

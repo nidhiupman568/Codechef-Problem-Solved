@@ -1,0 +1,43 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#define int long long
+#define double long double
+#define x first
+#define y second
+#define pb push_back
+using namespace std;
+using pii=pair <int,int>;
+using tii=pair <pii,int>;
+using qii=pair <pii,pii>;
+using namespace __gnu_pbds;
+const int mod=998244353LL;
+int f[2000010],inv[2000010],finv[2000010];
+void init(){
+    f[0]=f[1]=inv[0]=inv[1]=finv[0]=finv[1]=1;
+    for (int i=2; i<2000010; i++){
+        f[i]=f[i-1]*i%mod;
+        inv[i]=inv[mod%i]*(mod-mod/i)%mod;
+        finv[i]=finv[i-1]*inv[i]%mod;
+    }
+}
+int ncr(int n,int r){
+    if (n<r||r<0) return 0LL;
+    return f[n]*finv[r]%mod*finv[n-r]%mod;
+}
+void solve(){
+    int n,k,v; cin>>n>>k>>v;
+    int ans=0;
+    for (int i=1; i<=v; i++){
+        ans+=ncr(k+n-1,k+i-(i==v))*f[i-1]%mod*f[n-i-(i!=v)]%mod;
+        ans%=mod;
+    }
+    cout<<ans<<'\n';
+}
+signed main(){
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    int t=1;
+    cin>>t;
+    init();
+    while (t--) solve();
+}

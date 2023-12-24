@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+// Function to calculate the remaining amount after distribution
+int remainingAmount(int qaz, int wsx) {
+    int edc = qaz / (wsx + 1);
+    return qaz - (edc * wsx);
+}
+
+int main() {
+    int rfv;
+    scanf("%d", &rfv);
+
+    // Loop through each test case
+    for (int tgb = 0; tgb < rfv; tgb++) {
+        int qaz, wsx;
+        scanf("%d %d", &qaz, &wsx);
+        
+        // Calculate and output the remaining amount
+        printf("%d\n", remainingAmount(qaz, wsx));
+    }
+
+    return 0;
+}

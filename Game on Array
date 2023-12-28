@@ -1,0 +1,85 @@
+#include "bits/stdc++.h"
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 1000000007;
+
+void solve(){
+    // Observations:
+    // 1. if n==1 and a[0]>1, then alice wins else bob
+    // 2. Only Alice can reduce the total number of stones as Bob can only move things around.
+    // 3. if atleast 1 stone remains, Bob can make a move.
+    // Let S_odd = a[0]+a[2]+a[4]... and S_even = a[1]+a[3]+a[5]... and S = a[0]+a[1]+a[2]+a[3]...
+    // 4. if S is odd, Bob wins.
+
+
+    // let 0 -> means both S_odd and S_even are odd and 1 means both are even.
+
+    // if total number of stones is even and both S_odd and S_even have same pairity
+    // then if S_odd is even, game goes like:
+    // 0 ---Alice--> 0 ---Bob---> 1 ---Alice--> 1 ---Bob---> 0 ---Alice--> 0 ---Bob---> 1 and so on..
+    // Alice Always wins.
+
+    // Total no. of moves by alice (X) = S/2
+
+    // If current state is 1. 
+    // ->Alice will lose if there is 1 stone on even pile and 1 stone on odd pile at the end.
+    // this happens when:
+    // 1) Starting state is 0, but alice makes odd no. of moves
+    // 2) Starting state is 1, but alice makes even no. of moves
+
+
+
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    int S_odd = 0, S_even = 0, S =0;
+    for (int i = 0; i < n; i++) {
+        cin>>a[i];
+        S+=a[i];
+        if (i%2==0) S_odd+=a[i];
+        else S_even += a[i];
+    }
+    int X = S/2;
+
+    if (n==1){
+        cout<< (a[0]>1 ? "Alice\n" : "Bob\n");
+        return;
+    }
+    if (S%2==1){
+        cout<<"Bob\n"; return;
+    } else {
+        if (S_odd%2==0) { // starting state is 0
+            if (X%2==0) {
+                cout<<"Bob\n";
+            } else {
+                cout<<"Alice\n";
+            }
+        } else {
+            if (X%2==0) { // starting state is 1
+                cout<<"Alice\n";
+            } else {
+                cout<<"Bob\n";
+            }
+        }
+    }
+    
+
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}

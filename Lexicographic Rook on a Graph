@@ -1,0 +1,87 @@
+//
+// Created on 12/27/23.
+//
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+#define for_(i, s, e) for (int i = (int)(s); i < (int)(e); i++)
+#define endl "\n"
+using VI = vector<int>;
+
+void solve() {
+    int n, m, src, dest;
+    cin >> n >> m >> src >> dest;
+
+    src--, dest--;
+    vector <VI> g(n);
+    vector <VI> dp(n);
+    for_(i, 0, m) {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    int ans = 1e9;
+
+    for (int i = 0; i < n; i++) {
+        dp[i] = VI((int) g[i].size() + 1, 1e9);
+        sort(g[i].begin(), g[i].end());
+    }
+    dp[src].assign((int) g[src].size() + 1, 1);
+
+
+    deque <pair<int, int>> q;
+    for (int j = 1; j <= (int) g[src].size(); j++) {
+        q.push_back({src, j});
+    }
+    while (q.size()) {
+        auto frontNd = q.front();
+        q.pop_front();
+        int nd = frontNd.first;
+        int lex = frontNd.second;
+        // check within self
+        for (int i = 1; i <= (int) g[nd].size(); i++) {
+            if (dp[nd][i] > dp[nd][lex] + 1) {
+                dp[nd][i] = dp[nd][lex] + 1;
+                q.push_back({nd, i});
+            }
+        }
+        int maGuy = g[nd][lex - 1];
+        if (maGuy == dest) {
+            ans = min(ans, dp[nd][lex]);
+        }
+        if ((int) (g[maGuy].size()) >= lex) {
+            if (dp[maGuy][lex] > dp[nd][lex]) {
+                dp[maGuy][lex] = dp[nd][lex];
+                q.push_front({maGuy, lex});
+            }
+        } else {
+            for (int i = 1; i <= g[maGuy].size(); i++) {
+                if (dp[maGuy][i] > dp[nd][lex] + 1) {
+                    dp[maGuy][i] = dp[nd][lex] + 1;
+                    q.push_back({maGuy, i});
+                }
+            }
+        }
+    }
+    cout << ans << endl;
+}
+
+signed main() {
+#ifdef mlocal
+    freopen("input.in", "r", stdin);
+#endif
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int tc = 1;
+    cin >> tc;
+    while (tc--) {
+        solve();
+    }
+    return 0;
+}

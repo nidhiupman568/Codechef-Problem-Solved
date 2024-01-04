@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool canSatisfy(int diffvar, int samevar, int uniquevar) {
+    int maxLeaves = uniquevar / 3;
+    int basketsNeeded = min(maxLeaves, samevar);
+    int remainingApples = max(0, (samevar - basketsNeeded) / 2);
+    return (basketsNeeded + remainingApples >= diffvar);
+}
+
+int main() {
+    int roundvar;
+    cin >> roundvar;
+
+    vector<vector<int>> lessvar(roundvar, vector<int>(3)); // Store inputs for 't' test cases
+
+    for (int originalvar = 0; originalvar < roundvar; ++originalvar) {
+        for (int greatervar = 0; greatervar < 3; ++greatervar) {
+            cin >> lessvar[originalvar][greatervar]; // Read inputs for 't' test cases into the vector
+        }
+    }
+
+    for (int simplevar = 0; simplevar < roundvar; ++simplevar) {
+        cout << (canSatisfy(lessvar[simplevar][0], lessvar[simplevar][1], lessvar[simplevar][2]) ? "Yes" : "No") << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,20 @@
+#include <iostream>
+#include <vector>
+
+int main() {
+    int diffvar;
+    std::cin >> diffvar;
+
+    std::vector<int> samevar(diffvar);
+    for (int uniquevar = 0; uniquevar < diffvar; ++uniquevar) {
+        std::cin >> samevar[uniquevar];
+    }
+
+    int originalvar = 0;
+    do {
+        int simplevar = samevar[originalvar++];
+        std::cout << (simplevar % 2 == 0 ? simplevar / 2 : (simplevar + 1) / 2) << " " << simplevar << "\n";
+    } while (--diffvar > 0);
+
+    return 0;
+}

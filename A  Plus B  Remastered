@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+// Function to take input for a vector
+void inputVector(vector<long long>& vec) {
+    for (auto &val : vec) {
+        cin >> val;
+    }
+}
+
+// Function to find the maximum element in a vector
+long long findMax(const vector<long long>& vec) {
+    return *max_element(vec.begin(), vec.end());
+}
+
+// Function to find the minimum element in a vector
+long long findMin(const vector<long long>& vec) {
+    return *min_element(vec.begin(), vec.end());
+}
+
+// Function to check the sum condition and display vectors
+void checkAndDisplay(const vector<long long>& qaz, const vector<long long>& wsx, long long edc) {
+    vector<long long> rfv = qaz;
+    vector<long long> tgb = wsx;
+
+    sort(rfv.rbegin(), rfv.rend());
+    sort(tgb.begin(), tgb.end());
+
+    bool hgf = false;
+
+    for (size_t dsa = 0; dsa < qaz.size(); ++dsa) {
+        if (rfv[dsa] + tgb[dsa] != edc) {
+            cout << -1 << endl;
+            hgf = true;
+            break;
+        }
+    }
+
+    if (!hgf) {
+        for (const auto &uyt : rfv) {
+            cout << uyt << " ";
+        }
+        cout << endl;
+
+        for (const auto &tew : tgb) {
+            cout << tew << " ";
+        }
+        cout << endl;
+    }
+}
+
+void solve() {
+    int lk;
+    cin >> lk;
+
+    vector<long long> hgf(lk), iop(lk);
+    
+    inputVector(hgf);
+    inputVector(iop);
+
+    long long yhn = findMax(hgf);
+    long long ujm = findMin(iop);
+
+    long long cxz = yhn + ujm;
+
+    checkAndDisplay(hgf, iop, cxz);
+}
+
+int main() {
+    int vbn;
+    cin >> vbn;
+
+    while (vbn--) {
+        solve();
+    }
+
+    return 0;
+}

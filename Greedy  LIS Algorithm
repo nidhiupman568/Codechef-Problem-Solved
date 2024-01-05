@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+#define int ll
+#define endl '\n'
+
+const ll mod = 1000000007;
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t;
+    cin>>t;
+    while(t--){
+        int n,x;
+        cin>>n>>x;
+        if (x==0){
+            for(int i=1;i<=n;i++){
+                cout<<i<<" ";
+            }
+            cout<<endl;
+            continue;
+        }
+        if (x==n || x==n-1){
+            cout<<-1<<endl;
+            continue;
+        }
+        cout<<n<<" ";
+        for(int i=n-1;i>=x+2;i--){
+            cout<<i<<" ";
+        }
+        for(int i=1;i<=x+1;i++){
+            cout<<i<<" ";
+        }
+        cout<<endl;
+    }
+
+    return 0;
+}

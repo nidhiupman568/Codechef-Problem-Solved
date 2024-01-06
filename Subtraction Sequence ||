@@ -1,0 +1,86 @@
+#include <bits/stdc++.h>
+using namespace std;
+using i64 = long long;
+const int N = 1e6 + 10;
+const int mod = 1e9+7;
+#define endl '\n'
+bool flag = false;
+int cnt = 0;
+#define all(x) x.begin(), x.end()
+// int xx[] = { 1,0,-1,0 };
+// int yy[] = { 0,1,0,-1 };
+#define int long long
+i64 qp(i64 a, i64 b)
+{
+    i64 res = 1;
+    a %= mod;
+    while (b)
+    {
+        if (b & 1)
+            res = res * a % mod;
+        a = a * a % mod;
+        b >>= 1;
+    }
+    return res;
+}
+void solve()
+{
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++)
+        cin >> a[i];
+    vector<int> dp(n);
+    vector<int> c(n + 10);
+    auto b = a;
+    sort(all(b));
+    auto add = [&](int x, int d)
+    {
+        for (int i = x + 1; i < c.size(); i += i & -i)
+            c[i] = (c[i] + d) % mod;
+    };
+    auto ask = [&](int x)
+    {
+        i64 res = 0;
+        for (int i = x + 1; i; i -= i & -i)
+            res = (res + c[i]) % mod;
+        return res;
+    };
+    i64 ans = 0;
+    for (int i = 0; i < n; i++)
+    {
+        ans += 1ll * qp(2, i) * (qp(2, n - i - 1) - (n - i - 1) - 1 + mod) % mod * a[i] % mod;
+        ans %= mod;
+    }
+    i64 p = 1;
+    i64 sum = 1;
+    for (int i = 0; i < n; i++)
+    {
+        int id = lower_bound(all(b), a[i]) - b.begin() + 1;
+        i64 sm = ask(id) + 1;
+        ans += sm * a[i] % mod;
+        ans %= mod;
+        add(id, p);
+        p = p * 2 % mod;
+    }
+    c.assign(n + 10, 0);
+    for (int i = n - 1; ~i; i--)
+    {
+        int id = lower_bound(all(b), a[i]) - b.begin() + 1;
+        i64  sm = ask(id - 1);
+        ans += (qp(2, i) * sm%mod) * a[i] % mod;
+        ans %= mod;
+        add(id, 1);
+    }
+    cout << ans << endl;
+}
+signed main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0), cout.tie(0);
+    int T = 1;
+    cin >> T;
+
+    while (T--)
+        solve();
+}

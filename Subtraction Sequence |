@@ -1,0 +1,60 @@
+#include "bits/stdc++.h"
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 1000000007;
+
+void solve(){
+    int n,q;
+    cin>>n>>q;
+    vector<int> a(n);
+    int _sum = 0;
+    for (int i = 0; i < n; i++) {
+        cin>>a[i];
+        _sum += a[i];
+    }
+    auto get = [&](){
+        int ans = _sum - a[n-1];
+        int pref = ans;
+        int suff = 0;
+        if (ans>=a[n-1]){
+            ans = min(ans,a[n-1]);
+        }
+        for (int i = 1; i < 32; i++) {
+            if (i>=n) break;
+            pref -= a[n-i-1];
+            suff += a[n-i-1];
+            if (pref>=a[n-i-1]){
+                ans = min(ans,suff + a[n-i-1]);
+            }
+        }
+        return ans;
+    };
+
+    cout<<_sum - get() <<endl;
+    while(q--){
+        int x,y; cin>>x>>y;
+        _sum -= a[x-1];
+        a[x-1] = y;
+        _sum += y;
+        cout<<_sum - get() <<endl;
+    }
+
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}

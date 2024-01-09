@@ -1,0 +1,130 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int 
+const int mod = 998244353;
+int n;
+pair<ll,ll> nc2(int a, int l, int r) {
+	if(l > r || a == n) return {1, 1};
+	if(l == 1 || r == n) return {a + 1, a};
+	ll a1 = 1LL * a * (a + 1) / 2;
+	return {(a1 + 1)%mod, a1 % mod};
+}
+long long binpow(long long a, long long b) {
+    if(b == 0) return 1;
+    a %= mod;
+    if(a == 0) return 0;
+    long long res = 1;
+    while (b > 0) {
+        if (b & 1)
+            res = res * a % mod;
+        a = a * a % mod;
+        b >>= 1;
+    }
+    return res;
+}
+pair<ll,ll> binpow(pair<ll,ll> a, long long b) {
+	return {binpow(a.first, b), binpow(a.second, b)};
+}
+int32_t main() {
+	ios_base::sync_with_stdio(0);
+  	cin.tie(0);
+	int t = 1; cin >> t;
+	while(t--) {
+		cin >> n;
+		ll ans = 1;
+		std::vector<int> v(n + 2), id(n + 2);
+		for(int i = 1; i <= n; i++) {
+			cin >> v[i];
+			id[v[i]] = i;
+		} 
+		set<pair<int,int>>st;
+		pair<ll,ll> gun = {1, 1};
+		ll len = 0;
+		for(int i = 1; i <= n; i++) {
+			int a = id[i];
+			int pore = 0, age = 0;
+			int l1 = a, r1 = a;
+			if(v[a + 1] < i && a < n) {
+				auto it = st.lower_bound({a, a});
+				pore = (*it).second - (*it).first + 1;
+				r1 = (*it).second;
+				st.erase(it);
+			}
+			if(v[a - 1] < i  && a > 1) {
+				auto it = prev(st.lower_bound({a, a}));
+				age = (*it).second - (*it).first + 1;
+				l1 = (*it).first;
+				st.erase(it);
+			}
+			int cur = pore + age + 1;
+			auto mul = [&](pair<ll,ll> &a, pair<ll,ll> b) {
+				a.first = a.first * b.first % mod;
+				a.second = a.second * b.second % mod;
+			};
+			
+			mul(gun, binpow(nc2(pore, a + 1, a + pore), mod - 2));
+			mul(gun, binpow(nc2(age, l1, a - 1), mod - 2));
+			// if(i == 2) {
+			// 	cout << gun.first << " " << gun.second << "\n";
+			// }
+			auto an = gun;
+			// if(i == 2) cout << an << " ";
+			if(l1 > 1) mul(an, {age + 1, age + 1});
+			if(r1 < n) mul(an, {pore + 1,pore + 1});
+			mul(gun, nc2(cur, l1, r1));
+			st.insert({l1, r1});
+			int opr = n - i;
+			if(opr < st.size()){
+				ans -= an.second;
+				// cout << i << " ";
+			} //ans -= an.second;
+			// cout << an.first << " " << an.second << "\n";
+			ans += an.first;
+			// ans -= an.second;
+			ans %= mod;
+			ans += mod;
+			ans %= mod;
+ 		}
+ 		cout << ans << "\n";
+ 		int val = 8;
+ 		for(int i = val; i > val; i++) {
+ 			int a = id[i];
+ 			int ct = 0;
+ 			int lim = (1 << (i - 1));
+ 			
+ 			for(int j = 0; j < lim; j++) {
+ 				std::vector<int> vis(n + 1);
+ 				vis[a] = 1;
+ 				for(int k = 0; k < i - 1; k++) {
+ 					if((j >> k)&1) vis[id[k + 1]] = 1;
+ 				}
+ 				int part = 0;
+ 				int valid = 1;
+ 				for(int k = 1; k <= n;) {
+ 					if(!vis[k]) {
+ 						int mx = 0;
+ 						while(k <= n && !vis[k]) {
+ 							mx = max(mx, v[k]);
+ 							k++;
+ 						}
+ 						valid&=(mx > i);
+ 					} else {
+ 						part++;
+ 						while(k <= n && vis[k]) k++; 
+ 					}
+ 				}
+ 				if(part <= n - i && valid) {
+ 					for(int i = 1; i <= n; i++) {
+ 						if(!vis[i]) cout << v[i] << " ";
+ 					} cout << "\n";
+ 					ct++;
+ 				}
+ 				// cout << part << "\n"; 
+ 				// ct += part <= (n - i);
+ 			}
+ 			cout << ct << "\n";
+ 		}
+ 		// cout << (ans % mod) << "\n";
+	}
+	return 0;
+}

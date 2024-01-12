@@ -1,0 +1,32 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+using namespace std;
+
+void solve() {
+    int qaz, wsx;
+    cin >> qaz >> wsx;
+
+    vector<int> edc, rfv;
+    copy_n(istream_iterator<int>(cin), qaz, back_inserter(edc));
+    copy_n(istream_iterator<int>(cin), wsx, back_inserter(rfv));
+
+    int tgb = *max_element(rfv.begin(), rfv.end());
+
+    sort(edc.begin() + (qaz - tgb >= 0 ? qaz - tgb : 0), edc.end());
+
+    copy(edc.begin(), edc.end(), ostream_iterator<int>(cout, " "));
+    cout << endl;
+}
+
+int main() {
+    int yhn;
+    cin >> yhn;
+
+    while (yhn--) {
+        solve();
+    }
+
+    return 0;
+}

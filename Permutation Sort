@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+void solve() {
+    int n;
+    cin >> n;
+    vector<int> a(n + 1);
+
+    // Input the permutation
+    for (int i = 1; i <= n; i++) 
+        cin >> a[i];
+
+    vector<vector<int>> ans;
+
+    // Process cycles and perform swaps
+    while (1) {
+        vector<vector<int>> cycles;
+        vector<bool> vis(n + 1, false);
+
+        // Find cycles in the permutation
+        for (int i = 1; i <= n; i++) {
+            if (a[i] == i) {
+                // If element is already in correct position, mark it as visited
+                vis[i] = true;
+                continue;
+            }
+            if (!vis[i]) {
+                // Traverse the cycle and mark each element as visited
+                int tmp = i;
+                vector<int> v;
+                while (!vis[tmp]) {
+                    v.push_back(tmp);
+                    vis[tmp] = true;
+                    tmp = a[tmp];
+                }
+                cycles.push_back(v);
+            }
+        }
+
+        // Break if no more cycles
+        if (cycles.size() == 0) break;
+
+        vector<int> v;
+
+        // Perform swaps within cycles
+        for (vector<int> cycle : cycles) {
+            for (int i = 0; i < cycle.size(); i += 2) {
+                if (i + 1 >= cycle.size()) break;
+                v.push_back(cycle[i]);
+                v.push_back(cycle[i + 1]);
+                
+                // Swap elements in the cycle
+                swap(a[cycle[i]], a[cycle[i + 1]]);
+            }
+        }
+
+        ans.push_back(v);
+    }
+
+    // Output the results
+    cout << ans.size() << endl;
+    for (vector<int> v : ans) {
+        cout << v.size() << " ";
+        for (int x : v) 
+            cout << x << " ";
+        cout << endl;
+    }
+}
+
+signed main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    int t = 1;
+    cin >> t;
+
+    while (t--) {
+        solve();
+    }
+
+    return 0;
+}

@@ -1,0 +1,237 @@
+#line 2 "/Users/noya2/Desktop/Noya2_library/template/template.hpp"
+using namespace std;
+
+#include<bits/stdc++.h>
+#line 1 "/Users/noya2/Desktop/Noya2_library/template/inout_old.hpp"
+namespace noya2 {
+
+template <typename T, typename U>
+ostream &operator<<(ostream &os, const pair<T, U> &p){
+    os << p.first << " " << p.second;
+    return os;
+}
+template <typename T, typename U>
+istream &operator>>(istream &is, pair<T, U> &p){
+    is >> p.first >> p.second;
+    return is;
+}
+
+template <typename T>
+ostream &operator<<(ostream &os, const vector<T> &v){
+    int s = (int)v.size();
+    for (int i = 0; i < s; i++) os << (i ? " " : "") << v[i];
+    return os;
+}
+template <typename T>
+istream &operator>>(istream &is, vector<T> &v){
+    for (auto &x : v) is >> x;
+    return is;
+}
+
+void in() {}
+template <typename T, class... U>
+void in(T &t, U &...u){
+    cin >> t;
+    in(u...);
+}
+
+void out() { cout << "\n"; }
+template <typename T, class... U, char sep = ' '>
+void out(const T &t, const U &...u){
+    cout << t;
+    if (sizeof...(u)) cout << sep;
+    out(u...);
+}
+
+template<typename T>
+void out(const vector<vector<T>> &vv){
+    int s = (int)vv.size();
+    for (int i = 0; i < s; i++) out(vv[i]);
+}
+
+struct IoSetup {
+    IoSetup(){
+        cin.tie(nullptr);
+        ios::sync_with_stdio(false);
+        cout << fixed << setprecision(15);
+        cerr << fixed << setprecision(7);
+    }
+} iosetup_noya2;
+
+} // namespace noya2
+#line 1 "/Users/noya2/Desktop/Noya2_library/template/const.hpp"
+namespace noya2{
+
+const int iinf = 1'000'000'007;
+const long long linf = 2'000'000'000'000'000'000LL;
+const long long mod998 =  998244353;
+const long long mod107 = 1000000007;
+const long double pi = 3.14159265358979323;
+const vector<int> dx = {0,1,0,-1,1,1,-1,-1};
+const vector<int> dy = {1,0,-1,0,1,-1,-1,1};
+const string ALP = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string alp = "abcdefghijklmnopqrstuvwxyz";
+const string NUM = "0123456789";
+
+void yes(){ cout << "Yes\n"; }
+void no(){ cout << "No\n"; }
+void YES(){ cout << "YES\n"; }
+void NO(){ cout << "NO\n"; }
+void yn(bool t){ t ? yes() : no(); }
+void YN(bool t){ t ? YES() : NO(); }
+
+} // namespace noya2
+#line 1 "/Users/noya2/Desktop/Noya2_library/template/utils.hpp"
+namespace noya2{
+
+unsigned long long inner_binary_gcd(unsigned long long a, unsigned long long b){
+    if (a == 0 || b == 0) return a + b;
+    int n = __builtin_ctzll(a); a >>= n;
+    int m = __builtin_ctzll(b); b >>= m;
+    while (a != b) {
+        int mm = __builtin_ctzll(a - b);
+        bool f = a > b;
+        unsigned long long c = f ? a : b;
+        b = f ? b : a;
+        a = (c - b) >> mm;
+    }
+    return a << min(n, m);
+}
+
+template<typename T> T gcd_fast(T a, T b){ return static_cast<T>(inner_binary_gcd(abs(a),abs(b))); }
+
+long long sqrt_fast(long long n) {
+    if (n <= 0) return 0;
+    long long x = sqrt(n);
+    while ((x + 1) * (x + 1) <= n) x++;
+    while (x * x > n) x--;
+    return x;
+}
+
+template<typename T> T floor_div(const T n, const T d) {
+    assert(d != 0);
+    return n / d - static_cast<T>((n ^ d) < 0 && n % d != 0);
+}
+
+template<typename T> T ceil_div(const T n, const T d) {
+    assert(d != 0);
+    return n / d + static_cast<T>((n ^ d) >= 0 && n % d != 0);
+}
+
+template<typename T> void uniq(vector<T> &v){
+    sort(v.begin(),v.end());
+    v.erase(unique(v.begin(),v.end()),v.end());
+}
+
+template <typename T, typename U> inline bool chmin(T &x, U y) { return (y < x) ? (x = y, true) : false; }
+
+template <typename T, typename U> inline bool chmax(T &x, U y) { return (x < y) ? (x = y, true) : false; }
+
+template<typename T> inline bool range(T l, T x, T r){ return l <= x && x < r; }
+
+} // namespace noya2
+#line 8 "/Users/noya2/Desktop/Noya2_library/template/template.hpp"
+
+#define rep(i,n) for (int i = 0; i < (int)(n); i++)
+#define repp(i,m,n) for (int i = (m); i < (int)(n); i++)
+#define reb(i,n) for (int i = (int)(n-1); i >= 0; i--)
+#define all(v) (v).begin(),(v).end()
+
+using ll = long long;
+using ld = long double;
+using uint = unsigned int;
+using ull = unsigned long long;
+using pii = pair<int,int>;
+using pll = pair<ll,ll>;
+using pil = pair<int,ll>;
+using pli = pair<ll,int>;
+
+namespace noya2{
+
+/*　~ (. _________ . /)　*/
+
+}
+
+using namespace noya2;
+
+
+#line 2 "j.cpp"
+
+
+void solve(){
+    int n, q; in(n,q);
+    string s; in(s);
+    int sq = sqrt(q/log2(n));
+    chmax(sq,1);
+    vector<int> zero(n);
+    zero[n-1] = n-1;
+    reb(i,n-1){
+        if (s[i] == '1'){
+            zero[i] = zero[i+1];
+        }
+        else {
+            zero[i] = i;
+        }
+    }
+    auto leap = [&](int x, int k){
+        x = zero[x];
+        x += k;
+        chmin(x,n-1);
+        x = zero[x];
+        return x;
+    };
+    vector<array<int,3>> query(q);
+    vector<vector<int>> qids(n);
+    rep(i,q){
+        int u, v, k; in(u,v,k); u--, v--;
+        if (u > v) swap(u,v);
+        query[i] = {u,v,k};
+        qids[k].emplace_back(i);
+    }
+    vector<int> ans(q);
+    repp(k,1,sq){
+        if (qids[k].empty()) continue;
+        const int mx = int(ceil(log2(n/double(k)))) + 1;
+        vector<vector<int>> to(mx,vector<int>(n,n-1));
+        rep(i,n) to[0][i] = leap(i,k);
+        repp(j,1,mx) rep(i,n) to[j][i] = to[j-1][to[j-1][i]];
+        for (int id : qids[k]){
+            int u = query[id][0];
+            int v = query[id][1];
+            if (zero[u] >= v){
+                ans[id] = 0;
+                continue;
+            }
+            int cur = 0;
+            reb(i,mx){
+                if (to[i][u] < v){
+                    u = to[i][u];
+                    cur |= 1<<i;
+                }
+            }
+            ans[id] = cur+1;
+        }
+    }
+    repp(k,sq,n){
+        for (int id : qids[k]){
+            int u = query[id][0];
+            int v = query[id][1];
+            if (zero[u] >= v){
+                ans[id] = 0;
+                continue;
+            }
+            int cur = 0;
+            while (u < v){
+                u = leap(u,k);
+                cur++;
+            }
+            ans[id] = cur;
+        }
+    }
+    for (auto x : ans) out(x);
+}
+
+int main(){
+    int t = 1; //in(t);
+    while (t--) { solve(); }
+}

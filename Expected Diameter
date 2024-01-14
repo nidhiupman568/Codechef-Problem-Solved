@@ -1,0 +1,89 @@
+// Online C++ compiler to run C++ program online
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+vector<int> center(vector<vector<int>> &edges,vector<int> adj[],int n){
+    if(n==1) return {0};
+    vector<int> deg(n),ans;
+    
+    for(auto &i:edges){
+        deg[i[0]]++,deg[i[1]]++;
+    }
+    
+    queue<int> q;
+    for(int i=0;i<n;i++) if(adj[i].size()==1) q.push(i);
+    while(q.size()>0){
+        int a=q.size();ans.clear();
+        while(a--){
+            int x=q.front();q.pop();
+            ans.push_back(x);
+            for(int &v:adj[x]){
+                deg[v]--;
+                if(deg[v]==1) q.push(v);
+            }
+        }
+    }
+    return ans;
+}
+
+vector<int> dis(vector<vector<int>> &edges,vector<int> adj[],int n){
+    vector<int> ans(n,INT_MAX);
+    vector<int> v=center(edges,adj,n);
+    queue<int> q;
+    for(int &i:v) q.push(i),ans[i]=0;
+    
+    while(!q.empty()){
+        int x=q.front();q.pop();
+        for(int &nei:adj[x]){
+            if(ans[nei]==INT_MAX){
+                ans[nei]=ans[x]+1;
+                q.push(nei);
+            }
+        }
+    }
+    return ans;
+}
+
+void solve(){
+    int n;cin>>n;
+    vector<int> adj[n];
+    vector<vector<int>> edges;
+    for(int i=0;i<n-1;i++){
+        int x,y;cin>>x>>y;
+        x--,y--;
+        edges.push_back({x,y});
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+    
+    // vector<int> c=center(edges,adj,n);
+    // cout<<c.size()<<" ";
+    // for(int &i:c) cout<<i<<" ";
+    
+    vector<int> d = dis(edges,adj,n);
+    
+    
+    int maxi=*max_element(d.begin(),d.end()),c1=0,c2=0;
+    for(int &i:d){
+        // coput<<i<<",";
+        if(i==maxi) c1++;
+        if(i==maxi-1) c2++;
+    }
+    // cout<<":";
+    // cout<<c1<<","<<c2<<" ";
+    int ans=0;
+    ans+=2*(c1*(n-c1))+c1*(c1-1);
+    ans+=c1;
+    ans+=2*c1;
+    ans+=2*c2;
+    
+    cout<<ans<<endl;
+}
+
+signed main() {
+    int t;cin>>t;
+    while(t--) solve();
+
+    return 0;
+}

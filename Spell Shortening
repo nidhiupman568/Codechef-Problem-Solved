@@ -1,0 +1,44 @@
+#include <iostream>
+#include <string>
+using namespace std;
+#define ll long long
+
+// Function to find the index of the first decreasing pair
+int findDecreasingPairIndex(const string& spell) {
+    int gh = 0;
+    while (gh < spell.length() - 1 && spell[gh] <= spell[gh + 1]) {
+        gh++;
+    }
+    return gh;
+}
+
+// Function to remove the character at a specific index
+void removeCharacterAtIndex(string& spell, int index) {
+    spell.erase(index, 1);
+}
+
+// Function to solve the problem
+void solve() {
+    ll ui;
+    cin >> ui;
+    string spell;
+    cin >> spell;
+
+    // Find the first decreasing pair of characters
+    int index = findDecreasingPairIndex(spell);
+
+    // Remove the character at the found index
+    removeCharacterAtIndex(spell, index);
+
+    cout << spell << endl;
+}
+
+int main() {
+    // your code goes here
+    long op;
+    cin >> op;
+    while (op--) {
+        solve();
+    }
+    return 0;
+}

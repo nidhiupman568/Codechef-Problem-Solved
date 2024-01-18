@@ -1,0 +1,40 @@
+/*
+*	Author: rishabhxchoudhary
+*	Created: 17.01.2024 22:39:12 (GMT+5:30)
+*/
+#include "bits/stdc++.h"
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 1000000007;
+
+void solve(){
+    int a,b;
+    cin>>a>>b;
+    int d = abs(a-b);
+    if (d==0){
+        cout<<0<<endl;
+        return;
+    }
+    int n = sqrtl(2*d);
+    while (((n*(n+1))/2)<d) n++;
+    while (((n*(n+1))/2)%2 != d%2) n++;
+    cout<<n<<endl;
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}

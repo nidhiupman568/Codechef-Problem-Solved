@@ -1,0 +1,58 @@
+/*
+*	Author: rishabhxchoudhary
+*	Created: 18.01.2024 01:04:28 (GMT+5:30)
+*/
+#include "bits/stdc++.h"
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 998244353;
+
+void solve(){
+    int n,m;
+    cin>>n>>m;
+    if (n>m) swap(n,m);
+    int time = m/2;
+    int l = max(1ll,n-time);
+    int r = min(n,1+time);
+    int ans = r*(r+1)/2;
+    ans -= (l-1)*(l)/2;
+    ans = ans%MOD;
+    if (m&1){
+        ans = (ans * (m+1)/2)%MOD;
+    } else{
+        ans = (ans * (m+1))%MOD;
+    }
+    cout<<ans<<endl;
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}
+
+/*
+कर्मण्येवाधिकारस्ते मा फलेषु कदाचन |
+मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि ||
+
+हतो वा प्राप्स्यसि स्वर्गं जित्वा वा भोक्ष्यसे महीम् |
+तस्मादुत्तिष्ठ कौन्तेय युद्धाय कृतनिश्चय:||
+
+सुखदु:खे समे कृत्वा लाभालाभौ जयाजयौ |
+ततो युद्धाय युज्यस्व नैवं पापमवाप्स्यसि ||
+
+श्रेयान् स्वधर्मो विगुणः परधर्मात् स्वनुष्टितात्।
+स्वधर्मे निधनं श्रेयः परधर्मो भयावहः॥
+*/

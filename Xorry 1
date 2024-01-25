@@ -1,0 +1,26 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+pair<int, int> calculateXORPair(int qaz) {
+    int wsx = log2(qaz) + 1;
+    int edc = 1 << (wsx - 1);
+
+    return {edc, qaz ^ edc};
+}
+
+int main() {
+    int rfv;
+    cin >> rfv;
+
+    for (int tgb = 0; tgb < rfv; ++tgb) {
+        int yhn;
+        cin >> yhn;
+
+        pair<int, int> asd = calculateXORPair(yhn);
+        cout << asd.second << " " << asd.first << endl;
+    }
+
+    return 0;
+}

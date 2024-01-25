@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+
+// Function to process a single test case
+int processTestCase(int qaz, int wsx) {
+    int rfv = 0;
+    int gfd = 0;
+
+    do {
+        int zxc;
+        cin >> zxc;
+
+        gfd += zxc;
+        rfv += (gfd >= wsx) ? (gfd = 0, 1) : 0;
+    } while (--qaz > 0);
+
+    return rfv;
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int edc, rfv;
+        cin >> edc >> rfv;
+
+        int tyu = processTestCase(edc, rfv);
+        cout << tyu << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,39 @@
+#include <iostream>
+#include <cmath>
+#include <vector>
+
+using namespace std;
+
+vector<long long> calculateSequence(long long qaz, long long wsx) {
+    vector<long long> asd;
+
+    long long rfv = qaz / wsx;
+    long long tgb = rfv;
+
+    for (int yhn = 0; yhn < wsx; ++yhn) {
+        asd.push_back(tgb);
+        tgb += rfv;
+    }
+
+    return asd;
+}
+
+int main() {
+    int we;
+    cin >> we;
+
+    while (we--) {
+        long long zxc, vbn;
+        cin >> zxc >> vbn;
+
+        vector<long long> ghj = calculateSequence(zxc, vbn);
+
+        for (long long element : ghj) {
+            cout << element << " ";
+        }
+
+        cout << endl;
+    }
+
+    return 0;
+}

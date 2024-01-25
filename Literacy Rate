@@ -1,0 +1,22 @@
+#include <iostream>
+
+using namespace std;
+
+string checkLiterateStatus(int qaz, int wsx) {
+    double edc = (static_cast<double>(wsx) / qaz) * 100;
+    return (edc >= 75) ? "YeS" : "nO";
+}
+
+int main() {
+    int rfv;
+    cin >> rfv;
+
+    for (int tgb = 0; tgb < rfv; ++tgb) {
+        int yhn, nm;
+        cin >> yhn >> nm;
+
+        cout << checkLiterateStatus(yhn, nm) << endl;
+    }
+
+    return 0;
+}

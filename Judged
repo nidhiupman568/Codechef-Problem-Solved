@@ -1,0 +1,17 @@
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+int main() {
+    int qaz;
+    std::cin >> qaz;
+
+    for (int wsx = 0; wsx < qaz; ++wsx) {
+        std::vector<int> edc(5);
+        for (int &rfvtgb : edc) std::cin >> rfvtgb;
+
+        std::cout << ((std::accumulate(edc.begin(), edc.end(), 0) >= 4) ? "YES" : "NO") << std::endl;
+    }
+
+    return 0;
+}

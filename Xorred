@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define int long long
+#define endl "\n"
+#define all(x) (x).begin(),(x).end()
+#define dbg(x) cout<< #x <<" : "<<(x)<<endl;
+#define dbgv(v) cout<< #v <<" : ";for(auto &i:v) cout<<(i)<<" ";cout<<endl;
+class SparseTable
+{
+    public:
+    int n;
+    int k;
+    vector<vector<int>> sp;
+    int fspt(int a,int b)
+    {
+        return (a&b);
+    }
+    SparseTable(vector<int> &a)
+    {
+        n = a.size();
+        k = __lg(n)+1;
+        sp = vector<vector<int>>(k+1,vector<int>(n+1));
+        int n = a.size();
+        for(int j=0;j<n;j++) sp[0][j] = a[j];
+        for (int i = 1; i <= k; i++)
+            for (int j = 0; j + (1 << i) <= n; j++)
+                sp[i][j] = fspt(sp[i - 1][j], sp[i - 1][j + (1 << (i - 1))]);
+    }
+    int get(int l,int r)
+    {
+        int d = (r - l + 1);
+        int lg = __lg(d);
+        int rem = d - (1<<lg);
+        if(rem == 0) return sp[lg][l];
+        return fspt(sp[lg][l],get(r - rem + 1,r));
+    }
+};
+void solve()
+{
+    int n;cin>>n;
+    vector<int> a(n+1);
+    for(int i=1;i<=n;i++) cin>>a[i];
+    vector<vector<int>> z(30,vector<int>(n+2));
+    for(int i=1;i<=n;i++)
+    {
+        bitset<30> b(a[i]);
+        for(int j=0;j<30;j++) if(b[j] == 0) z[j].push_back(i); 
+    }
+    for(int j=0;j<30;j++) z[j].push_back(n+1);
+    int ans = 0;
+    SparseTable sp(a);
+    vector<int> pf_xor(n+1);
+    map<int,vector<int>> mp;
+    for(int i=1;i<=n;i++) {pf_xor[i] = (pf_xor[i-1]^a[i]);mp[pf_xor[i]].push_back(i);}
+    for(int i=1;i<=n;i++)
+    {
+        vector<int> ps;
+        for(int j=0;j<30;j++) ps.push_back(*lower_bound(all(z[j]),i));
+        sort(all(ps));
+        ps.erase(unique(all(ps)),ps.end());
+        int prv = i;
+        int crans = 0;
+        for(int cr:ps){
+            int ll = prv,rr = cr-1;
+            if(rr >= ll && ll <= n){
+                int req_xr = (sp.get(i,ll)^pf_xor[i-1]);
+                auto &vv = mp[req_xr];
+                ans += (upper_bound(all(vv),rr) - lower_bound(all(vv),ll));
+            }
+            prv = cr;
+        }
+        int ll = ps.back(),rr = n;
+        if(rr >= ll && ll <= n){
+            int req_xr = (sp.get(i,ll)^pf_xor[i-1]);
+            auto &vv = mp[req_xr];
+            ans += (upper_bound(all(vv),rr) - lower_bound(all(vv),ll));
+        }
+    }
+    cout<<ans<<endl;
+    
+    
+}
+main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    int t = 1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+    return 0;
+}

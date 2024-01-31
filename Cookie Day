@@ -1,0 +1,32 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int findSmallestModulo(vector<int>& qaz, int wsx) {
+    vector<int> rfvtgb;
+    int yhn = 0;
+
+    for (int ujm = 0; ujm < qaz.size(); ++ujm) {
+        if (wsx <= qaz[ujm]) rfvtgb.push_back(qaz[ujm] % wsx), yhn++;
+    }
+
+    return (yhn < 1) ? -1 : (*min_element(rfvtgb.begin(), rfvtgb.end()));
+}
+
+int main() {
+    int dsa;
+    cin >> dsa;
+
+    while (dsa--) {
+        int lkj, hgf;
+        cin >> lkj >> hgf;
+
+        vector<int> zxc(lkj);
+        for (int poi = 0; poi < lkj; ++poi) cin >> zxc[poi];
+
+        cout << findSmallestModulo(zxc, hgf) << endl;
+    }
+
+    return 0;
+}

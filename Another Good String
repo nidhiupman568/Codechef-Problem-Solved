@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int qaz, wsx, edc;
+    cin >> qaz;
+
+    while (qaz--) {
+        cin >> wsx >> edc;
+
+        string rfvtgb;
+        cin >> rfvtgb;
+
+        int yhn = 1, ujm = 1;
+
+        for (int poi = 1; poi < wsx; ++poi) {
+            yhn = (rfvtgb[poi] == rfvtgb[poi - 1]) ? yhn + 1 : 1;
+            ujm = max(ujm, yhn);
+        }
+
+        cout << ujm << " ";
+
+        while (edc--) {
+            char dsa;
+            cin >> dsa;
+            rfvtgb += dsa;
+
+            yhn = (dsa == rfvtgb[rfvtgb.size() - 2]) ? yhn + 1 : 1;
+            ujm = max(ujm, yhn);
+
+            cout << ujm << " ";
+        }
+
+        cout << endl;
+    }
+
+    return 0;
+}

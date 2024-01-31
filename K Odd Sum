@@ -1,0 +1,21 @@
+#include <iostream>
+#define qaz long long
+using namespace std;
+
+void printNumbers(qaz wsx, qaz edc, qaz rfvtgb) { for (qaz yhn = wsx; yhn <= edc; yhn += rfvtgb) cout << yhn << " "; }
+
+int main() {
+    qaz vbn; cin >> vbn;
+
+    while (vbn--) {
+        qaz poi, ewq; cin >> poi >> ewq;
+
+        printNumbers(1, ewq, 1);
+        printNumbers(ewq + 2, poi, 2);
+        printNumbers(ewq + 1, poi, 2);
+
+        cout << "\n";
+    }
+
+    return 0;
+}

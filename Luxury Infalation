@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>  
+ 
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC target("avx,avx2")
+
+#define watch(x) cout << (#x) << " : " << x << '\n'
+#define boost ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define ll long long
+
+using namespace std;   
+
+const int N = 1e3 + 128;
+const int S = 1e5 + 128;
+int dp[N][S];
+int n;
+int a[N], pref[N]; 
+const int INF = 1e9 + 128;
+
+void solve() {
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> a[i];
+    sort(a + 1, a + n + 1);
+
+    for (int i = 1; i <= n; i++)
+        pref[i] = pref[i - 1] + a[i];
+    
+    int max_s = pref[n];
+
+    for (int s = 1; s <= max_s; s++)
+        dp[0][s] = INF;
+    dp[0][0] = 0;
+
+    for (int i = 1; i <= n; i++) 
+        for (int j = 0; j <= max_s; j++) {
+            dp[i][j] = dp[i - 1][j];
+            if (j - a[i] >= 0)
+                dp[i][j] = min(dp[i][j], dp[i - 1][j - a[i]] + 1);
+        }  
+    
+    for (int s = 1; s <= max_s; s++) {
+        bool was = false;
+        for (int c = 0; c <= n; c++) 
+            was |= (max_s - pref[c] <= s && a[c] < (s + n - c + dp[c][s - max_s + pref[c]] - 1)  / (n - c + dp[c][s - max_s + pref[c]]));  
+        cout << was;
+    }
+    cout << '\n';
+}
+
+main() { 
+    boost;     
+    int t = 1;
+    cin >> t;
+    while (t--)
+        solve(); 
+    return 0;
+}

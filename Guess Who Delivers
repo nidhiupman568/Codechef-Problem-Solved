@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(i,a,b) for(int i=a;i<b;i++)
+typedef long long ll;
+typedef long double ld;
+typedef unsigned long long ull;
+typedef vector<int> vi;
+#define vll vector<ll>
+#define all(v) v.begin(),v.end()
+#define vii vector<pair<ll,ll>>
+#define pi pair<int,int>
+#define pll pair<ll,ll>
+#define lb lower_bound
+#define ub upper_bound
+#define pb push_back
+#define ff first
+#define ss second
+const ll MOD=1e9+7;   
+//const ll MOD=998244353;
+const int N=5005;
+vi adj[N];
+vector<vi>dis(N,vi(N));
+void dfs(int v,int s,int p){
+    if(p==-1) dis[s][v]=0;
+    else dis[s][v]=dis[s][p]+1;
+    for(int j:adj[v]){
+        if(j!=p) dfs(j,s,v);
+    }
+}
+void solve(int test){
+    int n,m;
+    cin>>n>>m;
+    rep(i,1,n+1) adj[i].clear();
+    rep(i,0,n-1){
+        int u,v;
+        cin>>u>>v;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
+    rep(i,1,n+1){
+        dfs(i,i,-1);
+    }
+    vii q(m);
+    rep(i,0,m) cin>>q[i].ff>>q[i].ss;
+    vi dp(n+1);
+    rep(i,0,m){
+        vi ndp(n+1,1e9);
+        int st=(i==0?q[i].ff:q[i-1].ss);
+        rep(j,1,n+1){
+            int x=dis[j][q[i].ff];
+            int y=dis[q[i].ff][q[i].ss];
+            int z=dis[j][q[i].ss];
+            z=(x+y-z)/2;
+            int d=2*x+2*y-z;
+            ndp[st]=min(ndp[st],d+dp[j]);
+            //if(i==0) cout<<ndp[st]<<" ";
+        }
+        rep(j,1,n+1){
+            int x=dis[st][q[i].ff];
+            int y=dis[q[i].ff][q[i].ss];
+            int z=dis[st][q[i].ss];
+            z=(x+y-z)/2;
+            int d=2*x+2*y-z;
+            ndp[j]=min(ndp[j],dp[j]+d);
+        }
+        dp=ndp;
+        //rep(i,1,n+1) cout<<dp[i]<<" ";
+        //cout<<'\n';
+    }
+    int ans=1e9;
+    rep(i,1,n+1) ans=min(ans,dp[i]);
+    cout<<ans<<'\n';
+}
+int main(){
+    
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    int t=1;
+    cin>>t;
+    rep(i,0,t){
+       //cout<<"Case #"<<i+1<<" ";
+        solve(i+1); 
+    }
+     
+    return 0;
+}

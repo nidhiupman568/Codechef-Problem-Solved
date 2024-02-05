@@ -1,0 +1,154 @@
+//Written BY RGC
+#include <bits/stdc++.h>
+using namespace std;
+
+#define endl '\n'
+#define mk make_pair
+#define pb push_back
+#define all(v) v.begin(), v.end()
+#define fi first
+#define se second
+#define cnti(x) __builtin_popcount(x)
+#define cntl(x) __builtin_popcountll(x)
+#define clzi(x) __builtin_clz(x)
+#define clzl(x) __builtin_clzll(x) 
+#define ctzi(x) __builtin_ctz(x)
+#define ctzl(x) __builtin_ctzll(x) 
+#define FORE(i, v) for (auto i : v)
+#define FOR(i, a, b) for (LL i = a; i < b; i ++)
+#define FOR_(i, a, b) for (LL i = a; i > b; i --)
+#define REP(i, a) for (LL i = 0; i < a; i ++)
+#define REP_(i, a) for (LL i = a - 1; ~i; i--)
+
+#define Error(x) cerr << #x << " = " << x << endl
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+template <typename hd, typename tl> inline void chkmin(hd &a, tl b) {if (a > b) a = b;}
+template <typename hd, typename tl> inline void chkmax(hd &a, tl b) {if (a < b) a = b;}
+
+using LL = long long;
+using VI = vector <LL>;
+using PI = pair <LL, LL>;
+using PII = pair <PI, LL>;
+using UMP = unordered_map <LL, LL>;
+
+const double PIE = acos(-1.0);
+const double E = 2.718281828;
+const double EPS = 1e-7;
+
+const LL MOD = 998244353;
+//const LL MOD = 1e9 + 7;
+const LL OO = 1e9 + 7;
+const LL OO_ = -1e9 - 7;
+const LL LOGN = 18;
+const LL ROOTN = 405;
+const LL MX = 1e6 + 105;
+const LL MN = 2e5 + 105;
+const LL MM = 1e5 + 105;
+const LL MK = 1e5 + 105;
+const LL MQ = 1e5 + 105;
+const LL ML = 1e5 + 105;
+
+struct BIT_ADD {
+	LL v[MX];
+	LL n, pw;
+	
+	void init(LL m) {
+		n = m;
+		fill_n(v, n + 1, 0);
+		for (pw = 1; pw * 2 <= n; pw *= 2);
+	}
+	
+	void add(LL k, LL d) {
+		for (; k <= n; k += k & -k) v[k] += d;
+	}
+	
+	LL get(LL k) {
+		LL s = 0;
+		for (; k > 0; k -= k & -k) s += v[k];
+		return s;
+	}
+}abit, abit_, gbit;
+
+struct BIT_MIN {
+	LL v[MX];
+	LL n, pw;
+	
+	void init(LL m) {
+		n = m;
+		fill_n(v, n + 1, OO);
+		for (pw = 1; pw * 2 <= n; pw *= 2);
+	}
+	
+	void add(LL k, LL d) {
+		for (; k <= n; k += k & -k) chkmin(v[k], d);
+	}
+	
+	LL get(LL k) {
+		LL s = OO;
+		for (; k > 0; k -= k & -k) chkmin(s, v[k]);
+		return s;
+	}
+}mbit, mbit_;
+
+LL a[MN], c[MN];
+
+void solve() {
+	LL n;
+	cin >> n;
+	REP(i, n) cin >> a[i + 1];
+	REP(i, n) cin >> c[i];
+	reverse(c, c + n);
+	
+	LL basis = n + 5, mn = OO, ans, low, high, tot;
+	VI res;
+	abit.init(basis + n);
+	abit_.init(basis + n);
+	gbit.init(basis + n);
+	mbit.init(basis + n);
+	mbit_.init(basis + n);
+	
+	REP(it, n) {
+		LL i = c[it];
+		chkmin(mn, i);
+		abit.add(a[i] - i + basis, a[i]);
+		abit_.add(n + 1 - (a[i] - i), i);
+		gbit.add(n + 1 - (a[i] - i), 1);
+		
+		low = abit.get(mn + basis);
+		high = abit_.get(n - mn) + gbit.get(n - mn) * mn;
+		tot = low + high;
+		tot -= min(a[mn], mn * 2);
+		ans = tot + a[mn];
+		
+		mbit.add(a[i] - i + basis, i);
+		mbit_.add(n + 1 - (a[i] - i), a[i]);
+		low = mbit.get(mn + basis);
+		high = mbit_.get(n - mn);
+		chkmin(ans, tot + min(low + mn, high));
+		res.pb(ans);
+	}
+	reverse(all(res));
+	FORE(u, res) cout << u << ' ';
+	cout << endl;
+}
+
+int main()
+{
+	#ifndef ONLINE_JUDGE
+		freopen("in.txt", "r", stdin);
+	#endif
+	ios::sync_with_stdio(0);
+	cin.tie(0), cout.tie(0);
+
+//	init();
+
+	LL tc = 1;
+	cin >> tc;
+	while (tc --) {
+		solve();
+	}
+
+	return 0;
+}

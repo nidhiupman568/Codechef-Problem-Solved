@@ -1,0 +1,53 @@
+#include <iostream>
+#include <map>
+#define M 1000000007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    ll t = 1;
+    cin >> t;
+
+    while (t--) {
+        ll x, q;
+        cin >> x >> q;
+        map<ll, ll> fac;
+
+        while (x % 2 == 0) {
+            fac[2]++;
+            x /= 2;
+        }
+
+        for (ll i = 3; i * i <= x; i += 2) {
+            while (x % i == 0) {
+                fac[i]++;
+                x /= i;
+            }
+        }
+
+        ll p;
+        while (q--) {
+            ll ans = 1;
+            cin >> p;
+            for (auto x : fac) {
+                ll ct = x.second;
+                ll ct1;
+
+                // using min(ct, ct) * p = max(ct1, ct) (property of lcm and hcf)
+                // case 1 considering ct <= power of ith prime fac in y (ct1)
+                // so ct * p = ct1 where ct1 >= ct
+                // always true as p >= 1
+                // case 2 considering ct > ct1
+                // so ct1 = ct/p and ct1 < ct and ct1 > 0 and ct is divisible by p so that p*ct1 = ct
+                ct1 = ct / p;
+                if (ct1 != 0 && ct1 < ct && p * ct1 == ct) {
+                    ans = (ans * 2ll) % M;
+                }
+            }
+            cout << ans << endl;
+        }
+    }
+
+    return 0;
+}

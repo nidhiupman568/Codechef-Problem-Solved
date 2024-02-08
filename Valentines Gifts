@@ -1,0 +1,36 @@
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T;
+
+    while (T--) {
+        int X;
+        cin >> X;
+
+        int current_budget = X;
+        int gift_value = 1; 
+
+        bool can_plan_gifts = true;
+
+        for (int i = 1; i <= 7; ++i) {
+            if (gift_value <= current_budget) {
+                current_budget -= gift_value;
+                gift_value *= 2;
+            } else {
+                can_plan_gifts = false;
+                break;
+            }
+        }
+
+        if (can_plan_gifts) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
+        }
+    }
+
+    return 0;
+}

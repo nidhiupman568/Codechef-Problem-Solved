@@ -1,0 +1,120 @@
+#include <bits/stdc++.h>
+#include <iostream>
+#include <unordered_map> 
+#include <bitset>
+#include <set>
+#include <map>
+#include <stack>
+#include <queue>
+#include <iomanip>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <numeric>
+#include <cmath>
+#include <stdio.h>
+#define ll long long
+#define forn(i, n) for (int i = 0; i < int(n); i++)
+#define ff first
+#define ss second
+#define pb push_back
+#define all(a) (a).begin(),(a).end()
+#define sz(a) int((a).size())
+#define mp(a,b) make_pair(a,b)
+#define fr(i,p,n) for(int i=p;i<n;i++)
+#define precise cout << std::setprecision(10) << std::fixed;
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
+using namespace std;
+
+typedef pair<int, int> pairs;
+
+//ll M= 998244353;
+ll M=1000000007;
+
+int gcd(int a, int b){
+    if(b==0) return a;
+    return gcd(b,a%b);
+}
+
+ll modpow(ll b,ll e){
+ll ans=1;
+for(;e>0;e/=2, b=(b*b)%M) if(e&1) ans=(ans*b)%M;
+    return ans;
+}
+ll inv(ll a){
+    return modpow(a,M-2); }
+
+int dx[8]={1,-1,0,0,1,-1,1,-1};
+int dy[8]={0,0,1,-1,1,-1,-1,1};
+vector<vector<int>> v;
+vector<pairs> bc;
+vector<int> vis;
+map<pairs,int> mp;
+int n;
+bool isvalid(int x,int y){
+    if(mp.find({x,y})==mp.end()) return false;
+    int ind=mp[{x,y}];
+    if(vis[ind]==0) return true;
+    return false;
+}
+void dfs(int i,int x){
+    int a=bc[i].ff,b=bc[i].ss;
+    vis[i]=x;
+    if(a==0)  v[x][1]=1;
+    if(b==0) v[x][0]=1;
+    if(a==n-1) v[x][2]=1;
+    if(b==n-1) v[x][3]=1;
+    int ind;
+    fr(j,0,8){
+        if(isvalid(a+dx[j],b+dy[j])){
+            ind=mp[{a+dx[j],b+dy[j]}];
+            dfs(ind,x);
+        }
+    }
+}
+
+int main()
+{
+    fastio; precise;
+    int T=1;
+    cin>>T;
+ 
+    while(T--){
+        int m;
+        cin>>n>>m;
+        bc = vector<pairs> (m);
+        //vis = arr = vector<vector<int>> (n,vector<int> (n,0));
+        mp.clear();
+        vis = vector<int> (m,0);
+        int x,y;
+        fr(i,0,m){
+            cin>>x>>y;
+            bc[i]={x-1,y-1};
+            //arr[x-1][y-1]=1;
+            mp[{x-1,y-1}]=i;
+        }
+        x=1;
+        int a,b,ans=0;
+        v = vector<vector<int>> (m+1,vector<int> (4,0));
+        
+        //cout<<"san"<<mp[{1,2}]<<endl;
+        fr(i,0,m){
+            
+            if(vis[i]>0) continue;
+            dfs(i,x);
+            if(v[x][0]+v[x][1]==2) ans=1;
+            else if(v[x][0]+v[x][3]==2) ans=1;
+            else if(v[x][2]+v[x][1]==2) ans=1;
+            else if(v[x][2]+v[x][3]==2) ans=1;
+            //cout<<x<<":";
+            if(ans==1) break;
+            x++;
+        }
+        //cout<<x<<endl;
+        if(ans==0) cout<<"yes"<<endl;
+        else cout<<"no"<<endl;
+  
+    }
+
+    return 0;
+}

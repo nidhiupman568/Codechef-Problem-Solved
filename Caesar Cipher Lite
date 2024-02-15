@@ -1,0 +1,32 @@
+// ___.              .___.__    .__    ________                
+// \_ |__   ____   __| _/|  |__ |__|  /  _____/  ____   _____  
+//  | __ \ /  _ \ / __ | |  |  \|  | /   \  ____/ __ \ /     \ 
+//  | \_\ (  <_> ) /_/ | |   Y  \  | \    \_\  \  ___/|  Y Y  \
+//  |___  /\____/\____ | |___|  /__|  \______  /\___  >__|_|  /
+//      \/            \/      \/             \/     \/      \/ 
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define mod1 998244353
+#define mod2 1000000007
+#define ll int long long
+#define fastio() ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+int main(){
+    fastio()
+    
+	int t; cin>>t; 
+	while(t--){
+	    int n; cin>>n; string a,b; 
+	    cin>>a>>b;
+	    for(int i = 0; i < n; i++){
+	        int dist = 0;
+	        if(a[i]<b[i]) dist = b[i]-a[i];
+	        else dist = 26 - (a[i]-b[i]);
+	        cout<<(9*dist)%26<<" ";
+	    }cout<<endl;
+	}
+	return 0;
+}

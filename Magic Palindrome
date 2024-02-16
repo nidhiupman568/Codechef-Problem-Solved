@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define endl "\n"
+#define int long long int
+#define NUMMAX 200050
+const int mod = 1e9 + 7;
+
+void solve()
+{
+    int n;
+    cin >> n;
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    vector<int> v;
+
+    int sum = 0;
+    for (int i = 0; i < n/2; i++){
+        sum += (arr[i] - arr[n-i-1]);
+        v.push_back((arr[i] - arr[n-i-1]));
+    }
+
+    int x = v.size();
+    int presum[x]={0};
+    presum[0] = v[0];
+    for (int i = 1; i < x; i++){
+        presum[i] = presum[i-1] + v[i];
+    }
+
+    if((abs(sum) % 2) == 1 and n%2==0){
+        cout << "-1\n";return;
+    }
+
+    int curr = -sum/2;
+    if(n%2) curr=-sum;
+    int ct = 0;
+    if(sum)ct++;
+    for (int i = x-2; i >= 1; i--){
+        int temp = presum[i] - curr;
+        if(temp)ct++;
+        curr = -temp; 
+    }
+    if(curr!=presum[0]) ct=-1;
+
+    // cout << ct << endl;
+    cout << ct << endl;
+
+
+}
+
+signed main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(0);
+
+    int t = 1;
+    cin >> t;
+
+    while (t--)
+        solve();
+}

@@ -1,0 +1,61 @@
+/*
+*	Author: rishabhxchoudhary
+*	Created: 15.02.2024 00:16:56 (GMT+5:30)
+*/
+#include "bits/stdc++.h"
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 1000000007;
+
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    int N = 61;
+    vector<int> count(N,0);
+    for (int i = 0; i < n; i++) {
+        cin>>a[i];
+        for (int j = 0; j < N; j++) {
+            if (a[i]&(1ll<<j)){
+                count[j]++;
+            }
+        }
+    }
+
+    bool check = false;
+    int ans = 0;
+    for (int i = N-1; i > 0; i--) {
+        if (count[i]&1){
+            ans = ans | (1ll<<i);
+        }
+        if (count[i]>0 && count[i]%2==0){
+            check = true;
+        }
+        if (check) {
+            ans = ans | (1ll<<i);
+        }
+    }
+    if (count[0]&1){
+        ans = ans | 1;
+    }
+    cout<<ans<<endl;
+
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}

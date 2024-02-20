@@ -1,0 +1,144 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+#define dbg(a)  cerr << #a << " " << a << "\n"
+
+const int mod = 998244353;
+const int root = 15311432;
+const int k = 1 << 23;
+
+int root_1;
+vector<int> rev;
+
+ll bigmod(ll a, ll b, ll mod){
+  a %= mod;
+  ll ret = 1;
+  while(b){
+    if(b&1) ret = ret*a%mod;
+    a = a*a%mod;
+    b >>= 1;
+  }
+  return ret;
+}
+
+void pre(int sz){
+  root_1 = bigmod(root, mod-2, mod);
+  if(rev.size()==sz)  return ;
+  rev.resize(sz);
+  rev[0]=0;
+  int lg_n = __builtin_ctz(sz);
+  for (int i = 1; i < sz; ++i)  rev[i] = (rev[i>>1] >> 1) | ((i&1)<<(lg_n-1));
+}
+
+
+void fft(vector<int> &a, bool inv){
+  int n = a.size();
+  
+  for (int i = 1; i < n-1; ++i) if(i<rev[i])  swap(a[i], a[rev[i]]);
+
+  for (int len = 2; len <= n; len <<= 1) {
+    int wlen = inv ? root_1 : root;
+    for (int i = len; i < k; i <<= 1){
+      wlen = 1ll*wlen*wlen%mod;
+    }
+    for (int st = 0; st < n; st += len) {
+      int w = 1;
+      for (int j = 0; j < len / 2; j++) {
+        int ev = a[st+j];
+        int od = 1ll*a[st+j+len/2]*w%mod;
+        a[st+j] = ev + od < mod ? ev + od : ev + od - mod;
+        a[st+j+len/2] = ev - od >= 0 ? ev - od : ev - od + mod;
+        w = 1ll * w * wlen % mod;
+      }
+    }
+  }
+
+  if (inv) {
+    int n_1 = bigmod(n, mod-2, mod);
+    for (int & x : a)
+      x = 1ll*x*n_1%mod;
+  }
+}
+
+vector<int> mul(vector<int> &a, vector<int> &b){
+  int n = a.size(), m = b.size(), sz = 1;
+  while (sz < n+m-1)  sz <<= 1;
+  vector<int> x(sz), y(sz), z(sz);
+  for (int i = 0; i < sz; ++i){
+    x[i] = i<n? a[i]: 0;
+    y[i] = i<m? b[i]: 0;
+  }
+  pre(sz);
+  fft(x, 0);
+  fft(y, 0);
+  for (int i = 0; i < sz; ++i){
+    z[i] = 1ll* x[i] * y[i] % mod;
+  }
+  fft(z, 1);
+  z.resize(n+m-1);
+  return z;
+}
+
+const int N = 1e5+5;
+
+vector<int> p[N];
+
+auto solve(int i, int j) {
+  if (i == j)  return p[i];
+  int m = (i + j) / 2;
+  auto a = solve(i, m);
+  auto b = solve(m + 1, j);
+  return mul(a, b);
+}
+
+void solve() {
+  int n;  cin >> n;
+  vector<int> c(n);
+  map<int, int> cnt;
+  for (auto &ci: c) {
+    cin >> ci;  ci--;
+    cnt[ci]++;
+  }
+
+  vector<int> p2(n + 1);
+  p2[0] = 1;
+  for (int i = 1; i <= n; ++i) {
+    p2[i] = (p2[i - 1] << 1);
+    if (p2[i] >= mod)  p2[i] -= mod;
+  }
+
+  int tot = 0;
+  for (auto [c, f]: cnt) {
+    int w = p2[f] - 1;
+    if (w < 0)  w += mod;
+    p[tot++] = {1, w};
+  }
+
+  auto ways = solve(0, tot - 1);
+  ways.resize(n + 1);
+
+  for (int i = 1; i <= n; ++i) {
+    ways[i] += ways[i - 1];
+    if (ways[i] >= mod)  ways[i] -= mod;
+  }
+
+  int q;  cin >> q;
+
+  while (q--) {
+    int l, r;  cin >> l >> r;
+    int ans = ways[r] - ways[l - 1];
+    if (ans < 0)  ans += mod;
+    cout << ans << "\n";
+  }
+}
+
+
+int main() {
+  ios_base::sync_with_stdio(false), cin.tie(NULL);
+
+  int tc = 1;
+  for (int t = 1; t <= tc; ++t) {
+    solve();
+  }
+}

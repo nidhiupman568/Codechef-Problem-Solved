@@ -1,0 +1,67 @@
+#include <iostream>
+#include <bits/stdc++.h>
+#include <string>
+#include <stdlib.h>
+#include <math.h>
+using namespace std;
+
+void solve()
+{
+    long long n, m, x0, y0, l;
+    cin >> n >> m >> x0 >> y0 >> l;
+    
+    // x0 and y0 -- to make them 0 based indexes 
+    x0--;
+    y0--;
+    if (l == 1)
+    {
+        cout << n * m << endl;
+    }
+    else
+    {
+        // we can go how many spaces up in a straight line
+        long long go_up_how_many_spaces = x0 / l; 
+        // we can go how many spaces down in a straight line
+        long long go_down_how_many_spaces = (n-1 - x0) / l;
+
+        // we can go how many spaces right in a straight line
+        long long go_left_how_many_spaces = y0 / l;//
+        // we can go how many spaces left in a straight line
+        long long go_right_how_many_spaces = (m-1 - y0) / l;
+
+
+
+        
+        // we can go how many spaces in the up and right side
+        long long go_up_and_right_how_many_spaces = go_up_how_many_spaces * go_right_how_many_spaces;
+        // we can go how many spaces in the up and left side
+        long long go_up_and_left_how_many_spaces = go_up_how_many_spaces * go_left_how_many_spaces;
+
+        // we can go how many spaces in the down and right side
+        long long go_down_and_right_how_many_spaces = go_down_how_many_spaces * go_right_how_many_spaces;
+        // we can go how many spaces in the down and left side
+        long long go_down_and_left_how_many_spaces = go_down_how_many_spaces * go_left_how_many_spaces;
+
+
+        // total spaces we can go in (up and right) + (up and left)+(down and right)+(down and left) directions
+        // not accounted for straight up,down,right,left spaces yet
+        long long total_spaces_covered = go_up_and_right_how_many_spaces + go_up_and_left_how_many_spaces + go_down_and_right_how_many_spaces + go_down_and_left_how_many_spaces;
+
+
+        // total spaces we can go in straight up,straight down,straight right,straight left
+        total_spaces_covered = total_spaces_covered + go_up_how_many_spaces + go_down_how_many_spaces + go_right_how_many_spaces + go_left_how_many_spaces;
+
+        // +1 for the space we are currently standing in ie x0,y0
+        cout << total_spaces_covered + 1 << endl;
+    }
+}
+
+int main()
+{
+    int testcase;
+    cin >> testcase;
+    for (long long testcase_variable = 0; testcase_variable < testcase; testcase_variable++)
+    {
+        solve();
+    }
+}

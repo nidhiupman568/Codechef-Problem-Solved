@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Player {
+    int runs;
+    int wickets;
+};
+
+void findManOfMatch(int T) {
+    for (int t = 0; t < T; ++t) {
+        vector<Player> players(22);
+        
+        for (int i = 0; i < 22; ++i) {
+            cin >> players[i].runs >> players[i].wickets;
+        }
+        
+        int maxScore = -1; 
+        int manOfMatchIndex = -1; 
+        for (int i = 0; i < 22; ++i) {
+            int score = players[i].runs * 1 + players[i].wickets * 20;
+            if (score > maxScore) {
+                maxScore = score;
+                manOfMatchIndex = i + 1;
+            }
+        }
+        
+        cout << manOfMatchIndex << endl;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+
+    int T;
+    cin >> T;
+    
+    findManOfMatch(T);
+    
+    return 0;
+}

@@ -1,0 +1,58 @@
+//
+// mera apna code hai
+#include<bits/stdc++.h>
+using namespace std;
+#define int long long
+#define pb push_back
+#define ff first
+#define ss second
+#define mod 10000007
+#define int_MAX 100000000000000000
+
+
+void solve(){
+    int n;
+    cin >> n;
+    int ans = 0;
+    int t = 0;   
+    for (int i = 31; i >= 0; i--) {
+        if (n & (1LL << i)) {
+            if (t == 0){
+                t = i;
+            }
+            if (ans == 0 || ans == 2) ans++;
+        } 
+        else {
+            if (ans == 1) ans++;
+        }
+    } 
+    if (ans != 3) {
+        cout<<0;
+        return;
+    }    
+    int temp = 0;
+    int res = INT_MAX;
+    
+    for (int i = t; i >= 0; i--) {
+        temp += (1LL << i);
+        if (temp < n){
+            continue;
+        }
+        else{
+            res = min(res, temp - n);
+        }  
+    }
+    cout<<res;
+}
+
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int tc = 1;
+    cin >> tc;
+    while (tc--){
+        solve();
+        cout << '\n';
+    }
+    return 0;
+}

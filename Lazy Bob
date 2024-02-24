@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+#define bug(x) cerr << #x << " " << x << endl
+typedef long long LL;
+typedef long double DB;
+using namespace std;
+const LL MX = 2e5 + 7;
+const LL INF = 1e16;
+const DB EPS = 1e-8;
+const LL mod = 998244353;
+
+void solve() {
+	LL n, m; cin >> n >> m;
+	vector <LL> a(n), c(n);
+	for (LL i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+	
+	LL ans = n * 2;
+	set <LL> s;
+	for (LL i = 0; i < n; i++) {
+		if (i) {
+			auto it = s.lower_bound(a[i]);
+			if (it == s.end()) it = s.begin();
+			LL val = *it - a[i];
+			if (val < 0) val += m;
+			LL tp = i * 2 + max(0ll, val - 1) * 2 + (n - i);
+			ans = min(ans , tp);
+			
+			auto it2 = s.upper_bound(a[i]);
+			if (it2 == s.begin()) it2 = s.end();
+			it2 = prev(it2);
+			val = a[i] - *it2;
+			if (val < 0) val += m;
+			tp = i + n + val * 2;
+			ans = min(ans , tp);
+		}
+		s.insert(a[i]);
+	}
+	cout << ans << "\n";
+}
+		
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.txt", "r", stdin);
+#endif
+	ios::sync_with_stdio(0);
+	cin.tie(0), cout.tie(0);
+	
+	LL tc; cin >> tc;
+	while (tc --) {
+		solve();
+	}
+	return 0;
+}

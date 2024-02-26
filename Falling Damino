@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+#define fst first
+#define snd second
+#define fore(i,a,b) for(int i=a,ThxDem=b;i<ThxDem;++i)
+#define pb push_back
+#define ALL(s) s.begin(),s.end()
+#define FIN ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+#define SZ(s) int(s.size())
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> ii;
+
+const int MAXN=6e5+10;
+ll w[MAXN],k[MAXN],dp[MAXN],sw[MAXN],sk[MAXN],n;
+
+pair<ll,int> st[MAXN];
+int idd=MAXN;
+
+void pre(){
+	idd=MAXN;
+	dp[2*n]=2*n;
+	for(int i=2*n-1;i>=1;i--){
+		ll now=max(w[i], k[i])-sw[i]+sk[i];
+		while(idd<MAXN&&(st[idd].fst<=now || st[idd].snd>=i+n)) idd++;
+		st[--idd]={now,i};
+
+		ll f=w[i-1];
+		if(f<w[i]) dp[i]=i;
+		else{
+			ll me=f+sk[i]-sw[i];
+
+			int l=upper_bound(st+idd,st+MAXN,(pair<ll,int>){me+1,-1})-st;
+
+			if(l==MAXN) dp[i]=2*n;
+			else{
+				int r=st[l].snd;
+				if(w[r]-sw[r]+sk[r] > me) dp[i]=r;
+				else dp[i]=dp[r+1];
+			}
+		}
+	}
+}
+
+int can(ll f){
+	idd=MAXN;
+	for(int i=2*n-1;i>=0;i--){
+		ll now=max(w[i], k[i])-sw[i]+sk[i];
+		while(idd<MAXN&&(st[idd].fst<=now || st[idd].snd>=i+n)) idd++;
+		st[--idd]={now,i};
+		
+		int ans=-1;
+
+		if(f<w[i]) ans=i;
+		else if(i<n){
+			ll me=f+sk[i]-sw[i];
+			
+			int l=upper_bound(st+idd,st+MAXN,(pair<ll,int>){me+1,-1})-st;
+			
+			if(l==MAXN) ans=2*n;
+			else{
+				int r=st[l].snd;
+				if(w[r]-sw[r]+sk[r] > me) ans=r;
+				else ans=dp[r+1];
+			}
+		}
+		
+		if(ans>=i+n) return 1;
+	}
+
+	return 0;
+}
+
+int main(){FIN;
+	int t; cin>>t;
+	while(t--){
+		cin>>n;
+		fore(i,0,n) cin>>w[i],w[n+i]=w[i];
+		fore(i,0,n) cin>>k[i],k[n+i]=k[i];
+		
+		fore(i,1,2*n+1) sw[i]=w[i-1]+sw[i-1];
+		fore(i,1,2*n+1) sk[i]=k[i-1]+sk[i-1];
+		
+		pre();
+		
+		ll l=0,r=1e14;
+		while(l<=r){
+			ll m=(l+r)/2;
+			if(can(m)) r=m-1;
+			else l=m+1;
+		}
+		
+		cout<<l<<"\n";
+	}
+}

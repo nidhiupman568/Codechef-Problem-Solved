@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+int get(int l,int r){
+    return 2*l+r-1;
+}
+void solve(){
+    int n,q;
+    cin>>n>>q;
+    vector<int>A(n+1);
+    for(int i=0;i<n;i++)cin>>A[i];
+    
+    vector<int>B(n+1);
+    B[n-1]=n;
+    vector<vector<int>>P(20,vector<int>(2,n));
+    for(int i=n-2;i>=0;i--){
+        int Bit=19;
+        while(Bit>=0 && (A[i]>>Bit)==(A[i+1]>>Bit))
+        --Bit;
+        
+        if(Bit>=0){
+            if((A[i]>>Bit)&1)
+            P[Bit][1]=i+1;
+            else P[Bit][0]=i+1;
+        }
+        B[i]=n;
+        for(int bit=19;bit>=0;bit--)
+        B[i]=min(B[i],max(P[bit][0],P[bit][1]));
+    }
+    vector<vector<int>>graph(n+1,vector<int>(20));
+    for(int i=0;i<n;i++)graph[i][0]=B[i];
+    graph[n][0]=n;
+    for(int i=1;i<20;i++){
+        for(int j=n;j>=0;j--)
+        graph[j][i]=graph[graph[j][i-1]][i-1];
+    }
+    while(q--){
+        int x,y;
+        cin>>x>>y;
+        int ans=0;
+        --x;
+        --y;
+        for(int bit = 19 ; bit >= 0 ; --bit) {
+                if (graph[x][bit] > y)
+                    continue;
+                ans |= 1 << bit;
+                x = graph[x][bit];
+            }
+            cout << (ans + 1) << '\n';
+    }
+}
+int main() {
+	// your code goes here
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+    int t;
+    cin>>t;
+    while(t--)solve();
+}

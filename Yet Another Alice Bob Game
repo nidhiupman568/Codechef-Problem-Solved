@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve()
+{
+    int n, a, b;
+    cin >> n >> a >> b;
+    int s = n / (a + b);
+    if (a < b and n <= a)
+    {
+      cout<<"Alice"<<endl;
+        return;
+    }
+    if (a < b and n > a)
+    {
+        cout<<"Bob"<<endl;
+        return;
+    }
+    if (a == b)
+    {
+        if (n % ++a == 0)
+            cout<<"Bob"<<endl;
+        else
+            cout<<"Alice"<<endl;
+        return;
+    }
+   cout<<"Alice"<<endl;
+}
+
+int main() {
+	// your code goes here
+	int t;cin>>t;
+	while(t--){
+	 solve();   
+	}
+
+}

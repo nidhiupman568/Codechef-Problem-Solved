@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define cin std::cin
+#define set std::set
+#define min std::min
+#define max std::max
+#define endl std::endl
+#define cout std::cout
+#define sort std::sort
+#define gcd std::__gcd
+#define string std::string
+#define vector std::vector
+#define to_string std::to_string
+#define tc int t; cin>>t; while(t--)
+
+int main() {
+    cin.tie(nullptr);
+	std::ios_base::sync_with_stdio(false);
+    cin.exceptions(std::ios::failbit|std::ios::badbit);
+    int x; cin>>x; cout<<(x>35?"Yes":"No"); return 0;
+}

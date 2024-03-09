@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#define ll long long
+using namespace std;
+
+void solve()
+{
+    int a,b;
+    cin >> a  >> b;
+    int n= b-a+1;
+    vector<int>v(n);
+    if(a%2==0 && b%2==0 ) {
+      cout << -1 <<endl;
+      return;
+    }
+    else {
+      int num=a;
+      for(int i=0; i<n; i++){
+         v[i]=a;
+         a++;
+      }
+    
+    }
+    //   for(auto i:v){
+    //   cout << i <<" " ;
+    // }
+   // cout <<endl;
+    if(n%2==0){
+      for(int i=0; i<n; i+=2){
+        swap(v[i],v[i+1]);
+      }
+    }
+    else{
+       for(int i=0; i<n-3; i+=2){
+        swap(v[i],v[i+1]);
+      }
+      swap(v[n-3],v[n-2]);
+      swap(v[n-2],v[n-1]);
+    }
+    for(auto i:v){
+      cout << i <<" " ;
+    }
+    cout <<endl;
+}
+
+int main()
+{
+  ll t;
+  cin >> t;
+  while (t--)
+  {
+    solve();
+  }
+}

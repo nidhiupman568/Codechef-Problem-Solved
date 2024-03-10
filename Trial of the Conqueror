@@ -1,0 +1,141 @@
+#define NDEBUG
+
+#ifdef NDEBUG
+#define dbg(TXTMSG) if constexpr (false) cerr << "lol"
+#define dbgv(VARN) ((void)0)
+#define dbgfor(COND) if constexpr (false) for (COND)
+
+#else
+#define _GLIBCXX_DEBUG 1
+#define _GLIBCXX_DEBUG_PEDANTIC 1
+#pragma GCC optimize("trapv")
+#define dbg(TXTMSG) cerr << "\n" << TXTMSG
+#define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
+#define dbgfor(COND) for (COND)
+
+#endif
+
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long; 
+using pll = pair<ll,ll>;
+#define e0 first
+#define e1 second
+
+ll N,K;
+vector<vector<ll>> tree;
+
+vector<ll> parents;
+
+// {depth, node}
+vector<pll> leafs;
+
+vector<ll> can_attack;
+vector<ll> chains;
+
+void dfs1(ll node, ll parent, ll depth)
+{
+	parents[node]=parent;
+
+	if (node!=0 && tree[node].size()==1)
+	{
+		leafs.push_back({depth, node});
+	}
+	else for (ll child : tree[node])
+	{
+		if (child!=parent) dfs1(child,node,depth+1);
+	}
+
+}
+
+ll dfs2(ll node, ll parent)
+{
+	ll best = 0;
+	for (ll child : tree[node])
+	{
+		if (child!=parent) best = max(best,dfs2(child,node));
+	}
+	return best+can_attack[node];
+}
+
+int main()
+{
+	ll T;
+	cin >> T;
+
+	for (ll tc = 0; tc < T; ++tc)
+	{
+		cin >> N >> K;
+
+		tree.assign(N,{});
+		can_attack.assign(N,0);
+		chains.assign(N,-2);
+		parents.assign(N,-1);
+
+
+		for (ll i = 0; i < N-1; ++i)
+		{
+			ll ui,vi;
+			cin >> ui >> vi;
+			ui--;vi--;//c
+
+			tree[ui].push_back(vi);
+			tree[vi].push_back(ui);
+		}
+
+		leafs.clear();
+		dfs1(0,-1,0);
+
+		sort(leafs.begin(),leafs.end());
+
+		for (auto [_, node] : leafs)
+		{
+			ll curr = node;
+			for (ll i = 0; i < K; ++i)
+			{
+				curr = parents[curr];
+				if (curr==0 || chains[curr]!=-2)
+				{
+					break;
+				}
+			}
+
+			ll head;
+			if (chains[curr]==-2) 
+			{
+				head=curr;
+				chains[curr]=curr;
+			}
+			else head = chains[curr];
+
+			curr=node;
+			for (ll i = 0; i < K; ++i)
+			{
+				chains[curr]=head;
+				curr = parents[curr];
+				if (curr==0 || chains[curr]!=-2)
+				{
+					break;
+				}
+			}
+		}
+
+		for (auto [_, node] : leafs)
+		{
+			can_attack[chains[node]]++;
+		}
+
+
+
+		dbgfor (ll i = 0; i < N; ++i)
+		{
+			dbgv(can_attack[i]);
+		}
+
+		cout << dfs2(0,-1) << "\n";
+
+
+	}
+
+
+}

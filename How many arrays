@@ -1,0 +1,78 @@
+#pragma GCC optimize("O2,no-stack-protector,unroll-loops")
+#define ll long long
+#define pb push_back
+#define ipar(arr, n) vector<ll> arr(n); for(int i=0;i<n;i++) cin>>arr[i];
+#include <cmath>
+#include <bits/stdc++.h>
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define all(s) s.begin(),s.end()
+#define MOD 998244353
+using namespace std;
+bool sorta(const pair<ll,ll>&a,const pair<ll,ll>&b) { return a.second<b.second;}
+bool sortd(const pair<ll,ll>&a,const pair<ll,ll>&b) { return a.second>b.second;}
+bool isPrime(ll n){if(n<=1)return false;if(n<=3)return true;if(n%2==0||n%3==0)return false;for(int i=5;i*i<=n;i=i+6)if(n%i==0||n%(i+2)==0)return false;return true;}
+bool isPowerOfTwo(int n){if(n==0)return false;return (ceil(log2(n)) == floor(log2(n)));}
+bool isPerfectSquare(ll x){if (x >= 0) {ll sr = sqrt(x);return (sr * sr == x);}return false;}
+ll gcd(ll a, ll b){if (b == 0)return a;return gcd(b, a % b);} //__gcd
+ll lcm(ll a, ll b){return (a/gcd(a,b)*b);}
+
+
+ll powi(ll base, ll exp, ll mod) {
+    base %= mod;
+    ll result = 1;
+    while (exp > 0) {
+        if (exp & 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+void solve(){
+    ll n,x; cin>>n>>x;
+    vector<pair<ll,ll>>primes;
+
+    ll c=0;
+    while(x%2==0){
+        x/=2;
+        c++;
+    }
+    if(c>0) primes.pb({2,c});
+    for(ll i=3;i*i<=x;i+=2){
+        ll cn=0;
+        while(x%i==0){
+            cn++;
+            x/=i;
+        }
+        if(cn>0) primes.pb({i,cn});
+    }
+    if(x>1) primes.pb({x,1});
+
+//    for(auto i:primes) cout<<i.first<<"-"<<i.second<<" ";
+//    cout<<"\n";
+    ll res=0;
+    for(ll l=1;l<=n;l++){
+        ll pd=1;
+        for(auto i:primes){
+            //ll pd=1;
+            ll p=i.first;
+            ll a=i.second;
+            pd = (pd * ((powi(a+1,l,MOD)-powi(a,l,MOD) + MOD) % MOD)) % MOD;
+        }
+        res=(res+pd)%MOD;
+    }
+    cout<<res<<"\n";
+}
+
+
+
+
+
+signed main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    ll t;
+	cin>>t;
+	while(t--) solve();
+}

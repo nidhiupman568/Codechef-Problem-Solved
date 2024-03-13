@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	int t,x,y;
+	cin>>t;
+	while(t--)
+	{
+	    cin>>x>>y;
+	    if(x<50)cout<<"Z\n";
+	    else if(y<50&&x>=50)cout<<"F\n";
+	    else cout<<"A\n";
+	}
+
+}

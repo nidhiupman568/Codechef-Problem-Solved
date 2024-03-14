@@ -1,0 +1,299 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+namespace std {
+#ifndef LOCAL
+#define cerr \
+  if (0) cerr
+#endif
+}  // namespace std
+
+const int OPEN = 1;
+const int CLOSE = -1;
+const int N = 4e5 + 5;
+
+// trai duoi - phai tren
+struct Rect {
+  int64_t x1, y1, x2, y2;
+  Rect(int64_t a = 0, int64_t b = 0, int64_t c = 0, int64_t d = 0) {
+    x1 = a;
+    y1 = b;
+    x2 = c;
+    y2 = d;
+  }
+  __int128_t area() {
+    return (__int128_t)(x2 - x1) * (y2 - y1);
+  }
+  friend istream& operator>>(istream& ist, Rect& r) {
+    ist >> r.x1 >> r.y1 >> r.x2 >> r.y2;
+    return ist;
+  }
+  friend ostream& operator<<(ostream& ost, const Rect& r) {
+    ost << "(" << r.x1 << " " << r.y1 << " " << r.x2 << " " << r.y2 << ")";
+    return ost;
+  }
+  bool outside(int64_t x, int64_t y) {
+    return x1 <= x && x <= x2 && y1 <= y && y <= y2;
+  }
+  bool outside(const Rect& other) {
+    return outside(other.x1, other.y1) && outside(other.x2, other.y2);
+  }
+};
+
+struct Element {
+  int64_t x, y, id;
+  Element(int64_t xx = 0, int64_t yy = 0, int64_t ii = 0) {
+    x = xx;
+    y = yy;
+    id = ii;
+  }
+  bool operator<(const Element& e) const {
+    if (x != e.x)
+      return x < e.x;
+    return id > e.id;
+  }
+};
+
+struct Node {
+  int cnt[3];
+  Node() {
+    memset(cnt, 0, sizeof(cnt));
+  }
+  Node operator+(const Node& rhs) const {
+    Node ans;
+    for (int i = 0; i < 3; i++) {
+      ans.cnt[i] = cnt[i] + rhs.cnt[i];
+    }
+    return ans;
+  }
+};
+
+int par[N];
+Rect rect[N];
+vector<int> g[N];
+int id_q[N];
+int id_a[N];
+int tin[N], tout[N];
+int time_dfs;
+Node st[4 * N];
+int lz[4 * N];
+array<int64_t, 6> qr[N];
+
+void dfs(int u) {
+  tin[u] = ++time_dfs;
+  for (int v : g[u]) {
+    if (v == par[u]) {
+      continue;
+    }
+    dfs(v);
+  }
+  tout[u] = time_dfs;
+}
+
+void build(int id, int l, int r) {
+  st[id] = Node();
+  st[id].cnt[1] = r - l + 1;
+  lz[id] = -1;
+  if (l == r) {
+    return;
+  }
+  int mid = (l + r) >> 1;
+  build(id << 1, l, mid);
+  build(id << 1 | 1, mid + 1, r);
+}
+
+void push(int id) {
+  if (lz[id] == -1) return;
+  for (int i = id << 1; i <= (id << 1 | 1); ++i) {
+    st[i].cnt[lz[id]] += st[i].cnt[3 - lz[id]];
+    st[i].cnt[3 - lz[id]] = 0;
+    lz[i] = lz[id];
+  }
+  lz[id] = -1;
+}
+
+void update(int id, int l, int r, int u, int v, int val) {
+  if (v < l || r < u) {
+    return;
+  }
+  if (u <= l && r <= v) {
+    // cerr << val << " " << 3 - val << endl;
+    st[id].cnt[val] += st[id].cnt[3 - val];
+    st[id].cnt[3 - val] = 0;
+    lz[id] = val;
+    return;
+  }
+  push(id);
+  int mid = (l + r) >> 1;
+  update(id << 1, l, mid, u, v, val);
+  update(id << 1 | 1, mid + 1, r, u, v, val);
+  st[id] = st[id << 1] + st[id << 1 | 1];
+}
+
+void update(int id, int l, int r, int i, int v) {
+  if (i < l || r < i) {
+    return;
+  }
+  if (l == r) {
+    st[id] = Node();
+    st[id].cnt[v] = 1;
+    return;
+  }
+  push(id);
+  int mid = (l + r) >> 1;
+  update(id << 1, l, mid, i, v);
+  update(id << 1 | 1, mid + 1, r, i, v);
+  st[id] = st[id << 1] + st[id << 1 | 1];
+}
+
+int get(int id, int l, int r, int i) {
+  while (true) {
+    if (l == r) {
+      for (int i = 1; i < 3; i++) {
+        if (st[id].cnt[i]) {
+          return i;
+        }
+      }
+      break;
+    }
+    int mid = (l + r) >> 1;
+    if (i <= mid) {
+      r = mid;
+      id <<= 1;
+    } else {
+      l = mid + 1;
+      id = (id << 1) | 1;
+    }
+  }
+  return -1;
+}
+
+void solve() {
+  int n, q;
+  cin >> n >> q;
+  for (int i = 1; i <= n; i++) {
+    cin >> rect[i];
+    id_a[i] = i;
+  }
+  rect[0] = Rect(-2e18, -2e18, 2e18, 2e18);
+  int num_rect = n;
+  for (int i = 1; i <= q; i++) {
+    cin >> qr[i][0];
+    if (qr[i][0] == 1) {
+      for (int j = 1; j < 3; j++) {
+        cin >> qr[i][j];
+      }
+    } else {
+      for (int j = 1; j < 6; j++) {
+        cin >> qr[i][j];
+      }
+      id_q[i] = ++num_rect;
+      rect[num_rect] = Rect(qr[i][2], qr[i][3], qr[i][4], qr[i][5]);
+    }
+  }
+  vector<Element> pts;
+  auto add_rect = [&](int id) {
+    auto [x1, y1, x2, y2] = rect[id];
+    pts.emplace_back(x1, OPEN, id);
+    pts.emplace_back(x2 + 1, CLOSE, id);
+  };
+  for (int i = 0; i <= num_rect; i++) {
+    par[i] = 0;
+    add_rect(i);
+  }
+  sort(pts.begin(), pts.end());
+  set<pair<int64_t, int64_t>> coor;
+  auto upd = [&](int id, int nid) {
+    if (rect[nid].outside(rect[id])) {
+      int& p = par[id];
+      if (rect[p].area() > rect[nid].area())
+        p = nid;
+    }
+  };
+  for (auto [x, type, id] : pts) {
+    auto [x1, y1, x2, y2] = rect[id];
+    if (type == CLOSE) {
+      coor.erase({y1, id});
+      coor.erase({y2, id});
+      continue;
+    }
+    auto it = coor.upper_bound({y1, id});
+    if (it != coor.end()) {
+      int cur_id = it->second;
+      upd(id, cur_id);
+      upd(id, par[cur_id]);
+    }
+    if (it != coor.begin()) {
+      --it;
+      int cur_id = it->second;
+      upd(id, cur_id);
+      upd(id, par[cur_id]);
+    }
+    it = coor.upper_bound({y2, id});
+    if (it != coor.end()) {
+      int cur_id = it->second;
+      upd(id, cur_id);
+      upd(id, par[cur_id]);
+    }
+    if (it != coor.begin()) {
+      --it;
+      int cur_id = it->second;
+      upd(id, cur_id);
+      upd(id, par[cur_id]);
+    }
+    coor.emplace(y1, id);
+    coor.emplace(y2, id);
+  }
+  for (int i = 0; i <= num_rect; i++) {
+    g[i].clear();
+    // cerr << rect[i] << " par = " << par[i] << endl;
+  }
+  for (int i = 1; i <= num_rect; i++) {
+    g[par[i]].push_back(i);
+  }
+  time_dfs = 0;
+  dfs(0);
+  build(1, 1, time_dfs);
+  for (int i = 0; i <= n; i++) {
+    update(1, 1, time_dfs, tin[i], 1);
+  }
+  for (int i = n + 1; i <= num_rect; i++) {
+    update(1, 1, time_dfs, tin[i], 0);
+  }
+  for (int i = 1; i <= q; i++) {
+    if (qr[i][0] == 1) {
+      int u = qr[i][1];
+      int node = id_a[u];
+      update(1, 1, time_dfs, tin[node], tout[node], qr[i][2] + 1);
+    } else {
+      int u = qr[i][1];
+      int& node = id_a[u];
+      // int col = get(1, 1, time_dfs, tin[node]);
+      update(1, 1, time_dfs, tin[node], 0);
+      node = id_q[i];
+      update(1, 1, time_dfs, tin[node], 1);
+    }
+    cout << st[1].cnt[2] << "\n";
+  }
+}
+
+int32_t main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+#ifdef LOCAL
+#define task "a"
+#else
+#define task ""
+#endif
+  if (fopen(task ".inp", "r")) {
+    freopen(task ".inp", "r", stdin);
+    freopen(task ".out", "w", stdout);
+  }
+  int tc;
+  cin >> tc;
+  while (tc--) {
+    solve();
+  }
+  return 0;
+}

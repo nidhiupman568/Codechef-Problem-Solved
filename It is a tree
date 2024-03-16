@@ -1,0 +1,334 @@
+#include <bits/stdc++.h>
+
+#define fi first
+#define se second
+
+using namespace std;
+using ll = long long;
+
+ll n, q;
+vector<vector<int>> g;
+vector<bool> stand;
+vector<int> et;
+int timer = 0;
+vector<int> in, out;
+const int k = 18;
+vector<vector<int>> dp;
+vector<int> depth;
+vector<set<pair<int, int>>> deps;
+vector<int> path;
+
+void cal_depth(int u, int p = 0) {
+    for(auto &v : g[u]) {
+        if(v == p)
+            continue;
+        depth[v] = depth[u] + 1;
+        cal_depth(v, u);
+    }
+}
+
+void cal_et(int u, int p = 0) {
+    in[u] = timer++;
+    et.push_back(u);
+    for(auto &v : g[u]) {
+        if(v == p)
+            continue;
+        cal_et(v, u);
+    }
+    out[u] = timer - 1;
+}
+
+void cal_dp(int u, int p = 0) {
+    if(p == 0) {
+        for(int i = 0; i < k; ++i)
+            dp[u][i] = u;
+    } else {
+        dp[u][0] = p;
+        for(int i = 1; i < k; ++i)
+            dp[u][i] = dp[dp[u][i - 1]][i - 1];
+    }
+
+    for(auto &v : g[u]) {
+        if(v == p)
+            continue;
+        cal_dp(v, u);
+    }
+}
+
+bool is_anc(int x, int y) {
+    return in[x] <= in[y] && out[y] <= out[x];
+}
+
+int lca(int x, int y) {
+    if(is_anc(x, y))
+        return x;
+    if(is_anc(y, x))
+        return y;
+
+    if(depth[x] > depth[y])
+        swap(x, y);
+
+    for(int i = k - 1; i >= 0; --i) {
+        if(!is_anc(dp[x][i], y))
+            x = dp[x][i];
+    }
+
+    return dp[x][0];
+}
+
+struct seg_tree {
+    ll buff_val;
+
+    vector<ll> v;
+
+    void init(ll n, ll buff) {
+        buff_val = buff;
+        v.resize(4*n, buff_val);
+    }
+
+    ll op(ll x, ll y) {
+        return (x+y);
+    }
+
+    void build(ll a[], int i, int tl, int tr) {
+        if(tl == tr) {
+            v[i] = a[tl];
+            return;
+        }
+
+        int tm = (tl+tr)/2;
+
+        build(a, 2*i+1, tl, tm);
+        build(a, 2*i+2, tm+1, tr);
+
+        v[i] = op(v[2*i + 1], v[2*i+2]);
+    }
+
+    ll operation(int l, int r, int i, int tl, int tr) {
+        ll ans = buff_val;
+
+        if(l > r) {
+            return buff_val;
+        }
+        if(l > tr || r < tl) {
+            return buff_val;
+        } else if(l <= tl && r >= tr) {
+            return v[i];
+        } else {
+            ll x1 = operation(l, r, 2*i + 1, tl, (tl+tr)/2);
+            ll x2 = operation(l, r, 2*i+2, (tl+tr)/2 + 1, tr);
+            ans = op(x1, x2);
+            return ans;
+        }
+
+    }
+
+    void update(ll new_val, int pos, int i, int tl, int tr) {
+        if(tl == tr && tl == pos) {
+            v[i] += new_val;
+            return;
+        }
+
+        if(pos < tl || pos > tr) {
+            return;
+        }
+
+        int tm = (tl+tr)/2;
+
+        update(new_val, pos, 2*i + 1, tl, tm);
+        update(new_val, pos, 2*i + 2, tm+1, tr);
+
+        v[i] = op(v[2*i + 1], v[2*i+2]);
+    }
+
+} st;
+
+void add_path(int u) {
+    if(depth[u] != 0)
+        st.update(1, in[dp[u][0]], 0, 0, n - 1);
+    if(path[u] != 0)
+        st.update(-1, in[path[u]], 0, 0, n - 1);
+}
+
+void del_path(int u) {
+    if(depth[u] != 0)
+        st.update(-1, in[dp[u][0]], 0, 0, n - 1);
+    if(path[u] != 0)
+        st.update(1, in[path[u]], 0, 0, n - 1);
+    path[u] = u;
+}
+
+void cal_path(int u) {
+    //cout << "CAL: " << u << " " << in[dp[u][0]] << "\n";
+    int xx = 0;
+
+    auto it = deps[depth[u]].find({in[u], u});
+
+    if(it != deps[depth[u]].begin()) {
+        int x1 = lca(prev(it) -> se, u);
+        xx = x1;
+    }
+    it = next(it);
+    if(it != deps[depth[u]].end()) {
+        int x2 = lca(u, it -> se);
+        if(depth[x2] > depth[xx])
+            xx = x2;
+    }
+
+    path[u] = xx;
+    add_path(u);
+}
+
+void my_insert(int u) {
+    //cout << "INSERT: " << u << "\n";
+    stand[u] = 1;
+
+    //for(int i = 1; i <= n; ++i)
+    //    cout << depth[i] << "\n";
+    auto it = deps[depth[u]].emplace(in[u], u).fi;
+
+    cal_path(u);
+
+    if(it != deps[depth[u]].begin()) {
+        int x1 = prev(it) -> se;
+        //cout << "GOOD1: " << x1 << "\n";
+        del_path(x1);
+        cal_path(x1);
+    }
+    it = next(it);
+    if(it != deps[depth[u]].end()) {
+        int x2 = it -> se;
+        //cout << "GOOD2: " << x2 << "\n";
+        del_path(x2);
+        cal_path(x2);
+    }
+}
+
+void my_delete(int u) {
+    //cout << "DELETE: " << u << "\n";
+    stand[u] = 0;
+
+    del_path(u);
+
+    auto it = deps[depth[u]].find({in[u], u});
+    if(0 && u == 9) {
+        cout << (prev(it)->se);
+        cout << "SET:\n";
+        for(auto &[v1, v2] : deps[depth[u]])
+            cout << v1 << " " << v2 << "\n";
+        exit(0);
+    }
+
+    int x1 = 0, x2 = 0;
+    if(it != deps[depth[u]].begin())
+        x1 = prev(it) -> se;
+    it = next(it);
+    if(it != deps[depth[u]].end())
+        x2 = it -> se;
+    it = prev(it);
+    deps[depth[u]].erase(it);
+
+    if(x1 != 0) {
+        //cout << "GOOD1: " << x1 << "\n";
+        del_path(x1);
+        cal_path(x1);
+    }
+    if(x2 != 0) {
+        //cout << "GOOD2: " << x2 << "\n";
+        del_path(x2);
+        cal_path(x2);
+    }
+}
+
+void solve() {
+    cin >> n >> q;
+
+    timer = 0;
+    g.assign(n + 1, vector<int>());
+    stand.assign(n + 1, 0);
+    depth.assign(n + 1, 0); depth[0] = -1;
+    in.assign(n + 1, 0); out.assign(n + 1, 0);
+    et.clear(); et.reserve(n);
+    deps.assign(n + 1, set<pair<int, int>>());
+    dp.assign(n + 1, vector<int>(k, 0));
+    st.v.clear(); st.init(n, 0);
+    path.resize(n + 1); iota(path.begin(), path.end(), 0);
+
+    for(int i = 1; i < n; ++i) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+
+/*
+    for(int i = 1; i <= n; ++i) {
+        cout << "ADJACENT " << i << ": ";
+        for(auto &v : g[i])
+            cout << v << " ";
+        cout << "\n";
+    }
+*/
+    //return;
+    cal_depth(1);
+    cal_et(1);
+    cal_dp(1);
+
+    if(0) {
+        for(auto &v : et)
+            cout << v << " "; cout << "\n";
+        for(auto &v : et)
+            cout << in[v] << " "; cout << "\n";
+        for(auto &v : et)
+            cout << path[v] << " "; cout << "\n";
+        for(auto &v : et)
+            cout << depth[v] << " "; cout << "\n";
+    }
+
+    while(q--) {
+        int type, x;
+        cin >> type >> x;
+
+        //if(q == 8)
+            //return;
+
+        if(type == 1) {
+            int res = st.operation(in[x], out[x], 0, 0, n - 1);
+            cout << res << "\n";
+        } else {
+            if(stand[x]) {
+                my_delete(x);
+            } else {
+                my_insert(x);
+            }
+        }
+
+        if(0 && q == 11) {
+            cout << "PATH: ";
+            for(auto &v : et)
+                cout << path[v] << " "; cout << "\n";
+            cout << "ST: ";
+            for(int i = 0; i < n; ++i)
+                cout << st.operation(i, i, 0, 0, n - 1) << " "; cout << "\n";
+            for(auto &[v1, v2] : deps[3]) {
+                //cout << v1 << " " << v2 << "\n";
+            }
+            exit(0);
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+
+    //freopen("inp.INP", "r", stdin);
+    //freopen("out.OUT", "w", stdout);
+
+    int t;
+    cin >> t;
+    while(t--)
+        solve();
+}

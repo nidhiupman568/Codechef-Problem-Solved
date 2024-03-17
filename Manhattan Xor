@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+int get_xor(int k){
+    if(k<0) return 0;
+    if(k%4==0) return k;
+    if(k%4==1) return 1;
+    if(k%4==2) return k+1;
+    if(k%4==3) return 0;
+}
+int g(int l,int r){
+    if(l>r) return 0;
+    int t=(2*get_xor((l-1)/2))^(2*get_xor(r/2));
+    if(r%2)
+    t^=(get_xor(r)^get_xor(l-1));
+
+    return t;
+}
+int h(int x,int y,int a,int b){
+    int ans=0;
+    if(x==a){
+        ans=(get_xor(x)^get_xor(y-1));
+        return ans;
+    }
+    if(x==y){
+        ans=(get_xor(x)^get_xor(a-1));
+        return ans;
+    }
+    if(a%2==x%2){
+        ans=(get_xor(a)^get_xor(b-1));
+        a++;
+        b++;
+    }
+    ans^=g(a,x);
+    ans^=(g(b,y-1));
+    return ans;
+}
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t;
+    cin>>t;
+    while(t--){
+        int n,m,x,y;
+        cin>>n>>m>>x>>y;
+        int ans=0;
+        ans^=h(x+y-2,x-1,y-1,0);
+        if(y!=m)
+        ans^=h(m-y+x-1,x,m-y,1);
+        if(x!=n)
+        ans^=h(n-x+y-1,n-x,y,1);
+        if(x!=n && y!=m)
+        ans^=h(n+m-x-y,n-x+1,m-y+1,2);
+
+        cout<<ans<<endl;
+    }
+    return 0;
+}

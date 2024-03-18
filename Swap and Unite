@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+#include<chrono>
+#include<random>
+using namespace std;
+using namespace chrono;
+
+#define     ll              long long
+#define     vi              vector<ll>
+#define     pi              pair<ll, ll>
+#define     vii             vector<pi>
+#define     vvi             vector<vi>
+#define     mpi             map<ll, ll>
+#define     all(x)          (x).begin(), (x).end()
+#define     rall(x)         (x).rbegin(), (x).rend()
+#define     popcnt(x)       __builtin_popcount(x)
+#define     eb(x)           emplace_back(x)
+#define     pb(x)           push_back(x)
+#define     ff              first
+#define     ss              second
+#define     speed           cin.tie(NULL)->sync_with_stdio(false)
+#define     rep(i, a, b)    for (ll i = (ll)a; i < (ll)b; i++)
+#define     reb(i, a, b)    for (ll i = (ll)a; i >= (ll)b; i--)
+mt19937     generator (std::chrono::system_clock::now().time_since_epoch().count());
+
+const int N = 1e5 + 2, MOD = 1e9 + 7;
+const ll INF = 9e18;
+
+ll getNumber(ll l, ll r) {
+return uniform_int_distribution<ll>(l, r)(generator);
+}
+
+void tests()
+{   
+    string s;
+    cin >> s;
+
+    vector<int> cnt(26, 0);
+    for(auto c : s) cnt[c - 97]++;
+
+    ll ans = INF, n = s.size();
+    for(int i = 0; i < 26; i++) {
+        if(cnt[i] > 0) {
+            ll sz = cnt[i], count = 0;
+            
+            for(int j = 0; j < sz; j++) {
+                count += (s[j] == i + 'a');
+            }
+            
+            ans = min(ans, sz - count);
+            
+            for(int j = sz; j < n; j++) {
+                count += (s[j] == i + 'a');
+                count -= (s[j - sz] == i + 'a');
+                ans = min(ans, sz - count);
+            }
+        }
+    }
+    
+    cout << ans << '\n';
+
+}
+
+signed main()
+{
+    speed;
+    int tt;
+    cin >> tt;
+    while(tt--)
+      tests();
+    return 0;
+}

@@ -1,0 +1,106 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 1000000007;
+
+// Common Mistakes:
+// 1. Use sqrtl() instead of sqrt() for long long
+// 2. if a[i] goes to 10^9, you only need to check for primes till sqrt(10^9) i.e. 31623
+// 3. GCD of |x-y|?
+// 4. should pairity of x and y be equal?
+// 5. Huffman Coding? Merging 2 smallest elements?
+// 6. Coordinate Compression? 
+// 7. Min/Max Spanning Tree.
+// 8. Topo sort ? if there is something related to relative ordering.
+// 9. Try calculating it in reverse order?
+// 10. All elements in L,R should be distinct?
+// 11. To check if a number is a power of 2, check if n&(n-1)=0
+
+void solve(){
+    int n;
+    cin>>n;
+    vector<int>pa(n),pb(n);
+    vector<int>a1,b1,a2,b2;
+    cin>>pa[0];
+    a2.push_back(pa[0]);
+    for (int i = 1; i < n; i++) {
+        cin>>pa[i];
+        pa[i]+=pa[i-1];
+        if (i&1) {
+            a1.push_back(pa[i]);
+        } else {
+            a2.push_back(pa[i]);
+        }
+    }
+    cin>>pb[0];
+    b2.push_back(pb[0]);
+    for (int i = 1; i < n; i++) {
+        cin>>pb[i];
+        pb[i]+=pb[i-1];
+        if (i&1) {
+            b1.push_back(pb[i]);
+        } else {
+            b2.push_back(pb[i]);
+        }
+    }
+    if (pb[n-1]!=pa[n-1]) {
+        cout<<"NO\n";
+        return;
+    }
+    sort(a1.begin(),a1.end());
+    sort(a2.begin(),a2.end());
+    sort(b1.begin(),b1.end());
+    sort(b2.begin(),b2.end());
+    for (int i = 0; i < a1.size(); i++) {
+        if (a1[i]!=b1[i]){
+            cout<<"NO\n";
+            return;
+        }
+    }
+    for (int i = 0; i < a2.size(); i++) {
+        if (a2[i]!=b2[i]){
+            cout<<"NO\n";
+            return;
+        }
+    }
+    cout<<"YES\n";
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+    
+    #ifndef ONLINE_JUDGE
+        function<bool(string,string)> compareFiles = [](string p1, string p2)->bool {
+            std::ifstream file1(p1);
+            std::ifstream file2(p2);
+            if (!file1.is_open() || !file2.is_open()){
+                return false;
+            }
+            cerr<<"checking.... ";
+            std::string line1, line2;
+            while (std::getline(file1, line1) && std::getline(file2, line2)) {
+                if (line1 != line2)
+                    return false;
+            }
+            return file1.eof() || file2.eof();
+        };
+        bool check = compareFiles("output.txt","expected.txt");
+        if (check) cerr<<"OK\n";
+        else cerr<<"Failed!\n";
+    #endif
+
+    return 0;
+}

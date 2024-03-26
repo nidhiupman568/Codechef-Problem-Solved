@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll=long long;
+
+void solve();
+signed main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    ll tes;cin>>tes;
+    while(tes--)
+        solve();
+}
+
+const ll mod=1e9+7;
+void solve()
+{
+    ll n;cin>>n;vector<ll> a(n+1);
+    for(ll i=1;i<=n;i++)   cin>>a[i];
+    vector<ll> dp(n+1),v(n+1);
+    vector<ll> pref=a;
+    for(ll i=1;i<=n;i++)   pref[i]+=pref[i-1],pref[i]%=mod;
+    v[1]=1;
+    stack<ll> s;s.push(1);
+    for(ll i=2;i<=n;i++)
+    {
+        ll x=0,y=0;
+        while(!s.empty() && a[s.top()]>a[i]){
+            ll ind=s.top();
+            s.pop();
+            x+=v[ind];x%=mod;
+            y+=dp[ind] + (pref[i-1] - pref[ind] + mod)*v[ind];y%=mod;
+        }  
+        if(!s.empty())
+        {
+            ll ind=s.top();
+            // s.pop();
+            x+=v[ind];x%=mod;
+            y+=dp[ind] + (pref[i-1] - pref[ind] + mod)*v[ind];y%=mod;
+        }
+        dp[i]=y;
+        v[i]=x;
+        s.push(i);
+    }   
+    cout<<dp[n]<<"\n";
+}

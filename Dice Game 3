@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lll long long
+
+int main()
+{
+    int testcase;
+    cin>>testcase;
+    while(testcase--)
+    {
+        lll n;
+        cin>>n;
+        lll ans,k;
+        if(n%2==0)
+        {
+            k=n/2;
+            ans=(k*1)+(2*k*6);
+        }
+        else
+        {
+            k=n/2;
+            ans=(k*1)+(2*k*6);
+            ans=ans+6;
+        }
+        cout<<ans<<endl;
+    }
+}

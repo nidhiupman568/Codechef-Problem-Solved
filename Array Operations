@@ -1,0 +1,100 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long int
+#define double long double
+#define endl '\n'
+
+const int MOD = 1000000007;
+
+void solve(){
+    int n,k;
+    cin>>n>>k;
+    int total = 0;
+    vector<pair<int,int>>a(n);
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin>>x;
+        int b = x, p = 0;
+        while (b%k==0 && k>1) {
+            b = b/k;
+            p++;
+        }
+        a[i] = {b,p};
+        total += p;
+    }
+    sort(a.begin(),a.end());
+    reverse(a.begin(),a.end());
+    
+    function<bool(int)> check = [&](int mid)->bool{
+        int count = 0,left = total;
+        for (int i = 0; i < n; i++) {
+            int req = 0;
+            int tmp = a[i].first;
+            while (tmp < mid) {
+                req++;
+                tmp *= k;
+            }
+            if (req <= left) {
+                if ((req == 1 && a[i].second ==0) || (req <= a[i].second) ) {
+                    left -= req;
+                    count++;
+                }
+            }
+        }
+        if (count>=mid){
+            return true;
+        }
+        else return false;
+    };
+    
+    int l=1,r=n,ans=r;
+    while(l<=r){
+        int mid=l+(r-l)/2;
+        if(check(mid)){
+            ans=mid;
+            l=mid+1;
+        }   
+        else{
+            r=mid-1;
+        } 
+    
+    }
+    cout<<ans<<endl;
+    
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+
+    int t=1;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+    
+    #ifndef ONLINE_JUDGE
+        function<bool(string,string)> compareFiles = [](string p1, string p2)->bool {
+            std::ifstream file1(p1);
+            std::ifstream file2(p2);
+            if (!file1.is_open() || !file2.is_open()){
+                return false;
+            }
+            cerr<<"checking.... ";
+            std::string line1, line2;
+            while (std::getline(file1, line1) && std::getline(file2, line2)) {
+                if (line1 != line2)
+                    return false;
+            }
+            return file1.eof() || file2.eof();
+        };
+        bool check = compareFiles("output.txt","expected.txt");
+        if (check) cerr<<"OK\n";
+        else cerr<<"Failed!\n";
+    #endif
+
+    return 0;
+}

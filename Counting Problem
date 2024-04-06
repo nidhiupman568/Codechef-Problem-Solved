@@ -1,0 +1,129 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define forl(i, a, b) for (ll i = a; i < b; i++)
+#define vl vector<ll>
+
+ll mod = 1e9 + 7;
+ll N = 2e5 + 4;
+vl fact(N, 1);
+ll max(ll a,ll b){
+    if(a > b) return a;
+    else return b;
+}
+ll mul_mod(ll a,ll b, ll mod) {
+    return ((a%mod)*(b%mod))%mod;
+}
+
+
+ll modinverse(ll a) {
+    ll m = mod, y = 0, x = 1;
+    while (a > 1) {
+        ll q = a / m;
+        ll t = m;
+        m = a % m;
+        a = t;
+        t = y;
+        y = x - q * y;
+        x = t;
+    }
+    if (x < 0)
+        x += mod;
+    return x;
+}
+
+ll nCr(ll n, ll r) {
+    if (n < r || r < 0)
+        return 0;
+    ll p = mul_mod(modinverse(fact[r]), modinverse(fact[n - r]),mod);
+    p %= mod;
+    return mul_mod(p,fact[n],mod);
+}
+ll power(ll a, ll b, ll md) {
+   // if(a == 0) return 0;
+    if (b < 0)
+        return 0;
+    ll product = 1;
+    a %= md;
+    while (b) {
+        if (b & 1)
+            product = (product * a) % md;
+        a = (a * a) % md;
+        b /= 2;
+    }
+    return product % md;
+}
+
+
+
+ll add_mod(ll a,ll b, ll mod) {
+    return ((a%mod)+(b%mod))%mod;
+}
+
+
+
+int main() {
+    forl(i, 1, N) {
+        fact[i] = mul_mod(i, fact[i - 1],mod);
+        fact[i] %= mod;
+    }
+    int t;
+    cin >> t;
+    while (t--) {
+        ll n;
+        cin >> n;
+        ll m;
+        cin >> m;
+        ll k;
+        cin >> k;
+
+        // greater = m-k
+
+        // smaller = k-1
+
+        // k-1 elements >= k
+        // dp[i] no of selections when K appears at ith position.
+        // dp[i] =
+        // (dp[i-1]*(k-1)+(dp[i-1]-ncr(i-2,k-1)*(m-k)^(k-1)*(k-1)^(i-k-1))*(m-k))*m^(n-i)
+
+        // sum of all dp[i] * (m^)
+        // dp[1] = m^(n-1)
+        // dp[2] = m^(n-1)
+        vector<ll> dp(n+5, 1);
+        ll ans = 0;
+        for (int i = 1; i <= 1; i++) {
+            ll d = power(m, n - i, mod);
+            ll c = 1;
+            dp[i] = c % mod;
+            ans += mul_mod(d,dp[i],mod);
+            ans = ans%mod;
+        }
+
+       
+        for (int i = 2; i <= n; i++) {
+            ll t = dp[i - 1] * (k - 1);
+            t = t % mod;
+            ll t1 = 0;
+            t1 = add_mod(t1,dp[i - 1],mod);
+            t1 = t1 % mod;
+            ll g = nCr(i - 2, k - 1); g=g%mod;
+            g = mul_mod(g,power(m - k, k - 1, mod),mod);
+            g = g % mod;
+            g = mul_mod(g,power(k-1,max(0, i - k - 1), mod),mod);
+            g = g % mod;
+            //t1= add_mod(mod-g,t1,mod);
+            t1=(t1-g+mod)%mod;
+            t1 = t1 % mod;
+            t1 = mul_mod(t1,m-k,mod);
+            t1 = t1 % mod;
+            t =add_mod(t,t1,mod);
+            t = t % mod;
+            dp[i] = t;
+            t = mul_mod(dp[i],power(m, n - i, mod),mod);
+            t = t % mod;
+            ans = add_mod(ans,t,mod);
+        }
+        cout << ans << "\n";
+    }
+}

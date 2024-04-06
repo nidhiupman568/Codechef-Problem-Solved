@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_NODES = 3e5 + 10;
+
+typedef pair<int, double> NodePair;
+
+int numNodes, numEdges;
+double distances[MAX_NODES];
+vector<NodePair> edges[MAX_NODES];
+
+void solve(){
+    cin >> numNodes >> numEdges;
+    
+    // Read the edges
+    for(int i = 1; i <= numEdges; i++) {
+        int startNode, endNode, weightNumerator, weightDenominator;
+        cin >> startNode >> endNode >> weightNumerator >> weightDenominator;
+        edges[startNode].emplace_back(endNode, 1.0 * weightNumerator / weightDenominator);
+    }
+    // Initialize distances
+    fill(distances + 1, distances + numNodes + 1, 1e18);
+    distances[numNodes] = 0;
+    
+    // Calculate shortest distances
+    for(int i = numNodes - 1; i >= 1; i--){
+        sort(edges[i].begin(), edges[i].end(), [&](NodePair x, NodePair y)
+        {
+            return distances[x.first] < distances[y.first];
+        });
+        
+        double sum = 1, res = 0;
+        for (auto edge : edges[i]) {
+            int endNode; double weight;
+            tie(endNode, weight) = edge;
+            res = sum * weight * (distances[endNode] + 2) + res;
+            sum = sum * (1 - weight);
+            distances[i] = min(distances[i], (res + sum) / (1 - sum));
+            
+        }
+    }
+    
+    // Print result
+    if (distances[1] == 1e18) cout << "-1" << endl;
+    else cout << fixed << setprecision(10) << distances[1] << endl;
+    
+    // clear edges for next test case
+    for (int i = 1; i <= numNodes; i++) edges[i].clear();
+}
+
+int main(){
+    ios::sync_with_stdio(0), cin.tie(0);
+    int numTestCases; cin >> numTestCases;
+    while (numTestCases--) {
+        solve();
+    }
+    return 0;
+}

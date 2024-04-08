@@ -1,0 +1,119 @@
+#pragma GCC optimize("Ofast","unroll-loops","omit-frame-pointer","inline")
+#pragma GCC option("arch=native","tune=native","no-zero-upper")
+//#pragma GCC target("avx2")
+#include <bits/stdc++.h>
+using namespace std;
+//#define INF 2147483647
+#define infL (1LL<<60)
+#define inf (1<<30)
+#define inf9 (1000000000)
+#define MOD  998244353 //1000000007
+#define EPS 1e-9
+#define Gr 9.8
+#define PI acos(-1)
+#define REP(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define REQ(i,n) for(int (i)=1;(i)<=(int)(n);(i)++)
+#define lch (rt<<1)
+#define rch (rt<<1|1)
+#define readmp(n) for(int i=0,u,v;i<n;i++) {scanf("%d%d",&u,&v); mp[u].push_back(v); mp[v].push_back(u);}
+typedef  long long ll;
+typedef pair<int, int> pii;
+typedef pair<int, vector<int>> piv;
+typedef pair<ll, ll> pll;
+typedef long double ld;
+typedef unsigned int uint;
+typedef unsigned long long ull;
+typedef double ValType;
+template<typename  T> void maxtt(T& t1, T t2) {
+    t1=max(t1,t2);
+}
+template<typename  T> void mintt(T& t1, T t2) {
+    t1=min(t1,t2);
+}
+
+
+bool debug = 0;
+int n,m,k;
+int dx[4] = {0,1,0,-1}, dy[4] = {1,0,-1,0};
+string direc="RDLU";
+const ll MOD2 = (ll)MOD * (ll)MOD;
+ll ln, lk, lm;
+void etp(bool f = 0) {
+    puts(f ?"YES" : "NO");
+    exit(0);
+}
+void addmod(int &x, int y, int mod = MOD){
+    x+=y; if (x>=mod) x-=mod;
+    if(x<0) x+=mod;
+    assert(x>=0 && x<mod);
+}
+void et(int x=-1) {
+    printf("%d\n", x); exit(0);
+}
+ll fastPow(ll x, ll y, int mod=MOD) {
+    ll ans = 1;
+    while(y>0) {
+        if(y&1) ans = (x * ans)%mod;
+        x = x*x%mod;
+        y>>=1;
+    }
+    return ans;
+}
+ll gcd1(ll x, ll y) {
+    return y?gcd1(y,x%y):x;
+}
+
+//#include <atcoder/all>
+//using mint = atcoder::modint998244353;
+#define MAX (200005)
+
+int a,b,c,d, dp[MAX];
+map<pii,int> mp;
+int I(int A,int B) {
+    if (mp.find({A,B}) != mp.end()) return mp[{A,B}];
+    int zz=fastPow(2, A+1) * fastPow(A+1, MOD-2) % MOD;
+    if(B==0) {
+        addmod(zz, MOD-fastPow(A+1, MOD-2));
+        return mp[{A,B}]=zz;
+    }
+    addmod(zz, MOD-(ll)B* fastPow(A+1, MOD-2)%MOD * I(A+1, B-1) %MOD);
+    return mp[{A,B}]=zz;
+}
+void cal(int g) {
+    int lg = n/g*k;
+    int x= fastPow(d-c, MOD-2);
+    int y=MOD-x;
+    dp[g]=0;
+    int X=I(lg, c-1), Y=I(lg, d-1);
+    addmod(X, MOD- fastPow(c, MOD-2));
+    addmod(Y, MOD- fastPow(d, MOD-2));
+    addmod(dp[g], (ll)X * x % MOD);
+    addmod(dp[g], (ll)Y * y % MOD);
+    for(int i=g+g;i<=n;i+=g) addmod(dp[g], MOD-dp[i]);
+}
+void fmain(int tid) {
+    scanf("%d", &n);
+    scanf("%d", &k);
+    scanf("%d%d%d%d", &a,&b,&c,&d);
+
+    int ans=0;
+    for(int i=n;i;i--) {
+        cal(i);
+        addmod(ans, (ll)(i+a)*(i+b)%MOD * dp[i]%MOD);
+    }
+    printf("%d\n", ans);
+}
+int main() {
+//    freopen("hash_slinger_input.txt","r",stdin);
+//    freopen("hash_slinger_oo.txt","w",stdout);
+    int t=1;
+//    ios::sync_with_stdio(false);
+//    cin.tie(0); cout.tie(0);
+//    cin>>t;
+
+    scanf("%d", &t);
+    REQ(i,t) {
+        fmain(i);
+    }
+    return 0;
+}

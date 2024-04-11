@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        int arr[n];
+        for (int i = 0; i < n; i++) {
+            cin >> arr[i];
+        }
+        int z = 0;
+        for (int a: arr) {
+            if (a == 2) {
+                z++;
+            }
+        }
+        // int h = pow(2.0, z / 8.0); 
+        // float g = pow(2.0, z / 8.0); 
+        if (z%8==0&&z/8==z/8.0) {
+            cout << "YES\n"; }
+        else {
+            cout << "NO\n"; }
+    }
+
+}

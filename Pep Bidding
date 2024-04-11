@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t; cin>>t;
+    while(t--){
+        int n; cin>>n;
+        int aA=0, dA=0, aP=0, dP=0;
+        for(int i =1; i<=n; i++){
+            int attA; cin>>attA;
+            aA+=attA;
+        }
+        
+           for(int i =1; i<=n; i++){
+            int defA; cin>>defA;
+            dA+=defA;
+        }
+        
+           for(int i =1; i<=n; i++){
+            int attP; cin>>attP;
+            aP+=attP;
+        }
+        
+           for(int i =1; i<=n; i++){
+            int defP; cin>>defP;
+            dP+=defP;
+        }
+        
+       if(aA>aP && dA>dP) cout<<"A\n";
+       else if(aA<aP && dA<dP) cout<<"P\n";
+       else cout<<"DRAW\n";
+       
+        
+        
+        
+    }
+}

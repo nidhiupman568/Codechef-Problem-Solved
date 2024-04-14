@@ -1,0 +1,154 @@
+#include<bits/stdc++.h>
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update> ordered_set;
+
+#define ll              long long int
+#define infi            INT_MAX
+const long long int mod = 1000000007;
+#define spc             " "
+#define nline            "\n"
+#define pii             pair<int,int>
+#define all(a)          a.begin(), a.end()
+#define print(a)        cout << (a) << nline;
+#define print2(a,b)      cout << (a) << " " << (b) << nline;
+#define logarr(arr,a,b)    for(int z=(a);z<=(b);z++) cout<<(arr[z])<<" ";cout<<endl;
+#define printarr(arr,n) logarr(arr,0,(n)-1)
+#define printmat(arr,r,c) for(int i=(0);i<(r);++i){logarr(arr[i],0,(c)-1)}
+#define rep(i,_srt,_end)      for(int i=(_srt); i < (_end); ++i)
+
+
+#ifndef ONLINE_JUDGE
+    #define bug(...)        __f (#__VA_ARGS__, __VA_ARGS__)
+#else
+    #define bug(...) ;
+#endif
+
+template <typename Arg1>
+void __f (const char* name, Arg1&& arg1) {cout << name << " : " << arg1 << endl; }
+template <typename Arg1, typename... Args>
+void __f (const char* names, Arg1&& arg1, Args&&... args) {
+    const char* comma = strchr (names + 1, ',');
+    cout.write(names, comma - names) << " : " << arg1 << " | "; __f(comma + 1, args...);
+}
+
+template<typename T1, typename T2> // cin >> pair<T1, T2>
+istream& operator>>(istream &istream, pair<T1,T2> &p){ return (istream >> p.first >> p.second); }
+
+template<typename T> // cin >> vector<T>
+istream& operator>>(istream &istream, vector<T> &v){
+    for(auto &it: v) cin >> it;
+    return istream;
+}
+
+template <typename T> // cout << vector<T>
+ostream &operator<<(ostream &ostream, const vector<T> &c)
+{
+    for (auto &it : c)
+        cout << it << " ";
+    return ostream;
+}
+
+void file_i_o() {
+    ios_base::sync_with_stdio(0); 
+    cin.tie(0); cout.tie(0);    
+    #ifndef ONLINE_JUDGE
+        freopen("input.txt", "r", stdin);
+        //freopen("output.txt", "w", stdout);
+    #endif
+}
+
+//---------------------------Jay Bajrangbali----------------------------
+
+
+const int N = 1000001;
+const int maxn = 1000003;
+int facts[maxn];
+int inverse_of_fact[maxn]; 
+ 
+ 
+int ext(int a, int b, int &x, int &y){
+    if(b == 0){
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int tx, ty;
+    int res = ext(b, a%b, tx, ty);
+    x = ty;
+    y = tx - (a / b) * ty;
+    return res;
+}
+ 
+int mod_inverse(int a, int m){
+    int x, y;
+    int g = ext(a, m, x, y);
+    return g == 1 ? (x + m) % m : -1;
+}
+ 
+void precompute(){
+    facts[0] = 1;
+    facts[1] = 1;
+    for (int i = 2; i < maxn; ++i) {
+        facts[i] = ((long long)i * facts[i-1]) % mod;
+    }
+
+    inverse_of_fact[maxn - 1] = mod_inverse(facts[maxn - 1], mod);
+    inverse_of_fact[1] = inverse_of_fact[0] = 1;
+    for (int i = maxn - 2; i > 1; --i) {
+        inverse_of_fact[i] = (inverse_of_fact[i + 1] * (long long)(i + 1ll)) % mod;
+    }
+}
+
+long long ncr(long long n, long long r, long long m = mod){
+    
+    return r <= n and r >= 0 ? (((long long)facts[n] * inverse_of_fact[r]) % m * inverse_of_fact[n - r]) % m : 0;
+}
+
+long long power(long long a, long long n, long long m = mod) {
+    if (n < 0) return 0;
+    long long ans = 1;
+    while (n) {
+        if (n & 1) ans = ans * a % m;
+        a = a * a % m;
+        n >>= 1;
+    }
+    return ans;
+}
+
+
+void solve() {
+    long long n, m, k;
+    cin >> n >> m >> k;
+
+    long long ans = power(m, n - 1), si = 1;
+    for (int i = 2; i <= n; ++i) {        
+        long long t = ((si - ncr(i - 2, k - 1) * power(m - k, k - 1) % mod * power(k - 1, i - 1 - k) % mod) % mod + mod) % mod;
+        si = ((k - 1) * si % mod + (m - k) * t % mod) % mod;
+        
+        ans = (ans + power(m, n - i) * si) % mod;
+    }
+
+    cout << ans << nline;
+}
+
+int32_t main(int32_t argc, char const *argv[]) {
+    file_i_o();
+
+    clock_t myclock = clock();
+
+    precompute();
+    int tc;
+    cin >> tc;
+    while(tc--){
+        solve();
+    }
+
+    cerr << "Run time: " << ((double)(clock() - myclock)/CLOCKS_PER_SEC) * 1000 << " ms" << endl;
+
+    return 0;
+}

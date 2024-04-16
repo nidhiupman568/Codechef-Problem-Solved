@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll=long long;
+const ll mod=998244353;
+
+#ifdef ANI
+#include "D:/DUSTBIN/local_inc.h"
+#else
+#define dbg(...) 0
+#endif
+
+ll fastexp(ll base,ll exp) {
+	ll res=1;
+	base%=mod;
+	while(exp) {
+		if(exp&1) res=(res*base)%mod;
+		base=(base*base)%mod;
+		exp>>=1;
+	}
+	return res;
+}
+ 
+ll modinv(ll num) {
+	return fastexp(num, mod-2);
+}
+
+void solve() {
+	ll n,B=30; cin>>n;
+	vector<ll> L(n),R(n);
+	for(ll i=0;i<n;i++) {
+		cin>>L[i];
+	}
+	for(ll i=0;i<n;i++) {
+		cin>>R[i];
+	}
+
+	ll ans=0;
+
+	auto pref=[&](ll i,ll bit)->ll{
+		/*
+			no of integers in [0...i] which have bit set
+		*/
+		if(i<0) return 0;
+		ll d=1ll<<bit,k=(i+1)/d,r=(i+1)%d;
+		return d*(k/2) + (k%2?r:0);
+	};
+
+	ll prefways=1;
+
+	for(ll i=0;i<n;i++) {
+		ll suffways=1;
+		for(ll j=i;j<n;j++) {
+			suffways=(suffways*(R[j]-L[j]+1))%mod;
+		}
+		vector<array<ll,2>> dp(B,{1,0});
+		for(ll j=i;j<n;j++) {
+			suffways=(suffways*modinv(R[j]-L[j]+1))%mod;
+			vector<array<ll,2>> ndp(B,{0,0});
+			for(ll bit=0;bit<B;bit++) {
+				/*
+					in the range [L...R], how many integers have this bit set?
+					0000L0011111100000001111111000000
+					0000000 1111111 0000000 111111
+					2^bit
+				*/
+				ll w1=pref(R[j],bit)-pref(L[j]-1,bit); 
+				ll w0=R[j]-L[j]+1-w1;
+				ndp[bit][0]=((dp[bit][0]*w0)%mod + (dp[bit][1]*w1)%mod)%mod;
+				ndp[bit][1]=((dp[bit][0]*w1)%mod + (dp[bit][1]*w0)%mod)%mod;
+			}
+			dp=ndp;
+			for(ll bit=0;bit<B;bit++) {
+				ll m=(1<<bit)%mod;
+				ll add=(m*dp[bit][1]%mod)*(prefways*suffways%mod)%mod;
+				ans=(ans + add)%mod;
+			}
+		}
+		prefways=(prefways*(R[i]-L[i]+1))%mod;
+	}
+	cout<<ans<<"\n";
+}
+
+int main() {
+	int t=1;
+	cin>>t;
+	while(t--) {
+		solve();
+	}	
+}

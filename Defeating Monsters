@@ -1,0 +1,62 @@
+// D SJH
+#include<bits/stdc++.h>
+#define INT long long
+#define pii pair<int, int>
+#define x first
+#define y second
+#define inf INT_MAX
+#define INF LONG_LONG_MAX
+#define VI vector<int>
+using namespace std;
+const int NN = 1000 + 100;
+const int mod = 1000000007;
+int a[NN], b[NN], chk[NN], n, m, k;
+char s[NN];
+int pa[NN], rpa[NN], A[NN];
+int power(int a, int b, int ans = 1){
+	for(; b; b >>= 1, a = 1ll * a * a % mod) if(b & 1) ans = 1ll * ans * a % mod;
+	return ans;
+}
+void pre_calc(){
+	pa[0] = rpa[0] = 1;
+	for(int i = 1; i < NN; i ++) pa[i] = 1ll * pa[i-1] * i % mod;
+	rpa[NN-1] = power(pa[NN-1], mod - 2);
+	for(int i = NN - 2; i >= 1; i --) rpa[i] = 1ll * rpa[i+1] * (i + 1) % mod;
+}
+int CNK(int n, int k){
+	return 1ll * pa[n] * rpa[k] % mod * rpa[n-k] % mod;
+}
+int pre[NN << 1][NN];
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+	freopen("out.out", "w", stdout);
+#endif
+	pre_calc();
+	int T;
+	cin >> T;
+	while(T--){
+		scanf("%d%d", &n, &k);
+		for(int i = 1; i <= n + k + 10; i++) pre[1][i] = (i + 1) % mod;
+		for(int i = 2; i <= n + k + 10; i++){
+			pre[i][0] = pre[i - 1][1];
+			for(int j = 1; j <= n + k + 10 - i + 1; j++){
+				pre[i][j] = (1ll * pre[i][j - 1] + pre[i - 1][j + 1]) % mod;
+			}
+		}
+		INT ans = 0;
+		for(int st = 0; st <= k - 1; st ++){
+			INT val = 0;
+			for(int ed = 0; ed <= n - k; ed ++){
+				if(ed == 0) {val = (val + 1) % mod; continue;}
+				if(ed == 1) {val = (val + st + 1) % mod; continue;}
+				if(st)	val = (val + pre[ed][st]) % mod;
+				else{
+					val = (val + pre[ed - 1][1]) % mod;
+				}
+			}
+			ans = (ans + val * CNK(k - 1, st) % mod) % mod;
+		}
+		printf("%lld\n", ans);
+	}
+}

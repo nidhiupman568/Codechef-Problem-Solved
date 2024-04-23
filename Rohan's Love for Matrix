@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
+	int t; cin>>t;
+	while(t--){
+	    int n,ans=0; cin>>n; 
+	    string s; cin>>s; 
+	    char c='1'; //you can start with 0 as well
+	    for(int i=0;i<n-1;i+=2) if(s[i]!=s[i+1]) ans++;
+	    cout<<ans<<"\n";
+	    for(int i=0;i<n-1;i+=2){
+	        if(s[i]!=s[i+1]){
+	            if(s[i]==c) cout<<i+1<<" ";
+	            else cout<<i+2<<" ";
+	            if(c=='0') c='1'; else c='0';
+	        }
+	    }
+	    cout<<"\n";
+	}
+}

@@ -1,0 +1,99 @@
+// E SJH
+#include<bits/stdc++.h>
+#define INT long long
+#define pii pair<int, int>
+#define x first
+#define y second
+#define inf INT_MAX
+#define INF LONG_LONG_MAX
+#define VI vector<int>
+#define ls (u << 1)
+#define rs (ls | 1)
+#define mid (L + R >> 1)
+using namespace std;
+const int NN = 9e5 + 100;
+int a[NN], b[NN], chk[NN], n, m, k;
+char s[NN];
+struct BIT{
+	int mx;
+	int pp, ed;
+	int c[NN], d[NN], st = 0;
+	void init(int n){
+		st = 0;
+		pp = n + 5; mx = 2 * n + 100; ed = 3 * n + 200;
+		for(int i = 0; i <= ed; i ++) c[i] = d[i] = 0;
+	}
+	void add(int u, int v){
+		u += pp;
+		for(; u < ed; u += u & -u) c[u] += v;
+	}
+	int calc(int u, int ans = 0){
+		u += pp;
+		for(; u ; u -= u & -u) ans += c[u];
+		return ans;
+	}
+	void add_cnt(int u, int v){
+		u += pp;
+		for(; u < ed; u += u & -u) d[u] += v;
+	}
+	INT calc_cnt(int u, INT ans = 0){
+		u += pp;
+		for(; u ; u -= u & -u) ans += d[u];
+		return ans;
+	}
+	void plus(){
+		st --;
+		add(st, -calc(st));
+		add_cnt(st, -calc_cnt(st));
+	}
+	void minus(){
+		st ++;
+		add_cnt(st, calc_cnt(st - 1));
+		add_cnt(st - 1, -calc_cnt(st - 1));
+		INT num = calc_cnt(st);
+		add(st - 1, -calc(st - 1));
+		add(st, -calc(st) + num * st);
+	}
+	int tot(){
+		return calc(mx) - st * calc_cnt(mx);
+	}
+} bit;
+
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+	freopen("out.out", "w", stdout);
+#endif
+	int T;
+	cin >> T;
+	while(T--){
+		cin >> n;
+		bit.init(n);
+		scanf("%s", s + 1);
+		INT   val = 0, tsum = 0, sum = 0;
+		INT ans = 0;
+		for(int i = 1; i <= n; i++){
+			if(s[i] == 'c'){
+				val = tsum - bit.tot() - sum;
+				bit.add_cnt(bit.st, 1);
+				bit.add(bit.st, bit.st);
+			}
+			if(s[i] == 'a'){
+				bit.plus();
+				bit.add_cnt(bit.st + 1, 1);
+				bit.add(bit.st + 1, bit.st + 1);
+				tsum += i;
+			}
+			if(s[i] == 'b'){
+				bit.minus();
+				bit.add_cnt(bit.st, 1);
+				bit.add(bit.st, bit.st);
+				sum += i;
+				tsum += i;
+			}
+			ans += val;
+		}
+		printf("%lld\n", ans);
+	}
+}
+

@@ -1,0 +1,43 @@
+//Radhe Radhe
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+
+void print3pair(int s,int n){
+    for(int i=s;i<=n;i+=3){
+        cout<<i<<" "<<i+2<<" "<<i+1<<" ";
+    }
+    
+}
+void Radhe(){
+ ll t;
+ cin>>t;
+ while(t--){
+     ll n;
+     cin>>n;
+     if(n%3==0){
+         for(int i=1;i<=n;i+=3){
+        cout<<i<<" "<<i+2<<" "<<i+1<<" ";
+    }
+    cout<<endl;
+     }
+    else if(n%3 ==1){
+        for(int i=1;i<n;i+=3){
+          cout<<i<<" "<<i+2<<" "<<i+1<<" ";   
+        }
+        cout<<n<<" "<<endl;
+     }
+     else {
+         cout<<5<<" "<<3<<" "<<2<<" "<<4<<" "<<1<<" ";
+         for(int i=6;i<=n;i+=3){
+             cout<<i+2<<" "<<i+1<<" "<<i<<" ";
+         }
+         cout<<endl;
+     }
+     }
+ 
+}
+int main(){
+Radhe();
+return 0;
+}

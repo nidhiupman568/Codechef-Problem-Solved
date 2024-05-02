@@ -1,0 +1,18 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	int X, Y;
+	cin >> X >> Y;
+	
+	int cost = 2*X;
+	if (Y >= cost)
+	cout << "YES";
+	
+	else
+	cout << "NO";
+	
+	return 0;
+
+}

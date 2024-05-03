@@ -1,0 +1,19 @@
+class Solution
+{
+    public:
+    void helper(struct Node *root, vector<int> &res, int d, int k){
+        if (root == NULL || d > k)
+            return;
+        if (d == k){
+            res.push_back(root->data);
+            return;
+        }
+        helper(root->left, res, d+1, k);
+        helper(root->right, res, d+1, k);
+    }
+    vector<int> Kdistance(struct Node *root, int k){
+        vector<int> res;
+        helper(root, res, 0, k);
+        return res;
+    }
+};

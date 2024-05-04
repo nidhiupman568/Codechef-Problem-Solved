@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+template<class T> using oset =tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+
+#define fast_io                       \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(0);                       \
+    cout.tie(0);
+
+#define ll                  long long
+#define ld                  long double
+#define mod                 1000000007
+#define inf                 1e9
+#define endl                '\n'
+
+
+static bool comp(const pair<int, int>& p1, const pair<int, int>& p2){
+    if(p1.first!=p2.first){
+        return p1.first<p2.first;
+    }else{
+        return p1.second>p2.second;
+    }
+}
+
+ll gcd(ll a, ll b){
+    if(b==0) return a;
+
+    return gcd(b, a%b);
+}
+
+ll lcm(ll a, ll b){
+    return (a*b)/gcd(a,b);
+}
+
+
+void solve(){
+    ll n; cin>>n;
+    vector<ll> a(n+1), one(n+1, 0), two(n+1, 0);
+
+    for(int i=1; i<=n; i++){
+        cin>>a[i];
+        one[i] = one[i-1] + (a[i]==1 ? 1: 0);
+        two[i] = two[i-1] + (a[i]==2 ? 1: 0);
+    }
+
+
+    ll q; cin>>q;
+    while(q--){
+        ll l, r, k, ans; cin>>l>>r>>k;
+
+        ll ones = one[r] - one[l-1];
+        ll twos = two[r] - two[l-1];
+        ll rem = r-l+1 - ones  - twos;
+
+        if(ones>twos) swap(ones, twos);
+
+        //make ones==twos using rem elements
+        int change = min({k, rem, twos - ones});
+        ones += change;
+        k -= change;
+        rem -= change;
+
+        if(ones==twos){
+            k = min(k, rem);
+            ones += (k/2);
+            twos += (k+1)/2;
+        }
+        else{
+            ll diff = twos - ones;
+            k = min(k, diff/2);
+            ones += k;
+            twos -= k;
+        }
+
+        ans = ones*twos;
+        cout << ans << endl;
+    }
+    
+}
+
+
+int main(){
+    fast_io;
+    cout << fixed;
+    cout << setprecision(10);
+ 
+    int t;
+    t=1;
+    cin>>t;
+ 
+    while(t--)
+    {
+        solve();
+    }
+}
+

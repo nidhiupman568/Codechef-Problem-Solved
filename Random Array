@@ -1,0 +1,97 @@
+// E SJH
+#include<bits/stdc++.h>
+#define INT long long
+#define pii pair<int, int>
+#define x first
+#define y second
+#define inf INT_MAX
+#define INF LONG_LONG_MAX
+#define VI vector<int>
+using namespace std;
+const int NN = 2e5 + 100;
+const int mod = 1e9 + 7;
+int b[NN], chk[NN], n, m, k;
+VI a[NN];
+pii sum[NN], tot;
+int power(int a, int b){
+	int ans = 1;
+	for(; b ; b >>= 1, a = 1ll * a * a % mod) if(b & 1) ans = 1ll * ans * a % mod;
+	return ans;
+}
+struct pp{
+	pp(int a, int b, int c){
+		addx = a, addy = b, id = c;
+	}
+	int addx, addy, id;
+};
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+	freopen("out.out", "w", stdout);
+#endif
+	int T;
+	cin >> T;
+	while(T--){
+		vector<pii> vec;
+		scanf("%d", &n);
+		int cnt = 0;
+		for(int i = 1; i <= n; i++){
+			int len;
+			scanf("%d", &len);
+			cnt += len;
+			a[i].resize(len + 1, 0);
+			for(int j = 1; j <= len; j++){
+				scanf("%d", &a[i][j]);
+				if(j == 1) b[i] = a[i][j];
+				vec.push_back({a[i][j], i});
+			}
+		}
+		INT ans = 0;
+		sort(vec.begin(), vec.end());
+		for(int i = 1; i <= n; i++) sort(a[i].begin(), a[i].end());
+		int inv = power(cnt, mod - 2);
+		vector<pp> tmp;
+		for(int i = 0; i < vec.size(); i++){
+			if(i != 0 && vec[i].x != vec[i - 1].x){
+				for(pp xx : tmp){
+					if(!xx.id){
+						tot.x = (tot.x + xx.addx) % mod;
+						tot.y = (tot.y + xx.addy) % mod;
+					}
+					else{
+						sum[xx.id].x = (sum[xx.id].x + xx.addx) % mod;
+						sum[xx.id].y = (sum[xx.id].y + xx.addy) % mod;
+					}
+				}
+				tmp.clear();
+			}
+			int val = vec[i].x, id = vec[i].y;
+			int p = (1ll * tot.x - sum[id].x + mod) % mod;
+			p = (p + inv) % mod;
+			
+			int cntvec = upper_bound(vec.begin(), vec.end(), pii(val, inf)) - vec.begin() - 1;
+			cntvec = vec.size() - max(0, cntvec);
+			int cnta = upper_bound(a[id].begin(), a[id].end(), val) - a[id].begin() - 1;
+			cnta = a[id].size() - max(0, cnta);
+			
+			int cnt = cntvec - cnta;
+			
+			if(!cnt){
+				ans = (ans + 1ll * (tot.y - sum[id].y + mod) % mod + 1ll * val * p % mod) % mod;
+				continue;
+			}
+			p = 1ll * p * power(cnt, mod - 2) % mod;
+			
+			tmp.push_back(pp(p, (1ll * (tot.y - sum[id].y + mod) % mod * power(cnt, mod - 2) % mod + 1ll * val * p % mod) % mod, 0));
+			tmp.push_back(pp(p, (1ll * (tot.y - sum[id].y + mod) % mod * power(cnt, mod - 2) % mod + 1ll * val * p % mod) % mod, id));
+			
+		}
+		printf("%lld\n", ans);
+		for(int i = 1; i <= n; i++){
+			chk[i] = 0; a[i].clear();
+			sum[i] = pii(0, 0);
+		}
+		tot = pii(0, 0);
+	}
+}
+

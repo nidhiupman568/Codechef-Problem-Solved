@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef  long long ll;
+void solve(){
+    int n;
+    cin>>n;
+    vector<ll> freq(n+1);
+    for(int i=0;i<n;i++){
+        cin>>freq[i];
+    }
+    vector<ll> ans(n+1,-1);
+    ll cnt=0;
+    for(int i=0;i<=n;i++){
+        ans[i]=cnt+freq[i];
+        if(freq[i]>=1){
+            continue;
+        }
+        
+        int ops=0,j=i;
+        while(true){
+            if(freq[j]>1){
+                freq[j]--;
+                freq[i]++;
+                cnt+=ops;
+                break;
+            }
+            
+            if(j==0){
+                break;
+            }
+            j/=2;
+            ops++;
+        }
+        if(freq[i]==0){
+            break;
+        }
+        
+    }
+    for(auto x: ans){
+        cout<<x<<" ";
+    }
+    cout<<endl;
+}
+int main() {
+	// your code goes here
+	int t;
+	cin>>t;
+	while(t--){
+	    solve();
+	}
+	return 0;
+}

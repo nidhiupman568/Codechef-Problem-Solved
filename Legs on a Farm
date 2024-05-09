@@ -1,0 +1,23 @@
+#include <bits/stdc++.h>
+#define lil long long int
+#define input(i,a,n); for(int i=0;i<n;i++){ cin >> a[i]; }
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
+	int test;cin>>test;
+	while(test--)
+	{
+	    lil n;cin>>n;
+	    int a=n/4;
+	    if(n%4!=0) a++;
+	    
+	    cout<<a<<endl;
+	    
+	    
+	    
+	    
+	   // cout<<endl;
+	}
+
+}

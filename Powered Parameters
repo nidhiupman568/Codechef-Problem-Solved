@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int haha;
+bool mycomp(long long p, long long q){
+    if (pow(p,haha)<=q) return true;
+    else return false;
+}
+
+int main() {
+	// your code goes here
+    int t;cin>>t;
+    while(t--){
+        long long n,temp,ans;
+        ans=0;
+        cin>>n;
+        vector<long long> a(n);
+        vector<long long> b(n);
+        for (int i=0;i<n;i++){
+            cin>>temp;
+            a[i]=temp;
+            b[i]=temp;
+        }
+        sort(b.begin(),b.end());
+        for (int i=0;i<n;i++){
+            temp=a[i];
+            int temp2=a[i];
+            ::haha=i+1;
+            auto it = lower_bound(b.begin(),b.end(),temp2,mycomp);
+            ans+=it-b.begin();
+        }
+        cout<<ans<<'\n';
+    }
+}

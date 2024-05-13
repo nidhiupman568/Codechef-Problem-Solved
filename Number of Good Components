@@ -1,0 +1,101 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll int
+
+vector <ll> v[100005];
+ll cnt[100005];
+ll ans[100005];
+ll col;
+
+ll dfs(ll pos,ll par){
+    ll r=0;
+    ll total=1;
+    ll x;
+    for(auto it:v[pos]){
+        if(it!=par){
+            x=dfs(it,pos);
+            r=max(x,r);
+            total+=x;
+        }
+    }
+    if(v[pos].size()==col){
+        r=0;
+        ans[pos]=total;
+    }else{
+        r++;
+    }
+    cnt[pos]=r;
+    return r;
+}
+
+void dfs2(ll pos,ll par,ll up){
+    if(v[pos].size()==col){
+        ans[pos]+=up;
+    }
+    ll n=v[pos].size();
+    ll x;
+    ll pre[n+2]={};
+    ll suf[n+1]={};
+    for(int i=0;i<n;i++){
+        if(v[pos][i]==par){
+            pre[i+1]=pre[i];
+            continue;
+        }
+        pre[i+1]=max(pre[i],cnt[v[pos][i]]);
+    }
+    for(int i=n-1;i>=0;i--){
+        if(v[pos][i]==par){
+            suf[i]=suf[i+1];
+            continue;
+        }
+        suf[i]=max(suf[i+1],cnt[v[pos][i]]);
+    }
+    for(int i=0;i<n;i++){
+        if(v[pos][i]==par){
+            continue;
+        }
+        x=max(pre[i],max(suf[i+1],up));
+        if(col==v[pos].size()){
+            x=0;
+        }else{
+            x++;
+        }
+        dfs2(v[pos][i],pos,x);
+    }
+    return;
+}
+
+int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+    ll kitne_cases_hain;
+    kitne_cases_hain=1;
+    cin>>kitne_cases_hain;
+    while(kitne_cases_hain--){          
+        ll n;
+        cin>>n;
+        ll x,y;
+        for(int i=1;i<=n;i++){
+            v[i].clear();
+        }
+        for(int i=1;i<n;i++){
+            cin>>x>>y;
+            v[x].push_back(y);
+            v[y].push_back(x);
+        }
+        set <ll> s;
+        for(int i=1;i<=n;i++){
+            s.insert(v[i].size());
+        }
+        for(auto it:s){
+            col=it;
+            dfs(1,0);
+            dfs2(1,0,0);
+        }
+        for(int i=1;i<=n;i++){
+            cout<<ans[i]<<" ";
+        }
+        cout<<"\n";
+    }
+	return 0;
+}

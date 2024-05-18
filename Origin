@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+#define lil long long int
+#define input(i,a,n); for(int i=0;i<n;i++){ cin >> a[i]; }
+#define MOD 100000000000000000
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
+	int test;cin>>test;
+	while(test--)
+	{
+	    
+	    lil n;cin>>n;
+	    lil sum=0;
+	    sum=(n/9)*45;
+	    int rem=n%9;
+	    sum+=(rem+1)*rem/2;
+	    cout<<sum<<endl;
+	}
+
+}

@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+#define lil long long int
+#define input(i,a,n); for(int i=0;i<n;i++){ cin >> a[i]; }
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
+	int test;cin>>test;
+	while(test--)
+	{
+	    lil n;cin>>n;
+	    string ss;
+	    cin>>ss;
+	    int c=0;
+	    //r p s;
+	    int conse=0;
+	    for(int i=0;i<n-1;i++)
+	    {
+	        if(ss[i]==ss[i+1])
+	        {
+	            conse++;
+	            i++;
+	        }
+	    }
+	    	    
+	    cout<<n-conse<<endl;
+	}
+
+}

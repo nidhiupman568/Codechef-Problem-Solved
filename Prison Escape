@@ -1,0 +1,101 @@
+#include<bits/stdc++.h>
+#include<cmath>
+using namespace std;
+#define rep(i, n) for (ll i = 0; i < n; i++)
+typedef long long ll;
+// #define int long long
+
+int dx[] = {0,1,0,-1};
+int dy[] = {1,0,-1,0};
+
+void solve(){
+    
+    ll n,m;
+    cin>>n>>m;
+    vector<vector<ll>> grid(n,vector<ll>(m,0));
+    vector<vector<ll>> tmp(n,vector<ll>(m,INT_MAX));
+    for(int i = 0;i<n;i++){
+        string s;
+        cin>>s;
+        for(int j = 0;j<m;j++){
+            grid[i][j] = s[j]-'0';
+        }
+    }
+
+    queue<vector<ll>> pq;
+    for(int i = 0;i<n;i++){
+        tmp[i][0] = grid[i][0];
+        tmp[i][m-1] = grid[i][m-1];
+        pq.push({i,0,tmp[i][0]});
+        pq.push({i,m-1,tmp[i][m-1]});
+    }
+    for(int j = 0;j<m;j++){
+        tmp[0][j] = grid[0][j];
+        tmp[n-1][j] = grid[n-1][j];
+        pq.push({0,j,tmp[0][j]});
+        pq.push({n-1,j,tmp[n-1][j]});
+    }
+    
+    while(!pq.empty()){
+        int i = pq.front()[0], j = pq.front()[1], cnt = pq.front()[2];
+        pq.pop();
+
+        for(int k = 0;k<4;k++){
+            int ni = i+dx[k], nj = j+dy[k];
+
+            if(ni>= 0 && nj >= 0 && ni < n && nj < m &&
+             tmp[ni][nj] > cnt + grid[ni][nj]){
+                tmp[ni][nj] = cnt + grid[ni][nj];
+                pq.push({ni,nj,tmp[ni][nj]});
+            }
+        }
+    }
+    ll ans = 0;
+    for(int i = 0;i<n;i++){
+        for(int j = 0;j<m;j++){
+            // cout<<tmp[i][j]<<" ";
+            if(grid[i][j]==0){
+                ans = max(ans, tmp[i][j]);
+            }
+        }
+        // cout<<"\n";
+    }
+    
+    cout<<""<<ans<<"";
+    
+}
+
+
+int main (){
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    int t = 1;
+    cin>>t;
+    while(t--){
+        solve();
+        cout<<"\n";
+    }
+
+    return 0;
+             
+}
+
+
+ll kadane_algo(vector<ll> &v, ll size){
+    int sum_atmost = INT_MIN, sum_till_end = 0;
+    for (int i = 0; i < size; ++i)
+    {
+        sum_till_end += v[i];
+        if(sum_atmost < sum_till_end){
+            sum_atmost = sum_till_end;
+        }
+        if(sum_till_end<0){
+            sum_atmost = max(sum_atmost,sum_till_end);
+            sum_till_end = 0;
+        }
+    }
+    return sum_atmost;
+}

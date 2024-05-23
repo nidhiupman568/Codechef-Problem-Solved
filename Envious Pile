@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+
+#ifndef ONLINE_JUDGE
+#include "template.cpp"
+#else
+#define debug(...)
+#define debugArr(...)
+#endif
+
+void solve()
+{
+  int n, w;
+  cin >> n >> w;
+  vector<int> a(n);
+  for (auto &v : a)
+    cin >> v;
+  vector<bool> vis(a[n - 1] + 1, false);
+  vector<int> par(a[n - 1] + 1, -1);
+  vis[w] = true;
+  par[w] = -2;
+  queue<int> q;
+  q.push(w);
+  while (!q.empty())
+  {
+    int u = q.front();
+    q.pop();
+    for (int i = 0; i < n; i++)
+    {
+      if (a[i] > u && !vis[a[i] - u])
+      {
+        vis[a[i] - u] = true;
+        q.push(a[i] - u);
+        par[a[i] - u] = i;
+      }
+    }
+  }
+  for (int i = 0; i < a[0]; i++)
+  {
+    if (vis[i])
+    {
+      vector<int> ans;
+      while (par[i] != -2)
+      {
+        ans.push_back(par[i] + 1);
+        i = a[par[i]] - i;
+      }
+      reverse(ans.begin(), ans.end());
+      for (int i = 1; i <= n; i++)
+      {
+        ans.push_back(i);
+      }
+      cout << ans.size() << "\n";
+      for (auto v : ans)
+      {
+        cout << v << " ";
+      }
+      return;
+    }
+  }
+  cout << -1;
+  return;
+}
+signed main()
+{
+  // cout << setprecision(10) << fixed;
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  ll tt = 1;
+  cin >> tt;
+  for (ll i = 1; i <= tt; i++)
+  {
+    // cout << "#" << i << " : ";
+    solve();
+    cout << "\n";
+  }
+  return 0;
+}

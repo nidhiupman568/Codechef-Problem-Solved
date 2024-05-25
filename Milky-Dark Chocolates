@@ -1,0 +1,94 @@
+/* 
+You are always optional, aren't you?
+*/
+// #pragma GCC target ("avx2")
+// #pragma GCC optimization ("O3")
+// #pragma GCC optimization ("unroll-loops")
+ 
+#include <bits/stdc++.h>
+ 
+#ifndef ONLINE_JUDGE
+#include "debug.h"
+#else
+#define debug(...)
+#endif
+ 
+using namespace std;
+ 
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+ 
+template<typename T> using oset = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template <class K,class V> using omap = tree<K, V, less<K>, rb_tree_tag, tree_order_statistics_node_update>;
+ 
+struct custom_hash {
+    static uint64_t splitmix64(uint64_t x) {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+    size_t operator()(uint64_t x) const {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
+#define int long long
+#define all(x) (x).begin(),(x).end()
+#define rall(x) (x).rbegin(),(x).rend()
+#define f first
+#define s second
+#define pb push_back
+#define pii pair<int,int>
+#define lb lower_bound
+#define ub upper_bound
+#define Checkbit(a,i) (((a)>>(i))&1)
+#define Setbit(a,i) ((a)^=1LL<<(i))
+
+const int mod = 1e9 + 7;
+
+const int N = 1e5;
+
+void testcase()
+{
+    int n, k;
+    cin >> n >> k;
+
+    vector<int> a(n + 1), b = a, pa = a, pb = b;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        pa[i] = pa[i - 1] + a[i];
+    }
+    for (int i = 1; i <= n; i++) {
+        cin >> b[i];
+        pb[i] = pb[i - 1] + b[i];
+    }
+
+    vector<vector<int>> dp(n + 1, vector<int>(k + 1));
+    vector<int> mn_a(k + 1), mn_b(k + 1);
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= k; j++) {
+            dp[i][j] = min({pa[i] + mn_a[j - 1], pb[i] + mn_b[j - 1]});
+            mn_a[j] = min(mn_a[j], dp[i][j] - pa[i]);
+            mn_b[j] = min(mn_b[j], dp[i][j] - pb[i]);
+        }
+    }
+
+    cout << dp[n][k] << "\n";
+}
+ 
+signed main()
+{
+    // freopen("input.txt", "r", stdin);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int t = 1;
+    cin >> t;
+    int cs = 1;
+    while (t--) {
+        //cout << "Case " << cs++ << ":" << " ";
+        testcase();
+    }
+}

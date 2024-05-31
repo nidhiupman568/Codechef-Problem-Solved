@@ -1,0 +1,125 @@
+#include<bits/stdc++.h>
+using namespace std;
+// #define int long long
+#define ll long long
+#define ld long double
+#define mod 998244353
+const int inf = 4e8;
+const long double esp=1e-9;
+#define all(a)  a.begin() , a.end()
+#define allr(a) a.rbegin() , a.rend()
+#define IOS ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define out(a) cout << #a << " = " << a <<endl
+#define out2(a,b) cout<< #a << "[" << b << "]" << " = " << a[b] << endl;
+#define outp(a) cout << #a << " first = " << a.first << "  second = " << a.second << endl
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+const int N = 1e5 ; 
+int arr[N + 10] , pref[N + 1]; 
+unordered_map < int , int > seg[4 * N + 10] ; 
+// map < int , int > seg[4 * N + 10] ; 
+
+void update(int node , int from , int to , int idx , int prefmsk , int val)
+{
+   if(idx < from or to < idx)return  ; 
+   if(seg[node].count(prefmsk))
+      seg[node][prefmsk] = min(seg[node][prefmsk] , val) ; 
+   else
+      seg[node][prefmsk] = val ; 
+   if(from == to)return  ; 
+   int mid = (from + to) / 2 ; 
+   update(node * 2 , from , mid , idx , prefmsk , val) ; 
+   update(node * 2 + 1 , mid + 1 , to , idx , prefmsk , val) ; 
+}
+
+int query(int node , int from , int to , int str , int ed , int prefmsk)
+{
+   if(ed < from or to < str)return inf ; 
+   if(str <= from and to <= ed)
+   {
+      if(seg[node].count(prefmsk))return seg[node][prefmsk] ; 
+      return inf ; 
+   }
+   int mid = (from + to) / 2 ; 
+   return min(query(node * 2 , from , mid , str , ed , prefmsk) , query(node * 2 + 1 , mid + 1 , to , str , ed , prefmsk)) ; 
+}
+
+string s ; 
+int n ; 
+
+int give(char ch)
+{
+   return ch - 'a' ; 
+}
+
+
+
+
+
+int solve()
+{
+   cin >> n >> s ; 
+   s = '.' + s ; 
+   vector < array < int , 2 > > vec ;
+   update(1 , 0 , n , 0 , 0 , 0) ; 
+   int res ; 
+   for(int i = 1 ; i <= n ; i += 1)
+   {
+      pref[i] = pref[i-1] ^ (1 << give(s[i])) ; 
+      int par = 0 , dis = 0 ; 
+      vec.push_back({i , 0}) ; 
+      auto tvec = vec ; 
+      int h = (1 << give(s[i])) ; 
+      vec.clear() ; 
+      while(tvec.size() > 0)
+      {
+         auto [idx , msk] = tvec.back() ; 
+         h |= msk ; 
+         if(vec.size() > 0 and (h == vec.back()[1]))
+         {
+            vec.back()[0] = idx ; 
+         }
+         else
+         {
+            vec.push_back({idx , h}) ; 
+         }
+         tvec.pop_back() ; 
+      }
+      int ls = i , ans = inf ; 
+      for(auto  & [idx , msk] : vec)
+      {
+         int from = idx-1 , to = ls-1 ; 
+         int req = msk ^ pref[i] ; 
+         ans = min(ans , query(1 , 0 , n , from , to , req) + 1) ; 
+         ls = idx ; 
+      }
+      update(1 , 0 , n , i , pref[i] , ans) ; 
+      reverse(all(vec)) ; 
+      res = ans ; 
+   }
+   cout << res << endl ; 
+
+   
+
+
+   return 0 ; 
+}
+
+
+
+
+int32_t main()
+{
+   IOS ; 
+   #ifndef ONLINE_JUDGE
+      freopen("input.txt","r",stdin);
+      freopen("output.txt","w",stdout);
+   #endif
+   int test=1;
+   // cin>>test;
+   for(int i=1;i<=test;i++)
+   {
+      solve() ; 
+   }
+   return 0;
+}

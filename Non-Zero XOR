@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+\
+
+void solve() {
+    long long n;
+    cin >> n;
+    vector<long long> a(n);
+    long long t = 0;
+    multiset<long long> ms;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        t ^= a[i];
+        ms.insert(a[i]);
+    }
+
+    long long cur = 0;
+
+    if (t == 0) {
+        cout << -1 << endl;
+        return;
+    }
+
+    vector<long long> ans;
+    bool ok = false;
+
+    for (int i = 0; i < n; i++) {
+        long long v1 = *(ms.begin());
+        long long v2 = *(ms.rbegin());
+        long long v = -1;
+
+        if (v1 != cur) v = v1;
+        else if (v2 != cur) v = v2;
+
+        if (v == -1) {
+            assert(v1 == v2);
+            long long ee = ans.back();
+            ans.pop_back();
+            for (long long pp : ms) ans.push_back(pp);
+            ans.push_back(ee);
+            break;
+        }
+
+        ans.push_back(v);
+        cur ^= v;
+        ms.erase(ms.find(v));
+    }
+
+    cur = 0;
+    for (int i = 0; i < n; i++) {
+        cur ^= ans[i];
+        if (cur == 0) {
+            cout << -1 << endl;
+            return;
+        }
+    }
+
+    for (auto x : ans) cout << x << " ";
+    cout << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+
+    #ifndef ONLINE_JUDGE
+        freopen("input.txt", "r", stdin);
+        freopen("output.txt", "w", stdout);
+    #endif
+
+    int t;
+    cin >> t;
+
+    for (int i = 1; i <= t; i++) {
+        solve();
+    }
+    return 0;
+}

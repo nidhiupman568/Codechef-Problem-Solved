@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <algorithm>
+#include <stack>
+#include <queue>
+using namespace std;
+#define ll long long
+int mod = 1e9+7;
+vector<int> dp(3*1e5+3,-1);
+
+ll fac(int n){
+    if(n==1||n==0){
+        dp[1] = 1;
+        dp[0] = 1;
+        return 1;
+    }
+    if(dp[n]!=-1){
+        return dp[n];
+    }
+    return (dp[n]=(n*(fac(n-1)))%mod);
+}
+
+int main(){
+    #ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
+    #endif
+    int tt;
+    cin >> tt;
+    while(tt--){
+        int n;
+        cin >> n;
+        // cout << fac(n) << " ";
+        for(int i=1;i<n;i++){
+            if(n%i==i-1){
+                cout << (fac(n/i)*fac(n-n/i))%mod << " ";
+            }else{
+                ll ans = (i-n%i);
+                ans*= fac(n/i);
+                ans%=mod;
+                ans*= fac(n-n/i);
+                ans%=mod;
+                cout << ans << " ";
+            }
+        }
+        cout << fac(n) << endl;
+    }
+}

@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+#include <vector>
+using namespace std;
+
+void calc(vector<long long>& a,long long n){
+    
+    vector<long long> ans;
+    
+    // loop will run at most 32 times because there are 32 bits
+    while(!a.empty()){
+        
+        // sorting the array 
+        sort(a.begin(),a.end());
+        long long maxi=a.back();
+        
+        // here all max elements are removed from array and inserted to ans
+        while(!a.empty() && a.back()==maxi){
+            a.pop_back();   
+            ans.push_back(maxi);
+        }
+        
+        // now we perform & with max elements with all elements
+        for(auto &x:a)
+            x&=maxi;
+    }
+    
+    
+    for(auto x: ans)
+        cout<<x<<" ";
+    cout<<endl;
+}
+
+
+int main()
+{
+    int t;
+    cin >> t;
+    while(t--){
+        
+        long long n;
+        vector<long long> a;
+        cin >> n;
+        for(long long i=0;i<n;i++){
+            long long x;
+            cin >> x;
+            a.push_back(x);
+        }
+        
+        calc(a,n);
+    }
+    return 0;
+
+}

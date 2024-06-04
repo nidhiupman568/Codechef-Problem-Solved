@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+signed main() {
+	
+	int tc; cin >> tc;
+	while(tc--) {
+	    int n, m; cin >> n >> m;
+	    
+	    map<int, int> mp;
+	    for(int i = 0; i < n; i++) {
+	        int a = i;
+	        int b = n - i - 1;
+	        mp[a ^ b]++;
+	    }
+	    int ans = 0;
+	    for(int i = 0; i < m; i++) {
+	        int a = i;
+	        int b = m - i - 1;
+	        ans += mp[a ^ b];
+	    }
+	    ans = n * m - ans;
+	    cout << ans << '\n';
+	}
+
+}

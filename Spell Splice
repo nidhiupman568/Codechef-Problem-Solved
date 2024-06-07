@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+#define lil long long int
+const int MOD = 1e9 + 7;
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
+	int test;cin>>test;
+	while(test--)
+	{
+	    lil n;cin>>n;
+	    lil a[n],v[n];
+	    for(int i=0;i<n;i++)
+	        cin>>a[i]>>v[i];
+	       int ans=0,z=0;
+	    for(int i=0;i<n;i++)
+	    {
+	        for(int j=i+1;j<n;j++)
+	        {
+	            z=a[i]*v[j] + a[j]*v[i];
+	            ans=max(ans,z);
+	        }
+	    }
+	    cout<<ans<<endl;
+	    
+	    
+	}
+
+}

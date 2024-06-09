@@ -1,0 +1,105 @@
+// #pragma GCC optimize("O3,unroll-loops")
+// #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#include "bits/stdc++.h"
+using namespace std;
+using ll = long long int;
+mt19937_64 RNG(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+/**
+ * Suffix Array
+ * Source: kactl
+ * Description: Builds the suffix array of the given string.
+ *              sa[i] is the index of the i'th suffix in sorted order
+ *              sa[0] = n
+ *              lcp[i] = longest common prefix of sa[i], sa[i-1]
+ *              lcp[0] = 0
+ * Time: O(nlogn)
+ */
+ 
+struct SuffixArray {
+    vector<int> sa, lcp;
+    SuffixArray(string& s, int lim=256) { // or basic_string<int>
+        int n = size(s) + 1, k = 0, a, b;
+        vector<int> x(begin(s), end(s)+1), y(n), ws(max(n, lim)), rank(n);
+        sa = lcp = y, iota(begin(sa), end(sa), 0);
+        for (int j = 0, p = 0; p < n; j = max(1, j * 2), lim = p) {
+            p = j, iota(begin(y), end(y), n - j);
+            for (int i = 0; i < n; ++i) if (sa[i] >= j) y[p++] = sa[i] - j;
+            fill(begin(ws), end(ws), 0);
+            for (int i = 0; i < n; ++i) ws[x[i]]++;
+            for (int i = 1; i < lim; ++i) ws[i] += ws[i - 1];
+            for (int i = n; i--;) sa[--ws[x[y[i]]]] = y[i];
+            swap(x, y), p = 1, x[sa[0]] = 0;
+            for (int i = 1; i < n; ++i) a = sa[i - 1], b = sa[i], x[b] =
+                (y[a] == y[b] && y[a + j] == y[b + j]) ? p - 1 : p++;
+        }
+        for (int i = 1; i < n; ++i) rank[sa[i]] = i;
+        for (int i = 0, j; i < n - 1; lcp[rank[i++]] = k)
+            for (k && k--, j = sa[rank[i] - 1];
+                    s[i + k] == s[j + k]; k++);
+    }
+};
+
+/**
+ * Sparse Table
+ * Source: kactl
+ * Description: Given an idempotent function f that can be evaluated in O(T) and a static array V,
+ *              finds f(V[L], V[L+1], ..., v[R-1]) in O(T) using O(nlogn) memory
+ * Time: O(Tnlogn) precomputation, O(1) query
+ * Note: Ranges are half-open, i.e, [L, R)
+ */
+
+template<class T>
+struct SparseTable {
+    T f(T a, T b) {return min(a, b);}
+    vector<vector<T>> jmp;
+    SparseTable(const vector<T>& V) : jmp(1, V) {
+        for (int pw = 1, k = 1; pw * 2 <= (int)V.size(); pw *= 2, ++k) {
+            jmp.emplace_back(V.size() - pw * 2 + 1);
+            for (int j = 0; j < (int)jmp[k].size(); ++j)
+                jmp[k][j] = f(jmp[k - 1][j], jmp[k - 1][j + pw]);
+        }
+    }
+    T query(int a, int b) {
+        assert(a < b); // or return unit if a == b
+        int dep = 31 - __builtin_clz(b - a);
+        return f(jmp[dep][a], jmp[dep][b - (1 << dep)]);
+    }
+};
+
+int main()
+{
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int t; cin >> t;
+    while (t--) {
+        int n; cin >> n;
+        string s; cin >> s;
+        SuffixArray SA(s);
+        SparseTable ST(SA.lcp);
+        vector<int> pos(n+1);
+        for (int i = 0; i <= n; ++i) pos[SA.sa[i]] = i;
+        
+        auto cmp = [&] (int i, int j, int k) {
+            // Compare s[i...k] to s[j...k]
+            int u = pos[i], v = pos[j];
+            int lcp = ST.query(min(u, v)+1, max(u, v)+1);
+            if (j + lcp >= k) return true;
+            return s[i+lcp] > s[j+lcp];
+        };
+        vector<int> stk = {n, n-1};
+        for (int i = n-2; i >= 0; --i) {
+            while (stk.size() >= 2) {
+                int x = *rbegin(stk);
+                int y = *next(rbegin(stk));
+                if (cmp(i, x, y)) stk.pop_back();
+                else break;
+            }
+            stk.push_back(i);
+        }
+        string ans = "";
+        for (int i = 1; i < stk.size(); ++i)
+            ans += s.substr(stk[i], stk[i-1] - stk[i]);
+        cout << ans << '\n';
+    }
+}

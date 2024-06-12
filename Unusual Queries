@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+    long long n, a, b;
+    scanf("%lld %lld %lld", &n, &a, &b);
+
+    if (a > b)
+        swap(a, b);
+
+    if (a == b) {
+        printf("%lld\n", (n / a));
+    } else {
+        long long ans = 0;
+        if (n >= a * (a - 1)) {
+            ans = n - a * (a - 1) + 1;
+            n = a * (a - 1) - 1;
+        }
+        long long temp = n / a;
+        ans += (temp * (temp + 1)) / 2;
+        ans += min(temp, n % a);
+
+        printf("%lld\n", ans);
+    }
+}
+
+int main() {
+    int tt;
+    scanf("%d", &tt);
+
+    while (tt--) {
+        solve();
+    }
+    return 0;
+}

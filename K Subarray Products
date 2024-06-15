@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0), cout.tie(0);
+	
+	int T; cin >> T;
+	while (T--) {
+		int N, K, M; cin >> N >> K >> M;
+		vector<int> A(N+1); for (int i = 1; i <= N; i++) cin >> A[i];
+		function<vector<pair<int, int>>(int)> DFS = [&](int K) {
+			if (K == 1) {
+				vector<pair<int, int>> rt(N+1);
+				for (int i = 1; i <= N; i++) rt[i] = {A[i]%M, A[i]%M};
+				return rt;
+			}
+			auto x = DFS(K / 2);
+			for (int i = 1; i <= N; i++) {
+				int nxt = i + K / 2;
+				pair<int, int> y;
+				if (nxt > N) y = {0, 0};
+				else y = x[nxt];
+				auto [a, b] = x[i];
+				auto [c, d] = y;
+				x[i] = {(a + 1LL * b * c) % M, 1LL * b * d % M};
+			}
+			if (K % 2) {
+				for (int i = 1; i <= N; i++) {
+					auto [c, d] = (i == N ? make_pair(0, 0) : x[i+1]);
+					x[i] = {(A[i] + 1LL * A[i] * c) % M, 1LL * A[i] * d % M};
+				}
+			}
+			return x;
+		}; auto ans = DFS(K);
+		int res = 0;
+		for (int i = 1; i <= N; i++) (res += ans[i].first) %= M;
+		cout << res%M << "\n";
+	}
+	
+	return 0;
+}

@@ -1,0 +1,124 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct dsu {
+    vector<int> p;
+    vector<int> sz;
+    int n;
+
+    dsu(int _n) : n(_n) {
+        p = vector<int>(n);
+        iota(p.begin(), p.end(), 0);
+        sz = vector<int>(n, 1);
+    }
+
+    inline int get(int x) {
+        if (p[x] == x) {
+            return x;
+        } else {
+            return p[x] = get(p[x]);
+        }
+    }
+
+    inline bool unite(int x, int y) {
+        x = get(x);
+        y = get(y);
+        if (x == y) {
+            return false;
+        }
+        p[x] = y;
+        sz[y] += sz[x];
+        return true;
+    }
+
+    inline bool same(int x, int y) {
+        return (get(x) == get(y));
+    }
+
+    inline int size(int x) {
+        return sz[get(x)];
+    }
+
+    inline bool root(int x) {
+        return (x == get(x));
+    }
+};
+
+int main() {
+   
+      
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int tt;
+    cin >> tt;
+    while (tt--) {
+        int n, m;
+        cin >> n >> m;
+        vector<int> color(n);
+        for (int i = 0; i < n; i++) {
+            cin >> color[i];
+        }
+        vector<int> x(m), y(m), w(m);
+        for (int i = 0; i < m; i++) {
+            cin >> x[i] >> y[i] >> w[i];
+            x[i]--;
+            y[i]--;
+        }
+        long long ans = -1;
+        int mn = *min_element(w.begin(), w.end());
+        // we only need to check mn, mn - 1, and mn - 2
+        for (int z = mn; z >= mn - 2; z--) {
+            int ok = 1;
+            // each connected component must be an eulearian curcuit
+            vector<long long> sum(n);
+            for (int i = 0; i < m; i++) {
+                sum[x[i]] += w[i] - z;
+                sum[y[i]] += w[i] - z;
+            }
+            for (int i = 0; i < n; i++) {
+                if (sum[i] % 2 == 1) {
+                    ok = 0;
+                }
+            }
+            // make connected components
+            // ignore the edge with w[i] == z since no operations are needed
+            dsu d(n);
+            for (int i = 0; i < m; i++) {
+                if (w[i] > z) {
+                    d.unite(x[i], y[i]);
+                }
+            }
+            vector<vector<int>> g(n);
+            for (int i = 0; i < n; i++) {
+                g[d.get(i)].emplace_back(i);
+            }
+            for (int i = 0; i < n; i++) {
+                int black = 0, white = 0, need_ops = 0;
+                for (int v : g[i]) {
+                    if (color[v]) {
+                        black = 1;
+                    } else {
+                        white = 1;
+                    }
+                    if (sum[v] > 0) {
+                        need_ops = 1;
+                    }
+                }
+                if (need_ops) {
+                    if (!(black && white)) {
+                        ok = 0;
+                    }
+                }
+            }
+            if (ok) {
+                ans = 0;
+                for (int i = 0; i < m; i++) {
+                    ans += w[i] - z;
+                }
+                break;
+            }
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}

@@ -1,0 +1,163 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Macros
+#define pb          push_back
+#define pf          push_front
+#define ff          first
+#define ss          second
+#define all(v)      v.begin(), v.end()
+#define rall(v)     v.rbegin(), v.rend()
+
+#define rep(i, x, n)   for(int i = x; i < n; ++i)
+#define rrep(i, x, n)  for(int i = x; i >= n; --i)
+
+// Read and Print
+#define read(a, i, n) for(ll i = 0; i < n; ++i) cin >> a[i];
+#define print(a, i, n) for(ll i = 0; i < n; ++i){ cout << a[i] << " ";} cout << "\n";
+
+// Typedefs
+typedef long long ll;
+typedef long double ld;
+typedef pair <ll, ll> pii;
+
+typedef vector <ll> vi;
+typedef vector <vector <ll>> vvi;
+
+// Constants
+const ll mxn = 2e5 + 5;
+const ll mod = 1e9 + 7;
+
+// Fast IO
+void fast(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+}
+
+// Solve
+
+int dp[mxn][2][2];
+
+int slv(int i, bool started, bool ended, vector <int> &o, vector <int> &even, vector <int> &odd, int n){
+	if(i >= n){
+		return 0;
+	}
+
+	if(dp[i][started][ended] != -1){
+		return dp[i][started][ended];
+	}
+
+	if(!started){
+		int a1 = o[i] + slv(i + 1, started, ended, o, even, odd, n);
+		int a2;
+		if(i % 2 == 0){
+			// Even start
+			a2 = even[i] + even[i + 1];
+			a2 += slv(i + 2, 1, ended, o, even, odd, n);
+		}
+		else{
+			a2 = odd[i] + odd[i + 1];
+			a2 += slv(i + 2, 1, ended, o, even, odd, n);
+		}
+
+		return dp[i][started][ended] = max(a1, a2);
+	}
+	else{
+		if(ended){
+			return dp[i][started][ended] = o[i] + slv(i + 1, 1, 1, o, even, odd, n);
+		}
+		else{
+			// Continue or end at current
+			int a1, a2;
+
+			// Continue
+			if(i % 2 == 0){
+				a1 = even[i] + even[i + 1] + slv(i + 2, 1, ended, o, even, odd, n);
+			}
+			else{
+				a1 = odd[i] + odd[i + 1] + slv(i + 2, 1, ended, o, even, odd, n);
+			}
+
+			a2 = o[i] + slv(i + 1, 1, 1, o, even, odd, n);
+
+			return dp[i][started][ended] = max(a1, a2);
+		}
+	}
+}
+
+void solve() {
+    int n;
+    cin >> n;
+
+    for(int i = 0; i <= n + 1; ++i){
+    	dp[i][0][0] = -1;
+    	dp[i][0][1] = -1;
+    	dp[i][1][0] = -1;
+    	dp[i][1][1] = -1;
+    }
+
+    vector <int> a(n);
+    read(a, i, n);
+
+    vector <int> original(n, 0);
+
+    set <int> st;
+    for(int i = 0; i < n; ++i){
+    	st.insert(a[i]);
+    	original[i] = (st.size() == *prev(st.end()));
+    }
+    original.pb(0);
+
+    vector <int> tmp = a;
+
+    vector <int> evenSwap(n, 0);
+    st.clear();
+
+    for(int i = 0; i < n; i += 2){
+    	if(i + 1 < n){
+    		swap(tmp[i], tmp[i + 1]);
+    	}
+    }
+    for(int i = 0; i < n; ++i){
+    	st.insert(tmp[i]);
+    	evenSwap[i] = (st.size() == *prev(st.end()));
+    }
+    evenSwap.pb(0);
+
+    tmp = a;
+
+    vector <int> oddSwap(n, 0);
+    st.clear();
+
+    for(int i = 1; i < n; i += 2){
+    	if(i + 1 < n){
+    		swap(tmp[i], tmp[i + 1]);
+    	}
+    }
+    for(int i = 0; i < n; ++i){
+    	st.insert(tmp[i]);
+    	oddSwap[i] = (st.size() == *prev(st.end()));
+    }
+    oddSwap.pb(0);
+
+    // print(original, i, n);
+    // print(oddSwap, i, n);
+    // print(evenSwap, i, n);
+
+    cout << slv(0, 0, 0, original, evenSwap, oddSwap, n) << "\n";
+    
+}
+
+int main(){
+    
+    fast();
+
+    ll t;
+    cin >> t;
+
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}

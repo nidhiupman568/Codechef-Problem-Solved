@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll=long long;
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+typedef __gnu_pbds::tree<int,__gnu_pbds::null_type,less<int>,__gnu_pbds::rb_tree_tag,__gnu_pbds::tree_order_statistics_node_update> ordered_set;
+typedef __gnu_pbds::tree<pair<int,int>,__gnu_pbds::null_type,less<pair<int,int>>,__gnu_pbds::rb_tree_tag,__gnu_pbds::tree_order_statistics_node_update> ordered_mset;
+
+struct node{
+    int num;
+    ll sum;
+};
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    int t;cin>>t;
+    while(t--){
+        int n,m;cin>>n>>m;
+        vector<int> c(n+1,0);
+        for(int i=0;i<n;i++){
+            cin>>c[i+1];
+        }
+        vector<int> f(n+1,0);
+        vector<int> start(n+1);
+        vector<vector<vector<int>>> end(n+1);
+        for(int i=0;i<m;i++){
+            int l,r;cin>>l>>r;
+            start[l]++;
+            end[r].push_back({l,i});
+        }
+        ordered_mset om;
+        int ct=1;
+        vector<vector<int>> temp(n+1);
+        vector<int> last(n+1,0);
+        for(int i=1;i<=n;i++){
+            for(int j=0;j<start[i];j++){
+                om.insert({i,ct});
+                temp[i].push_back(ct);
+                ct++;
+            }
+            f[c[i]]+=(om.size()-om.order_of_key({last[c[i]],1e9}));
+            for(int j=0;j<end[i].size();j++){
+                om.erase({end[i][j][0],temp[end[i][j][0]].back()});
+                temp[end[i][j][0]].pop_back();
+            }
+            last[c[i]]=i;
+        }
+
+        last.assign(n+1,0);
+
+
+        vector<node> st(4*n+1);
+        auto merge=[&](node a,node b)->node{
+            node temp;
+            temp.sum=a.sum+b.sum;
+            temp.num=a.num+b.num;
+            return temp;
+        };
+        auto update=[&](auto &self,int v,int l,int r,int indx,int ds,int dn)->void{
+            if(indx<l||indx>r)return;
+            if(l==r){
+                st[v].sum+=ds;
+                st[v].num+=dn;
+                return;
+            }
+            int mid=(l+r)/2;
+            self(self,2*v,l,mid,indx,ds,dn);
+            self(self,2*v+1,mid+1,r,indx,ds,dn);
+            st[v]=merge(st[2*v],st[2*v+1]);
+            return;
+        };
+        auto query=[&](auto &self,int v,int l,int r,int ql,int qr)->node{
+            if(ql>r||qr<l)return {0,0};
+            if(ql<=l&&qr>=r)return st[v];
+            int mid=(l+r)/2;
+            return merge(self(self,2*v,l,mid,ql,qr),self(self,2*v+1,mid+1,r,ql,qr));
+        };
+        vector<ll> ans(m+1,0);
+        for(int i=1;i<=n;i++){
+            update(update,1,0,n,last[c[i]],-f[c[i]],-1);
+            last[c[i]]=i;
+            update(update,1,0,n,last[c[i]],f[c[i]],1);
+            for(int j=0;j<end[i].size();j++){
+                node temp=query(query,1,0,n,end[i][j][0],i);
+                ans[end[i][j][1]]=1LL*m*temp.num-temp.sum;
+            }
+        }
+        for(int i=0;i<m;i++)cout<<ans[i]<<" ";
+        cout<<"\n";
+    }
+    return 0;
+}

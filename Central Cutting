@@ -1,0 +1,130 @@
+#include <bits/stdc++.h>
+
+#define mod 998244353
+
+using namespace std;
+
+#define endl '\n'
+#define pb push_back
+typedef long long ll;
+typedef vector<int> vi;
+typedef pair<int,int> pii;
+
+const int inf = 1e9;
+const int MX = 2e5 + 5;
+
+typedef long long LL;
+const int M = mod;
+LL inv[MX], f[MX], g[MX];
+int fac[MX];
+
+void init() {
+	int i;
+	inv[1] = 1;
+	for (i = 2; i < MX; i++) inv[i] = inv[M % i] * (M - M / i) % M;
+	f[0] = g[0] = 1;
+	for (i = 1; i < MX; i++) {
+		f[i] = f[i - 1] * i % M;
+		g[i] = g[i - 1] * inv[i] % M;
+	}
+	fac[0] = 1;
+	for (int i = 1; i < MX; i++) fac[i] = 1ll * fac[i - 1] * i % mod;
+}
+
+inline LL C(int n, int k) {
+	if (k < 0 || k > n) return 0;
+	return f[n] * g[k] % M * g[n - k] % M;
+}
+
+int n;
+int a[MX], flg[MX];
+int l[MX], r[MX];
+int cl[MX], cr[MX];
+
+void solve() {
+	cin >> n;
+	a[0] = 0;
+	a[n + 1] = 0;
+	for (int i = 1; i <= n + 1; i++) flg[i] = 0;
+	for (int i = 1; i <= n; i++) cin >> a[i], flg[a[i]] = 1;
+	for (int i = 0; i <= n + 1; i++) cl[i] = cr[i] = 0;
+	for (int i = 1; i <= n; i++) cl[i] = cl[i - 1] + (a[i] == 0);
+	for (int i = n; i > 0; i--) cr[i] = cr[i + 1] + (a[i] == 0);
+	cr[0] = cr[1], cl[n + 1] = cl[n];
+	vector<int> vec;
+	vec.clear();
+	vector<int> P;
+	P.clear();
+	for (int i = 1; i <= n; i++) if (a[i] == 0) P.push_back(i);
+	for (int i = 1; i <= n; i++) if (!flg[i]) vec.push_back(i);
+	int m = vec.size();
+	for (int i = 0; i <= n + 1; i++) l[i] = n + 1, r[i] = 0;
+	for (int i = 1; i <= n; i++) {
+		l[i] = l[i - 1];
+		if (a[i]) l[i] = min(l[i], a[i]);
+	}
+	l[n + 1] = l[n];
+	for (int i = n; i; i--) {
+		r[i] = r[i + 1];
+		if (a[i]) r[i] = max(r[i], a[i]);
+	}
+	r[0] = r[1];
+	int ans = 0;
+	vector<int> L, R;
+	L.clear(), R.clear();
+	for (int i = n; i; i--) R.push_back(r[i]), L.push_back(l[i]);
+	for (int x = 1; x <= n; x++) {
+		int tp = ans;
+		if (flg[x]) continue;
+		int sm = lower_bound(vec.begin(), vec.end(), x) - vec.begin();
+		int big = m - sm - 1;
+		int pos = lower_bound(R.begin(), R.end(), x) - R.begin();
+		pos = n - pos;
+		pos++;
+		int cnt = cr[pos];
+		ans = (ans + 1ll * x * (C(m, big + 1) - C(m - cnt, big + 1)) % mod * fac[sm] % mod * fac[big] % mod) % mod;
+		pos = lower_bound(L.begin(), L.end(), x) - L.begin();
+		pos = n - pos;
+		cnt = cl[pos];
+		ans = (ans + 1ll * x * (C(m, sm + 1) - C(m - cnt, sm + 1)) % mod * fac[big] % mod * fac[sm] % mod) % mod;
+		pos = P[big];
+		if (x < l[pos] && x > r[pos]) {
+			ans = (ans - 1ll * x * fac[big] % mod * fac[sm] % mod) % mod;
+		}
+	}
+	for (int i = 1; i <= n; i++) {
+		if (a[i] == 0) continue;
+		int tp = ans;
+		int x = a[i];
+		if (l[i] < x && r[i] > x) continue;
+		int sm = lower_bound(vec.begin(), vec.end(), x) - vec.begin();
+		int big = m - sm;
+		if (l[i] < x) {
+			ans = (ans + 1ll * x * C(sm, cr[i]) % mod * fac[cr[i]] % mod * fac[cl[i]] % mod) % mod;
+		} else if (r[i] > x) {
+			ans = (ans + 1ll * C(big, cl[i]) * x % mod * fac[cl[i]] % mod * fac[cr[i]] % mod) % mod;
+		} else {
+			ans = (ans + 1ll * x * C(big, cl[i]) % mod * fac[cl[i]] % mod * fac[cr[i]] % mod) % mod;
+			ans = (ans + 1ll * C(sm, cr[i]) * x % mod * fac[cr[i]] % mod * fac[cl[i]] % mod) % mod;
+			if (cl[i] == big && cr[i] == sm) ans = (ans - 1ll * fac[big] * x % mod * fac[sm] % mod) % mod;
+		}
+	}
+	ans = (ans % mod + mod) % mod;
+	cout << ans << "\n";
+}
+
+int main() {
+#ifndef ONLINE_JUDGE
+	freopen("in.txt", "r", stdin);
+#endif
+	ios::sync_with_stdio(0);
+	cin.tie(0), cout.tie(0);
+
+	int Tc = 1;
+	init();
+	cin >> Tc;
+	while (Tc--) {
+		solve();
+	}
+	return 0;
+}

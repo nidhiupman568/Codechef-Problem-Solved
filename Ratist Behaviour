@@ -1,0 +1,120 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+template<typename T> using Tree = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+typedef long long int ll;
+typedef long double ld;
+typedef pair<int,int> pii;
+typedef pair<ll,ll> pll;
+
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define pb push_back
+#define endl '\n'
+#define sz(a) (int)a.size()
+#define setbits(x) __builtin_popcountll(x)
+#define ff first
+#define ss second
+#define conts continue
+#define ceil2(x,y) ((x+y-1)/(y))
+#define all(a) a.begin(), a.end()
+#define rall(a) a.rbegin(), a.rend()
+#define yes cout << "Yes" << endl
+#define no cout << "No" << endl
+
+#define rep(i,n) for(int i = 0; i < n; ++i)
+#define rep1(i,n) for(int i = 1; i <= n; ++i)
+#define rev(i,s,e) for(int i = s; i >= e; --i)
+#define trav(i,a) for(auto &i : a)
+
+template<typename T>
+void amin(T &a, T b) {
+    a = min(a,b);
+}
+
+template<typename T>
+void amax(T &a, T b) {
+    a = max(a,b);
+}
+
+#ifdef LOCAL
+#include "debug.h"
+#else
+#define debug(...) 42
+#endif
+
+/*
+
+
+
+*/
+
+const int MOD = 1e9 + 7;
+const int N = 1e5 + 5;
+const int inf1 = int(1e9) + 5;
+const ll inf2 = ll(1e18) + 5;
+
+void solve(int test_case)
+{
+    ll n; cin >> n;
+    vector<pll> a(n+5);
+    rep1(i,n) cin >> a[i].ff;
+    rep1(i,n){
+        char ch; cin >> ch;
+        a[i].ss = ch-'0';
+    }
+
+    map<ll,pll> mp;
+    rep1(i,n){
+        if(!a[i].ss){
+            mp[a[i].ff].ff++;
+        }
+        else{
+            mp[a[i].ff].ss++;
+        }
+    }
+
+    ll bal = 0, cnt = 0;
+    ll ans = 1;
+    priority_queue<ll,vector<ll>,greater<ll>> pq;
+
+    for(auto it = mp.rbegin(); it != mp.rend(); ++it){
+        auto [x,y] = it->ss;
+        amax(ans,x);
+        amax(ans,y);
+
+        bal += x, cnt += x;
+        if(bal == 0) conts;
+        
+        bal--;
+        cnt += y;
+        pq.push(y);
+        amax(ans,cnt);
+
+        while(bal <= 0){
+            ll val = pq.top();
+            pq.pop();
+            cnt -= val;
+            bal++;
+        }
+    }
+
+    cout << ans << endl;
+}
+
+int main()
+{
+    fastio;
+
+    int t = 1;
+    cin >> t;
+
+    rep1(i, t) {
+        solve(i);
+    }
+
+    return 0;
+}

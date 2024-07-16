@@ -1,0 +1,92 @@
+#include <bits/stdc++.h>
+#define int long long int
+#define endl "\n"
+#define pb push_back
+#define fastio() ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(__null);
+
+using namespace std;
+
+class SegTree {
+public:
+    int n;
+    vector<int> tree;
+
+    SegTree(int m) {
+        n = m;
+        tree.resize(4 * n);
+    }
+
+    int query(int node, int lo, int hi, int l, int r) {
+        if (lo > r || hi < l) return 0LL;
+        if (lo >= l && hi <= r) return tree[node];
+
+        int mid = (lo + hi) / 2;
+        int left = query(2 * node, lo, mid, l, r);
+        int right = query(2 * node + 1, mid + 1, hi, l, r);
+        return merge(left, right);
+    }
+
+    void update(int node, int lo, int hi, int i, int v) {
+        if (lo == hi) {
+            tree[node] += v;
+            return;
+        }
+
+        int mid = (lo + hi) / 2;
+        if (i <= mid) update(2 * node, lo, mid, i, v);
+        else update(2 * node + 1, mid + 1, hi, i, v);
+
+        tree[node] = merge(tree[2 * node], tree[2 * node + 1]);
+    }
+
+    int query(int l, int r) {
+        return query(1, 0, n - 1, l, r);
+    }
+
+    void update(int i, int v) {
+        update(1, 0, n - 1, i, v);
+    }
+
+    int merge(int l, int r) {
+        return l + r;
+    }
+};
+
+signed main() {
+    fastio()
+
+    vector<int> pw(19, 1);
+    for (int i = 1; i < 19; i++) pw[i] = pw[i - 1] * 10;
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n, x;
+        cin >> n >> x;
+
+        vector<int> v(n);
+        for (auto &x : v) cin >> x;
+
+        vector<int> all = v;
+        sort(all.begin(), all.end());
+        all.erase(unique(all.begin(), all.end()), all.end());
+
+        auto idx = [&](int x) {
+            return lower_bound(all.begin(), all.end(), x) - all.begin();
+        };
+
+        int ans = 0;
+        SegTree st(size(all));
+        for (int j = 0; j < n; j++) {
+            int l = idx(pw[x - 1] - v[j]);
+            int r = (x < 19 ? idx(pw[x] - v[j]) - 1 : size(all) - 1);
+            ans += st.query(l, r) * (n - j);
+            st.update(idx(v[j]), j + 1);
+        }
+
+        cout << ans << endl;
+    }
+
+    return 0;
+}

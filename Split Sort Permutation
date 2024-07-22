@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(i,n) for(int i=0;i<n;i++)
+#define per(i,n) for(int i=n-1;i>=0;i--)
+#define rng(i,c,n) for(int i=c;i<n;i++)
+#define fi first
+#define se second
+#define pb push_back
+#define sz(a) (int) a.size()
+#define all(a) a.begin(),a.end()
+#define vec(...) vector<__VA_ARGS__>
+#define _3Wcdivh ios::sync_with_stdio(0),cin.tie(0)
+typedef long long ll;
+typedef vector<int> vi;
+typedef pair<int,int> pii;
+void print(){cout<<'\n';}
+template<class h,class...t>
+void print(const h&v,const t&...u){cout<<v<<' ',print(u...);}
+
+// snuke's mod int
+template <ll mod>
+struct modint{
+	ll x;
+	modint(ll x=0):x((x%mod+mod)%mod){}
+	modint operator-()const{return modint(-x);}
+	modint& operator+=(const modint a){if((x+=a.x)>=mod) x-=mod; return *this;}
+	modint& operator-=(const modint a){if((x+=mod-a.x)>=mod) x-=mod; return *this;}
+	modint& operator*=(const modint a){(x*=a.x)%=mod; return *this;}
+	modint operator+(const modint a)const{modint res(*this); return res+=a;}
+	modint operator-(const modint a)const{modint res(*this); return res-=a;}
+	modint operator*(const modint a)const{modint res(*this); return res*=a;}
+	modint pow(ll n)const{
+		modint res=1,x(*this);
+		while(n){
+			if(n&1)res*=x;
+			x*=x;
+			n>>=1;
+		}
+		return res;
+	}
+	modint inv()const{return pow(mod-2);}
+};
+
+using mint=modint<1000000007>;
+
+void slv(){
+	int n,k;
+	cin>>n>>k;
+
+	vec(mint) f(n+1),dp(n+1);
+	dp[1]=f[1]=1;
+	for(int a=2;a<=n;a++){
+		for(int i=1;i<=min(k,a);i++){
+			dp[a]+=f[i]*dp[a-i];
+		}
+		dp[a]*=2;
+		f[a]=dp[a];
+		for(int j=1;j<a;j++){
+			f[a]-=f[j]*dp[a-j];
+		}
+		// if(a==n){
+		// 	rep(i,n) cout<<f[i].x<<" ";
+		// 	print();
+		// }
+	}
+	print(dp[n].x);
+}
+
+signed main(){
+_3Wcdivh;
+	int __t;
+	cin>>__t;
+	rep(cs,__t){
+		slv();
+	}
+}

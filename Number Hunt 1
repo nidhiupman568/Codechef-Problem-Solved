@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+bool isPrime(int number) {
+    for(int i = 2; i * i <= number; i++) {
+        if(number % i == 0) return false;
+    }
+    return true;
+}
+
+int findProductOfPrimes(int start) {
+    vector<int> primes;
+    while(primes.size() < 2) {
+        if(isPrime(start)) primes.push_back(start);
+        start++;
+    }
+    return primes[0] * primes[1];
+}
+
+signed main() {
+    int testCases;
+    cin >> testCases;
+    while(testCases--) {
+        int number;
+        cin >> number;
+        if(number == 1) number++;
+        cout << findProductOfPrimes(number) << endl;
+    }
+    return 0;
+}

@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// void print(unordered_map<int, long long> &mp){
+//     for(auto &pr: mp)
+//         cout<<pr.first<<"->"<<pr.second<<endl;
+// }
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> vec(n);
+    for(auto &i: vec)
+        cin>>i;
+    
+    sort(vec.begin(), vec.end());
+    long long ans = 0;
+    unordered_map<int, long long> prefix, suffix;
+    
+    for(auto &x: vec)
+        prefix[x]=prefix[x-1]+1;
+    for(int i=n-1; i>=0; i--)
+        suffix[vec[i]]=suffix[vec[i]+1]+1;
+    
+    // cout<<"Prefix"<<endl;
+    // print(prefix);
+    // cout<<"Suffix"<<endl;
+    // print(suffix);
+    for(auto &x: vec)
+        ans+=prefix[x]*suffix[x+2];
+    // cout<<ans<<endl<<endl<<endl<<endl;
+    cout<<ans<<endl;
+}
+int main() {
+	int t;
+	cin>>t;
+	while(t--)
+	    solve();
+	return 0;
+}

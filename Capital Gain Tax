@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int Xrop, Yrops;
+    cin >> Xrop >> Yrops;
+
+    if (Xrop < Yrops) {
+        cout << "INCREASED" << endl;
+    } else if (Xrop > Yrops) {
+        cout << "DECREASED" << endl;
+    } else {
+        cout << "SAME" << endl;
+    }
+
+    return 0;
+}

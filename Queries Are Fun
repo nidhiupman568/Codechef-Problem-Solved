@@ -1,0 +1,109 @@
+#include <bits/stdc++.h>
+
+
+
+using namespace std;
+
+constexpr int BLOCK_SIZE = 1000;
+
+int64_t sumOfFirstN(int64_t n) {
+    return n * (n + 1) / 2;
+}
+
+int64_t sumOfSquaresOfFirstN(int64_t n) {
+    return n * (n + 1) * (2 * n + 1) / 6;
+}
+
+int64_t calculateSum(int64_t maxVal, int64_t count) {
+    if (maxVal < 0) maxVal = 0;
+    return sumOfFirstN(count - maxVal) + maxVal * (count - maxVal);
+}
+
+int64_t calculateSum(int64_t maxVal, int64_t startIdx, int64_t endIdx) {
+    if (maxVal < 0) maxVal = 0;
+    int64_t result = sumOfSquaresOfFirstN(endIdx) - sumOfSquaresOfFirstN(startIdx - 1);
+    result -= (2 * maxVal - 1) * (sumOfFirstN(endIdx) - sumOfFirstN(startIdx - 1));
+    result += maxVal * (maxVal - 1) * (endIdx - startIdx + 1);
+    result /= 2;
+    result += maxVal * (sumOfFirstN(endIdx) - sumOfFirstN(startIdx - 1));
+    result -= maxVal * maxVal * (endIdx - startIdx + 1);
+    return result;
+}
+
+void processBlock(int blockIdx, vector<int>& values, vector<int>& maxPrefix, vector<int64_t>& accumulatedAnswers, vector<int>& blockStarts, vector<int>& blockEnds) {
+    accumulatedAnswers[blockIdx] = 0;
+    for (int idx = blockStarts[blockIdx]; idx < blockEnds[blockIdx]; ++idx) {
+        maxPrefix[idx] = values[idx];
+        if (idx > blockStarts[blockIdx])
+            maxPrefix[idx] = max(maxPrefix[idx], maxPrefix[idx - 1]);
+        accumulatedAnswers[idx] = calculateSum(maxPrefix[idx], idx + 1);
+        if (idx > blockStarts[blockIdx])
+            accumulatedAnswers[idx] += accumulatedAnswers[idx - 1];
+    }
+}
+
+void solveTestCase(int testCase) {
+    int numElements, numQueries;
+    cin >> numElements >> numQueries;
+    vector<int> values(numElements);
+    for (int &val : values)
+        cin >> val;
+    for (int i = 0; i < numElements; ++i)
+        values[i] = i + 1 - values[i];
+
+    int numBlocks = (numElements + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    vector<int> maxPrefix(numElements);
+    vector<int> blockStarts(numBlocks), blockEnds(numBlocks), blockIdx(numElements);
+    vector<int64_t> accumulatedAnswers(numElements);
+
+    for (int i = 0; i < numElements; i += BLOCK_SIZE) {
+        blockStarts[i / BLOCK_SIZE] = i;
+        blockEnds[i / BLOCK_SIZE] = min(i + BLOCK_SIZE, numElements);
+    }
+
+    for (int i = 0; i < numBlocks; ++i)
+        for (int j = blockStarts[i]; j < blockEnds[i]; ++j)
+            blockIdx[j] = i;
+
+    for (int i = numBlocks - 1; i >= 0; --i)
+        processBlock(i, values, maxPrefix, accumulatedAnswers, blockStarts, blockEnds);
+
+    for (int i = 0; i < numQueries; ++i) {
+        int position, newValue;
+        cin >> position >> newValue;
+        --position;
+        values[position] = position - newValue + 1;
+        processBlock(blockIdx[position], values, maxPrefix, accumulatedAnswers, blockStarts, blockEnds);
+
+        int64_t result = accumulatedAnswers[blockEnds[0] - 1];
+        int64_t currentMax = maxPrefix[blockEnds[0] - 1];
+
+        for (int j = 1; j < numBlocks; ++j) {
+            if (maxPrefix[blockStarts[j]] >= currentMax) {
+                result += accumulatedAnswers[blockEnds[j] - 1];
+                currentMax = maxPrefix[blockEnds[j] - 1];
+                continue;
+            }
+            if (maxPrefix[blockEnds[j] - 1] < currentMax) {
+                result += calculateSum(currentMax, blockStarts[j] + 1, blockEnds[j]);
+                continue;
+            }
+            int pos = lower_bound(maxPrefix.begin() + blockStarts[j], maxPrefix.begin() + blockEnds[j], currentMax) - maxPrefix.begin();
+            result += accumulatedAnswers[blockEnds[j] - 1] - accumulatedAnswers[pos - 1];
+            result += calculateSum(currentMax, blockStarts[j] + 1, pos);
+            currentMax = maxPrefix[blockEnds[j] - 1];
+        }
+        cout << result << '\n';
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int numTestCases;
+    cin >> numTestCases;
+    for (int testCase = 1; testCase <= numTestCases; ++testCase) {
+        solveTestCase(testCase);
+    }
+    return 0;
+}

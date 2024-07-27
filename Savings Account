@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+#include <tuple>
+using namespace std;
+
+vector<int> calculate_sources_to_reduce(int num_cases, vector<tuple<int, int, int>> cases_data) {
+    vector<int> results;
+    for (const auto& data : cases_data) {
+        int sources, income_per_source, max_limit;
+        tie(sources, income_per_source, max_limit) = data;
+
+        int total_income = sources * income_per_source;
+        int reduce_count = (total_income <= max_limit) ? 0 : (total_income - max_limit + income_per_source - 1) / income_per_source;
+        results.push_back(reduce_count);
+    }
+    return results;
+}
+
+int main() {
+    int num_cases;
+    cin >> num_cases;
+    vector<tuple<int, int, int>> cases_data;
+    int index = 0;
+    while (index < num_cases) {
+        int sources, income, limit;
+        cin >> sources >> income >> limit;
+        cases_data.push_back(make_tuple(sources, income, limit));
+        index++;
+    }
+
+    vector<int> results = calculate_sources_to_reduce(num_cases, cases_data);
+
+    for (int result : results) {
+        cout << result << endl;
+    }
+
+    return 0;
+}

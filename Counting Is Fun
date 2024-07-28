@@ -1,0 +1,202 @@
+
+#include <iostream>
+ 
+using namespace std;
+ 
+ 
+#ifndef _GLIBCXX_NO_ASSERT
+  #include <cassert>
+  #endif
+  #include <cctype>
+  #include <cerrno>
+  #include <cfloat>
+  #include <ciso646>
+  #include <climits>
+  #include <clocale>
+  #include <cmath>
+  #include <csetjmp>
+  #include <csignal>
+  #include <cstdarg>
+  #include <cstddef>
+  #include <cstdio>
+  #include <cstdlib>
+  #include <cstring>
+  #include <ctime>
+ 
+  #if __cplusplus >= 201103L
+  #include <ccomplex>
+  #include <cfenv>
+  #include <cinttypes>
+  #include <cstdbool>
+  #include <cstdint>
+  #include <ctgmath>
+  #include <cwchar>
+  #include <cwctype>
+  #endif
+ 
+  // C++
+  #include <algorithm>
+  #include <bitset>
+  #include <complex>
+  #include <deque>
+  #include <exception>
+  #include <fstream>
+  #include <functional>
+  #include <iomanip>
+  #include <ios>
+  #include <iosfwd>
+  #include <iostream>
+  #include <istream>
+  #include <iterator>
+  #include <limits>
+  #include <list>
+  #include <locale>
+  #include <map>
+  #include <memory>
+  #include <new>
+  #include <numeric>
+  #include <ostream>
+  #include <queue>
+  #include <set>
+  #include <sstream>
+  #include <stack>
+  #include <stdexcept>
+  #include <streambuf>
+  #include <string>
+  #include <typeinfo>
+  #include <utility>
+  #include <valarray>
+  #include <vector>
+ 
+  #if __cplusplus >= 201103L
+  #include <array>
+  #include <atomic>
+  #include <chrono>
+  #include <condition_variable>
+  #include <forward_list>
+  #include <future>
+  #include <initializer_list>
+  #include <mutex>
+  #include <random>
+  #include <ratio>
+  #include <regex>
+  #include <scoped_allocator>
+  #include <system_error>
+  #include <thread>
+  #include <tuple>
+  #include <typeindex>
+  #include <type_traits>
+  #include <unordered_map>
+  #include <unordered_set>
+ 
+#endif /* bitsStdcpp_hpp */
+const int maxn = 2e5 + 10;
+typedef long long ll;
+const ll mod = 998244353;
+#define bit(n, k) (((n) >> (k)) & 1)
+ll gcd(ll a, ll b){
+    if(a % b == 0){
+        return b;
+    }
+    else{
+        return gcd(b, a % b);
+    }
+}
+ll power(ll a, ll b){
+    if(b == 0){
+        return 1;
+    }
+    else{
+        ll k = power(a, b/2);
+        k = k*k;
+        k %= mod;
+        if(b%2){
+            k *= a;
+            k %= mod;
+        }
+        return k;
+    }
+}
+ 
+ll divide(ll a, ll b){
+    ll modInverse = power(b%mod, mod - 2);
+    a %= mod;
+    a *= modInverse;
+    a %= mod;
+    return a;
+}
+ 
+//int n, m;
+vector<int> g[maxn];
+int sub[maxn], parent[maxn], seen[maxn], height[maxn];
+int mx1, mx2;
+ 
+void dfs(int v, int p = -1){
+    parent[v] = p;
+    
+    if(p != -1){
+        height[v] = height[p] + 1;
+    }
+    
+    for(int u : g[v]){
+        if(u != p){
+            dfs(u, v);
+        }
+    }
+}
+
+ll fac[maxn + 10];
+ll divFac[maxn + 10];
+
+ll c(ll n, ll k){
+    ll ans = fac[n];
+    ans *= divFac[n - k];
+    ans %= mod;
+    ans *= divFac[k];
+    ans %= mod;
+    return ans;
+}
+
+ll cathalan(ll n){
+    ll g = power(2*n + 1, mod - 2);
+    g *= c(2*n + 1, n);
+    g %= mod;
+    return g;
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    ios::sync_with_stdio(false);
+    int t = 1;
+    cin >> t;
+    fac[0] = 1;
+    for(int i = 1; i <= maxn; i++){
+        fac[i] = fac[i - 1]*1ll*i;
+        fac[i] %= mod;
+    }
+    divFac[maxn] = power(fac[maxn], mod - 2);
+    for(int i = maxn - 1; i >= 0; i--){
+        divFac[i] = divFac[i + 1]*1ll*(i + 1);
+        divFac[i] %= mod;
+    }
+    
+    while(t--){
+        int n;
+        cin >> n;
+        ll ans = 0;
+        for(int i = n % 2; i <= n; i += 2){
+            ll k = c(n, i);
+            k %= mod;
+            k *= cathalan((n - i)/2);
+            k %= mod;
+            k *= fac[n];
+            k %= mod;
+            k *= power(power(2, mod - 2), (n - i)/2);
+            k %= mod;
+            ans += k;
+            ans %= mod;
+            //cout << i << " " << c(n, i) << '\n';
+         }
+        cout << ans << '\n';
+    }
+}

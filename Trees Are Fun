@@ -1,0 +1,175 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+#define LL long long
+#define NEWLINE "\n"
+#define all(x) x.begin(), x.end()
+
+const LL MAX_SIZE = 500500;
+const LL MAX_LOG = 20;
+const LL MODULO = 998244353;
+
+struct FenwickTree {
+    vector<LL> bit; 
+    LL size;
+    FenwickTree(LL size) {
+        this->size = size;
+        bit.assign(size, 0);
+    }
+    FenwickTree(vector<LL> data) : FenwickTree(data.size()) {  
+        LL dataSize = data.size();
+        for (size_t i = 0; i < dataSize; i++)
+            add(i, data[i]);
+    }
+    LL querySum(LL right) {
+        LL result = 0;
+        for (; right >= 0; right = (right & (right + 1)) - 1) {
+            result += bit[right];
+        }
+        return result;
+    }
+    LL querySum(LL left, LL right) {
+        if (left > right)
+            return 0;
+        return querySum(right) - querySum(left - 1);
+    }
+    void add(LL index, LL delta) {
+        for (; index < size; index = index | (index + 1)) {
+            bit[index] += delta;
+        }
+    }
+};
+
+vector<LL> order;
+vector<vector<LL>> adjacencyList;
+LL subtreeSize[MAX_SIZE], entryTime[MAX_SIZE], exitTime[MAX_SIZE], timestamp = 1;
+LL ancestorJump[MAX_SIZE][MAX_LOG];
+
+void depthFirstSearch(LL currentNode, LL parent) {
+    subtreeSize[currentNode] = 1;
+    entryTime[currentNode] = timestamp++;
+    order.push_back(currentNode);
+    ancestorJump[currentNode][0] = parent;
+    for (LL i = 1; i < MAX_LOG; i++) {
+        ancestorJump[currentNode][i] = ancestorJump[ancestorJump[currentNode][i - 1]][i - 1];
+    }
+    for (auto child : adjacencyList[currentNode]) {
+        if (child != parent) {
+            depthFirstSearch(child, currentNode);
+            subtreeSize[currentNode] += subtreeSize[child];
+        }
+    }
+    exitTime[currentNode] = timestamp++;
+    order.push_back(-currentNode);
+}
+
+LL isAncestor(LL ancestor, LL descendant) {
+    return (entryTime[ancestor] <= entryTime[descendant] && exitTime[ancestor] >= exitTime[descendant]) ? 1 : 0;
+}
+
+LL modularExponentiation(LL base, LL exponent, LL mod) {
+    LL result = 1;
+    base %= mod;  
+    while (exponent) {
+        if (exponent & 1)
+            result = (result * base) % mod;
+        exponent /= 2;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+LL modularInverse(LL number, LL mod) {
+    return modularExponentiation(number, mod - 2, mod);
+}
+
+void solve() {
+    LL numNodes;
+    cin >> numNodes;
+    timestamp = 1;
+    order = {0};
+    LL len = 2 * numNodes;
+    adjacencyList = vector<vector<LL>>(len + 5);
+    vector<LL> values(len + 5), leftMost(len + 5, len), rightMost(len + 5);
+
+    for (LL i = 1; i <= len; i++) {
+        cin >> values[i];
+        leftMost[values[i]] = min(leftMost[values[i]], i);
+        rightMost[values[i]] = i;
+    }
+
+    for (LL i = 1; i < len; i++) {
+        LL u, v;
+        cin >> u >> v;
+        adjacencyList[u].push_back(v);
+        adjacencyList[v].push_back(u);
+    }
+
+    depthFirstSearch(1, 1);
+    LL result = 0;
+    auto findLowestCommonAncestor = [&](LL u, LL notAncestor) {
+        if (isAncestor(u, notAncestor)) {
+            assert(0);
+        }
+        for (LL b = MAX_LOG - 1; b >= 0; b--) {
+            if (!isAncestor(ancestorJump[u][b], notAncestor)) {
+                u = ancestorJump[u][b];
+            }
+        }
+        return u;
+    };
+
+    FenwickTree fenwickTree(timestamp + 5);
+    vector<LL> marked(numNodes + 5, 0);
+    vector<LL> fromSelf(numNodes + 5, 0), fromNotAncestor(numNodes + 5, 0);
+
+    for (LL i = 1; i < timestamp; i++) {
+        LL node = abs(order[i]);
+        LL notAncestor = leftMost[values[node]];
+        if (notAncestor == node) {
+            notAncestor = rightMost[values[node]];
+        }
+        if (isAncestor(node, notAncestor)) {
+            continue;
+        }
+        LL multiplier = 1;
+        if (isAncestor(notAncestor, node)) {
+            multiplier = len - subtreeSize[findLowestCommonAncestor(node, notAncestor)];
+        } else {
+            multiplier = subtreeSize[notAncestor];
+        }
+        LL lowestCommonAncestor = ancestorJump[findLowestCommonAncestor(node, notAncestor)][0];
+        LL sum = 2LL * fenwickTree.querySum(entryTime[lowestCommonAncestor], entryTime[node] - 1) +
+                 (1 + isAncestor(notAncestor, node)) * fenwickTree.querySum(entryTime[lowestCommonAncestor] + 1, entryTime[notAncestor] - 1);
+        if (notAncestor == lowestCommonAncestor) {
+            sum -= 2LL * fenwickTree.querySum(entryTime[lowestCommonAncestor], entryTime[lowestCommonAncestor]);
+        }
+        if (order[i] >= 1) {
+            if (!marked[values[node]]) {
+                result = (result + 2LL * multiplier * subtreeSize[node]) % MODULO;
+                marked[values[node]] = 1;
+            }
+            result = (result - sum * multiplier) % MODULO;
+            fenwickTree.add(entryTime[notAncestor], subtreeSize[node]);
+            fenwickTree.add(exitTime[notAncestor], -subtreeSize[node]);    
+        } else {
+            result = (result + sum * multiplier) % MODULO;
+        }
+    }
+
+    result = (result + MODULO) % MODULO;
+    result = (result * modularInverse(2, MODULO)) % MODULO;
+    cout << result << NEWLINE;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);                         
+    cin.tie(NULL);                                  
+    LL testCases = 1;                 
+    cin >> testCases;
+    while (testCases--) {
+        solve();
+    }
+    cout << fixed << setprecision(10);
+    cerr << "Time: " << 1000 * ((double)clock()) / (double)CLOCKS_PER_SEC << "ms\n"; 
+}

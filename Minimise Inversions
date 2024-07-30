@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ff first
+#define ss second
+#define ll long long
+#define ld long double
+const long long M = 1e9 + 7, N = 1e5 + 7, mod = 998244353;
+
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+// using namespace __gnu_pbds;
+// #define pbds tree<long long, null_type, less<long long>, rb_tree_tag, tree_order_statistics_node_update>
+
+
+
+void solve()
+{
+    int n, k, ans = 1e9;
+    cin >> n >> k;
+    string s;
+    cin >> s;
+    for (int i = 0; i <= k; i++)
+    {
+        string r = s;
+        int cnt = 0, one = 0;
+        for (int j = 0, temp = i; j < n and temp > 0; j++)
+        {
+            if (r[j] == '1') r[j] = '0', temp--;
+        }
+        for (int j = n - 1, temp = (k - i); j >= 0 and temp > 0; j--)
+        {
+            if (r[j] == '0') r[j] = '1', temp--;
+        }
+        for (int j = 0; j < n; j++)
+        {
+            if (r[j] == '1') one++;
+            else cnt += one;
+        }
+        ans = min(ans, cnt);
+    }
+    cout << ans << "\n";
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    long long t = 1;
+    cin >> t;
+    while (t--)
+    {
+        solve();
+    }
+    return 0;
+}
+
+// Staring at the bottom of your glass
+// Hoping one day you'll make a dream last But dreams come slow and they go so fast
+// You see her when you close your eyes
+// Maybe one day you'll understand why Everything you touch surely dies

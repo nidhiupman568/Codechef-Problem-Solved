@@ -1,0 +1,54 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+void solve(){
+    ll n;cin>>n;
+    ll p[n],mi[n],ma[n];
+    for(int i=0;i<n;i++){
+        cin>>p[i];
+        p[i]--;
+        if(i){
+            mi[i]=min(mi[i-1],p[i]);
+            ma[i]=max(ma[i-1],p[i]);
+        }
+        else{
+            mi[i]=ma[i]=p[i];
+        }
+    }
+    vector<int> v;
+    // vector<vector<int>> ans;
+    int stop=n;
+    for(int i=n-1;i>=0;i--){
+        if(mi[i]==p[i]){
+            // int rr=stop;
+            for(int j=i+1;j<=stop;j++){
+                if(j==stop || ma[j]==p[j]){
+                    for(int k=j-1;k<stop;k++){
+                        v.push_back(k);
+                    }
+                    for(int k=j-2;k>=i;k--){
+                        v.push_back(k);
+                    }
+                    break;
+                }
+            }
+            stop=i;
+        }
+    }
+    for(auto i:v) cout<<i+1<<" ";
+    // for(auto i:ans){
+    //     for(auto j:i)
+    //         cout<<j<<" ";
+    // }
+    cout<<"\n";
+}
+
+int main() {
+	int t;cin>>t;
+	while(t--){
+	    solve();
+	}
+}

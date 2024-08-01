@@ -1,0 +1,23 @@
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int s, h, i, r;
+    cin >> s >> h >> i >> r;
+    
+    // Calculate volumes
+    int volumeCuboid = s * h * i;
+    int volumeCube = r* r * r;
+    
+    // Compare volumes
+    if (volumeCuboid > volumeCube) {
+        cout << "Cuboid" << endl;
+    } else if (volumeCube > volumeCuboid) {
+        cout << "Cube" << endl;
+    } else {
+        cout << "Equal" << endl;
+    }
+    
+    return 0;
+}

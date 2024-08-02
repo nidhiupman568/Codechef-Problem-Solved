@@ -1,0 +1,176 @@
+#include <bits/stdc++.h>
+#define INT long long
+#define pb push_back
+#define mid ((L + R) >> 1)
+#define ls (u << 1)
+#define rs (ls | 1)
+using namespace std;
+const int NN = 2e5 + 100;
+int A[NN],val[NN];
+
+typedef pair<INT, INT> pii;
+ 
+pii exgcd(INT a, INT b){
+    if(b == 0) return make_pair(1, 0);
+    else{
+        int p = a / b;
+        pii q = exgcd(b, a % b);
+        return make_pair(q.second, q.first - q.second * p);
+    }
+}
+pair<INT, INT> exsolve(int _a, int _b, int _K)
+{
+	pii p = exgcd(abs(_a), abs(_b));
+	INT xx = p.first;
+	INT yy = p.second;
+	if(_a < 0) xx = -xx;
+	if(_b < 0) yy = -yy;
+	xx = xx * _K;
+	yy = yy * _K;
+	int flag = _b > 0 ? 1 : -1;
+	if(xx < 0) {
+		INT dd = -xx / _b + 1000 * flag;
+		xx = xx + _b * dd;
+		yy = yy - _a * dd;
+		
+	}
+	if(xx < 10){
+		xx = xx + _b * 1000 * flag;
+		yy = yy - _a * 1000 * flag;
+	}
+	if((xx + yy) % 2 != 0)  {
+		xx = xx + _b * flag;
+		yy = yy - _a * flag;
+	}
+	return {xx, yy};
+}
+
+int MM = 100000000;
+int a, b, K;
+void input()
+{
+#ifndef ONLINE_JUDGE
+	a = rand() % MM - MM / 2;
+	b = rand() % MM - MM / 2;
+	K = rand() % MM - MM / 2;
+#else
+	scanf("%d%d%d", &a, &b, &K);
+#endif	
+}
+
+vector<INT> mysolve()
+{
+	vector<INT> ans;
+	
+	if(a == 0 && b == 0) {
+		if(K == 0) 
+			ans.push_back(1);
+		return ans;
+	}
+	if(a == 0) {
+		if(K % b == 0)  
+			ans.push_back(K / b);
+		return ans;
+	}
+	if(b == 0) {
+		if(K == 0) {
+			ans.push_back(1);
+			return ans;
+		}
+		if(K % a == 0 && 1LL * K * a > 0) {
+			ans.push_back(K / a);
+			ans.push_back(0);
+		}
+		return ans;
+	}
+	
+	if(K % b == 0) {
+		ans.push_back(K / b);
+		return ans;
+	}
+	
+	int d = __gcd(abs(a), abs(b));
+	if(K % d != 0) return ans;
+	
+	a = a / d; b = b / d; K = K / d;
+	if(b < 0) a = -a, b = -b, K = -K;
+	
+	auto [x1, y1]  = exsolve(a, b, K);
+	
+	if((x1 + y1) % 2 == 0) {
+		
+		INT A1 = (y1 - x1) / 2;
+		INT A2 = (y1 + x1) / 2;
+		ans.push_back(A1);
+		ans.push_back(A2);
+		return ans;
+	}
+	
+	auto [y2, x2] = exsolve(2 * a, b, K);
+	if(2ll * a * y2 + 1ll * b * x2 != K) assert(0);
+//	if(y2 < 8) assert(0);
+	int rem = (x2 - y2) % 3 + 3;
+	INT A1,A2,A3;
+	A1 = (x2 - y2 - 3) / 3;
+	A2 = x2 - y2 - 2 * A1;
+	A3 = A1 + y2;
+	if(A1 > A2) assert(0);
+	if(A2 > A3) assert(0);
+	if((A1 + A2 + A3) * b + (A3 - A1) * 2ll * a != K) assert(0);
+	ans.push_back(A1);
+	ans.push_back(A2);
+	ans.push_back(A3);
+	return ans;
+}
+INT f(vector<INT> ans)
+{
+	if(ans.size() == 0) return K;
+	//sort(ans.begin(), ans.end());
+	INT ret = 0;
+	int kk = ans.size(); 
+	for(int i = 0; i < kk; i++) for(int j = i + 1; j < kk; j++) ret += abs(ans[j] - ans[i]);
+	ret = ret * a;
+	for(int i = 0; i < kk; i++) ret += 1LL * b * ans[i];
+	return ret;
+}
+
+void print(vector<INT> ans)
+{
+	if(ans.size() == 0) {
+		puts("-1");
+		return;
+	}
+	printf("%d\n", ans.size());
+	for(INT xx : ans) printf("%lld ", xx);
+	puts("");
+}
+void solve()
+{
+	
+	input();
+	vector<INT> ans = mysolve();
+	
+	//if(f(ans) == K) print(ans);
+	//else
+	{
+//		cout<<"abk="<<a << ","<<b<<","<<K<<endl;
+		print(ans);
+//		cout<<f(ans)<<endl;
+//		exit(0);
+	}
+ 	if(f(ans) != K) cerr<<"---error--"<<endl, assert(0);
+}	
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+ 	freopen("out.out", "w", stdout);
+	srand(time(0));
+#endif
+	int T;
+	cin >> T;
+	while(T--){
+		solve();
+	}
+
+	return  0;
+}

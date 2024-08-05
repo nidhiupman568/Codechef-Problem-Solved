@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef pair<ll,ll> pi;
+const int mod = 1e9+7;
+vector<int>tree[555555];
+ll dp[555555][2];
+ll f(int cur,int p){
+	ll&ret = dp[cur][p];
+	if(~ret) return ret;
+	ret = 0;
+	if(tree[cur].empty()) return ret = 1;
+	vector<ll>pre,suf;
+	for(int nxt : tree[cur]) pre.emplace_back(f(nxt,0));
+	suf = pre;
+	int c = tree[cur].size();
+	for(int i=1; i<pre.size(); i++) pre[i] = (pre[i-1]*pre[i])%mod;
+	for(int i=c-2; i>=0; i--) suf[i] = (suf[i+1]*suf[i])%mod;
+	if(!p){
+		for(int i=0; i<tree[cur].size(); i++){
+			ll w = f(tree[cur][i],1);
+			if(i) w = (w*pre[i-1])%mod;
+			if(i+1 < tree[cur].size()) w = (w*suf[i+1])%mod;
+			ret+=w;
+		}
+	}
+	else{
+		if(tree[cur].size() > 1){
+			vector<ll>pre1 = pre;
+			vector<ll>suf1 = suf;
+			for(int i=0; i<tree[cur].size(); i++){
+				int nxt = tree[cur][i];
+				pre1[i] = f(nxt,1);
+				suf1[i] = f(nxt,1);
+				if(i) pre1[i] = (pre1[i]*pre[i-1])%mod;
+				if(i+1 < tree[cur].size()) suf1[i] = (suf1[i]*suf[i+1])%mod;
+			}
+			ll mul = pre1[0];
+			for(int i=1; i<tree[cur].size(); i++){
+				int nxt = tree[cur][i];
+				ret+=(mul*suf1[i])%mod;
+				mul = (mul*f(nxt,0) + pre1[i])%mod;
+			}
+		}
+		ret+=f(cur,0); ret*=2;
+	}
+	return ret%=mod;
+}
+void solve(){
+	int n; cin >> n;
+	for(int i=1; i<=n; i++) tree[i].clear();
+	for(int i=2; i<=n; i++){
+		int p; cin >> p;
+		tree[p].emplace_back(i);
+	}
+	if(n == 1){
+		cout<<1<<'\n';
+		return;
+	}
+	for(int i=1; i<=n; i++) dp[i][0] = dp[i][1] = -1;
+	cout<<f(1,0)<<'\n';
+}
+int main(){ 
+	ios_base::sync_with_stdio(false); cin.tie(NULL);
+	int t = 1;
+	cin >> t;
+	while(t--) solve();
+}

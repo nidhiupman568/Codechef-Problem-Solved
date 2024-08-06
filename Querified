@@ -1,0 +1,103 @@
+#include "bits/stdc++.h"
+using namespace std;
+#define endl "\n"
+#define all(x) x.begin(),x.end()
+#define ALL(x) x.rbegin(),x.rend()
+#define int long long
+using i_64 = int64_t;
+using u_64 = uint64_t;
+using u_128 = __uint128_t;
+const int mod = 1e9 + 7, MAX = 1e7 + 7, N = 1e5 + 5, inf = 1e18 ;
+
+#ifndef ONLINE_JUDGE
+    #include "/home/anonymous/Templates/debug.hpp"
+#else
+    #define debug(x...);
+#endif
+
+
+bool marked[N];
+int  sp[N];
+
+void Sieve() {
+    for (int i = 2; i < N; i += 2)  sp[i] = 2;//even numbers have smallest prime factor 2
+
+    for (int i = 3; i < N; i += 2) {
+        if (!marked[i]) {
+            sp[i] = i;
+
+            for (int j = i; (j * i) < N; j += 2) {
+                if (!marked[j * i]) marked[j * i] = true, sp[j * i] = i;
+            }
+        }
+    }
+}
+
+
+vector <int> factorize (int k) {
+    vector <int> ans;
+
+    while (k > 1) {
+        ans.push_back (sp[k]);
+        k /= sp[k];
+    }
+
+    return ans;
+}
+void ____solve() {
+
+    int n, R; cin >> n >> R;
+    vector<int>graph[n + 1];
+
+    for (int i = 1; i < n; i++) {
+        int u, v; cin >> u >> v;
+        graph[u].push_back (v);
+        graph[v].push_back (u);
+    }
+
+    vector<int>in (n + 1), out (n + 1), ans (n + 1, -1);
+    int time = 0;
+
+    function<int (int, int) > dfs = [&] (int node, int par) -> int {
+        in[node] = time++;
+        int mn = node;
+
+        for (auto &child : graph[node]) {
+            if (child == par) continue;
+
+            int child_min = dfs (child, node);
+            mn = min (mn, child_min); // if there is min node gcd is 1
+        }
+
+        if (mn < node) ans[node] = 1;
+
+        out[node] = time++;
+        return mn;
+    };
+
+    dfs (R, R);
+
+    for (int i = 2; i <= n; i++) {
+        auto v = factorize (i);
+        v.push_back (i);
+
+        for (auto &p : v) { // for each prime factors of ( i ) mark its parent ( j )  with prime factor ( p )
+            for (int j = p; j <= n; j += i) {
+                if (i<j and in[i]>in[j] and out[i] < out[j] ) { // to check if i is in subtree of j
+                    ans[j] = max (ans[j], p);
+                }
+            }
+        }
+    }
+
+    for (int i = 1; i <= n; i++) cout << ans[i] << " ";
+}
+
+
+
+int32_t main() {
+    Sieve();
+    int Test = 1;  cin >> Test;
+
+    for (int i = 0; i < Test; i++, ____solve(), cout << endl);
+}

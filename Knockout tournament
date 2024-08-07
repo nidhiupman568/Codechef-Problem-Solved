@@ -1,0 +1,30 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class CompetitionSimulator {
+    vector<pair<int, int>> playerData;
+    vector<int> performanceResults;
+public:
+    void evaluate(const vector<int>& skillLevels) {
+        playerData.clear(); performanceResults.resize(16);
+        for (int i = 0; i < 16; ++i) playerData.emplace_back(skillLevels[i], i);
+        sort(playerData.begin(), playerData.end());
+        for (int i = 0; i < 16; ++i)
+            performanceResults[playerData[i].second] = i > 14 ? 4 : i > 6 ? 3 : i > 2 ? 2 : i > 0;
+    }
+    void displayResults() { for (int score : performanceResults) cout << score << " "; cout << endl; }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
+    int testCases; cin >> testCases;
+    while (testCases--) {
+        CompetitionSimulator simulator;
+        vector<int> playerSkills(16);
+        for (int& skill : playerSkills) cin >> skill;
+        simulator.evaluate(playerSkills);
+        simulator.displayResults();
+    }
+}

@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <cmath>
+
+class Analyzer {
+    std::vector<int> sequence, prefixSum, suffixSum;
+
+    void calculateSums() {
+        prefixSum = suffixSum = sequence;
+        std::partial_sum(sequence.begin(), sequence.end(), prefixSum.begin());
+        std::partial_sum(sequence.rbegin(), sequence.rend(), suffixSum.rbegin());
+    }
+
+    int findOptions() {
+        int options = 0;
+        for (size_t dx = 0; dx < sequence.size(); ++dx) {
+            if (sequence[dx] == 0) {
+                int leftSum = dx ? prefixSum[dx - 1] : 0;
+                int rightSum = dx < sequence.size() - 1 ? suffixSum[dx + 1] : 0;
+                options += (leftSum == rightSum) ? 2 : (std::abs(leftSum - rightSum) == 1);
+            }
+        }
+        return options;
+    }
+
+public:
+    void handleTest() {
+        int length;
+        std::cin >> length;
+        sequence.resize(length);
+        for (int &value : sequence) {
+            std::cin >> value;
+        }
+        calculateSums();
+        std::cout << findOptions() << '\n';
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    int testCases;
+    std::cin >> testCases;
+    Analyzer analyzer;
+    while (testCases--) {
+        analyzer.handleTest();
+    }
+    return 0;
+}

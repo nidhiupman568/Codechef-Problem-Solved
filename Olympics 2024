@@ -1,0 +1,16 @@
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int g, s, b;
+    cin >> g >> s >> b;
+
+    int total_needed = 0;
+    total_needed += max(0, 5 - g);
+    total_needed += max(0, 5 - s);
+    total_needed += max(0, 5 - b);
+
+    cout << total_needed << endl;
+    return 0;
+}

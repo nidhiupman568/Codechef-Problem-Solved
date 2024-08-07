@@ -1,0 +1,36 @@
+#include <iostream>
+#include <vector>
+
+class SeqBuilder {
+    int n;
+    std::vector<int> seq;
+public:
+    SeqBuilder(int len) : n(len), seq(len) {}
+
+    void generate() {
+        for (int i = 0, odd = 1, even = (n + 1) / 2 + 1; i < n; i++)
+            seq[i] = (i % 2 == 0) ? odd++ : even++;
+    }
+
+    void display() const {
+        for (int e : seq) std::cout << e << " ";
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int t;
+    std::cin >> t;
+    while (t--) {
+        int n;
+        std::cin >> n;
+        SeqBuilder builder(n);
+        builder.generate();
+        builder.display();
+    }
+
+    return 0;
+}

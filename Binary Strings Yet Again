@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = signed long long;
+template<typename T = int> T nxt(){T x_; cin >> x_; return x_;}
+
+int main() 
+{
+    ios::sync_with_stdio(false), cin.tie(0);
+
+    int cases;
+
+    for(cin >> cases; cases--;)
+    {
+        int n, m;
+        cin >> n >> m;
+        int T[m], nn = n;
+        bitset<30> A[m];
+        for(auto &b : T) cin >> b;
+        for (int i = 0; i < m; i++)
+            A[i] = T[i];
+        
+        ll val = 0, zz = (int) A[m - 1].count() - 30;
+        for(auto &b : A) zz += 30 - (int) b.count();
+        for (int b = 0; b < 30; b++)
+            if(A[m - 1][b] == 0 && (m - 1) * 30 + b < n)
+                zz++;
+        
+        vector<int> D;
+        for (int i = 2; i * i <= nn; i++) if(nn % i == 0) {
+            D.push_back(i);
+            while (nn % i == 0)
+                nn /= i;
+        } if(nn > 1) D.push_back(nn);
+
+        for(auto &a : D) {
+            array<int, 2> cc = {0, 0};
+            ll res = 0, temp = 0, zzz = zz;
+            int zero_cnt[a + 1] = {0}, all_one = 0, j = 0;
+            for (int i = 0; i < n; i++) {
+                bool bit = A[i / 30][j++];
+                temp += (ll) cc[0] * bit;
+                cc[bit]++;
+                if((i + 1) % a == 0) {
+                    res += temp + (ll) zero_cnt[cc[1]] * cc[1];
+                    if(cc[1] == a) all_one += a; 
+                    zero_cnt[cc[1]] += cc[0];
+                    cc = {0, 0}, temp = 0;
+                }
+                if(j == 30) j = 0;
+            }
+            res += zzz * all_one;
+            for (int i = a - 1; i > 0; i--) {
+                zzz -= zero_cnt[i];
+                res += zzz * i * zero_cnt[i] / (a - i);
+            }
+            val = max(val, res);
+        }
+        cout << val << '\n';
+    }
+    //Struggling!!! read question once again...
+}

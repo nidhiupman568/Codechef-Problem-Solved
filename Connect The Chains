@@ -1,0 +1,116 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long int ll;
+typedef unsigned long long int ull;
+typedef long double ld;
+typedef pair<int,int> pi;
+typedef pair<ll,ll> pll;
+typedef vector<int> vi;
+typedef vector<long long int> vll;
+typedef map<int, int> mi;
+typedef map<long long int, long long int> mll;
+typedef set<int> si;
+typedef set<long long int> sll;
+typedef multiset<int> msi;
+typedef multiset<long long> msll;
+#define F first
+#define S second
+#define pb push_back
+#define ai(a,n) for(int j=0;j<(n);j++) cin>>a[j]
+#define ao(a,n) for(int j=0;j<(n);j++) cout<<a[j]<<" "
+#define f(n) for(int i=0;i<(n);i++)
+#define YN(flag) cout<<(((flag))? "YES\n":"NO\n");
+#define ceil(a,b) ((a)/(b)+((a)%(b)!=0))
+
+ll multiply(ll a, ll b,ll MOD) {a = a % MOD; b = b % MOD; return (((a * b) % MOD) + MOD) % MOD;}
+ll mod_mul(vll v,ll M){ ll ans=1; for(auto i:v){ ans=multiply(ans,i,M); } return ans; }
+ll expo(ll a, ll b, ll m) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % m; a = (a * a) % m; b >>= 1;} return res;}
+//Only for prime MOD:-
+ll mminvprime(ll a, ll b) {return expo(a, b - 2, b);}
+ll mod_div(ll a, ll b,ll MOD) {a = a % MOD; b = b % MOD; return multiply(a, mminvprime(b, MOD), MOD);}
+
+#define int long long
+int fun(vector<vll> a){
+	int m=a[0].size(),ans=1e18;
+	int sum0=0,sum1=0,sum2=0,x0,x2,cur00=0,cur01,cur20=0,cur21,cur0=0,cur1,cur;
+	f(m){
+		sum0+=a[0][i];
+		sum1+=a[1][i];
+		sum2+=a[2][i];
+	}
+	x0=sum0;x2=sum2;
+	f(m){
+		cur01=sum0-cur00;
+		cur21=sum2-cur20;
+		cur00+=a[0][i];
+		cur20+=a[2][i];
+		x0=min(x0,max(cur00,cur01));
+		x2=min(x2,max(cur20,cur21));
+	}
+	f(m){
+		cur1=sum1-cur0;
+		cur0+=a[1][i];
+		cur=max(cur0,cur1);
+		ans=min(ans,max(x0+cur,x0+x2+a[1][i]));
+	}
+	return ans;
+}
+signed main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	int T,n,m,k;
+	cin>>T;
+	while(T--){
+		cin>>n>>m;
+		int b[n][m],ans=0;
+		pair<pll,int> v[n];
+		f(n) {
+			ai(b[i],m);
+			int sum=0;
+			for(int j=0;j<m;j++) sum+=b[i][j];
+			ans=max(ans,sum);
+			int x=sum,cur1=0,cur2,mid_val;
+			for(int j=0;j<m;j++){
+				cur2=sum-cur1;
+				cur1+=b[i][j];
+				if(x>=max(cur1,cur2)){
+					x=max(cur1,cur2);
+					mid_val=b[i][j];
+				}
+			} 
+			v[i]={{x,-mid_val},i};
+		}
+		sort(v,v+n);
+		reverse(v,v+n);
+		ans=max(ans,v[0].F.F+v[1].F.F);
+		if(n>2){
+			vector<vll> a(3);
+			f(m){
+				a[0].pb(b[v[1].S][i]);
+				a[1].pb(b[v[0].S][i]);
+				a[2].pb(b[v[2].S][i]);
+			}
+			int cur=fun(a);
+			a[0].clear();a[1].clear();a[2].clear();
+			f(m){
+				a[0].pb(b[v[0].S][i]);
+				a[1].pb(b[v[1].S][i]);
+				a[2].pb(b[v[2].S][i]);
+			}
+			cur=min(cur,fun(a));
+			a[0].clear();a[2].clear();
+			f(m){
+				a[0].pb(b[v[0].S][i]);
+				a[2].pb(b[v[1].S][i]);
+			}
+			for(int j=2;j<n;j++){
+				a[1].clear();
+				f(m) a[1].pb(b[v[j].S][i]);
+				cur=min(cur,fun(a));
+			}
+			ans=max(ans,cur);
+		}
+		cout<<ans<<"\n";
+	}
+	return 0;
+}

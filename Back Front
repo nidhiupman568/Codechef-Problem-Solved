@@ -1,0 +1,127 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int n;
+        cin >> n;
+        string s;
+        cin >> s;
+        int ans = n;
+        int k = 0, ck = 0, ack = 0, back = 0, f = 0, fr = 0, fro = 0, fron = 0, front = 0;
+        for (int i = n-1; i >=0; i--)
+        {
+            if(s[i]=='k'){
+                k++;
+            }
+            else if((s[i]=='c') && k){
+                ck++;
+                k--;
+            }
+            else if((s[i]=='a') && ck){
+                ack++;
+                ck--;
+            }
+            else if((s[i]=='b') && ack){
+                back++;
+                ack--;
+            }
+        }
+        for (int i = 0; i < n; i++)
+        {
+            if(s[i]=='f'){
+                f++;
+            }
+            else if((s[i]=='r') && f){
+                fr++;
+                f--;
+            }
+            else if((s[i]=='o') && fr){
+                fro++;
+                fr--;
+            }
+            else if((s[i]=='n') && fro){
+                fron++;
+                fro--;
+            }
+            else if((s[i]=='t') && fron){
+                front++;
+                fron--;
+            }
+        }
+        int av = 0;
+        while(back!=0){
+            back--;
+            ans -= 4;
+            av++;
+            if(av && ack){
+                ack--;
+                av--;
+                back++;
+                ans++;
+            }
+            else if(av>=2 && ck){
+                ck--;
+                av-=2;
+                back++;
+                ans+=2;
+            }
+            else if(av>=3 && k){
+                k--;
+                av-=3;
+                back++;
+                ans+=3;
+            }
+            else if(av>=4){
+                av -= 4;
+                back++;
+                ans += 4;
+            }
+        }
+        ans += av;
+        av = 0;
+        while(front!=0){
+            front--;
+            ans -= 5;
+            av++;
+            if(av && fron){
+                fron--;
+                av--;
+                front++;
+                ans++;
+            }
+            else if(av>=2 && fro){
+                fro--;
+                av-=2;
+                front++;
+                ans+=2;
+            }
+            else if(av>=3 && fr){
+                fr--;
+                av-=3;
+                front++;
+                ans+=3;
+            }
+            else if(av>=4 && f){
+                f--;
+                av-=4;
+                front++;
+                ans+=4;
+            }
+            else if (av >= 5)
+            {
+                av -= 5;
+                front++;
+                ans += 5;
+            }
+        }
+        ans += av;
+        cout << ans << endl;
+    }
+}

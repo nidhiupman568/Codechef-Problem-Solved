@@ -1,0 +1,23 @@
+#include <iostream>
+#include <array>
+#include <numeric>
+#include <algorithm>
+
+struct StripChecker {
+    std::array<int, 3> s;
+    void read() { for (auto& i : s) std::cin >> i; }
+    bool isValid() const { 
+        int m = *std::max_element(s.begin(), s.end());
+        return m <= std::accumulate(s.begin(), s.end(), 0) - m + 1;
+    }
+    void print() const { std::cout << (isValid() ? "YES\n" : "NO\n"); }
+};
+
+int main() {
+    int t;
+    for (std::cin >> t; t--; ) {
+        StripChecker c;
+        c.read();
+        c.print();
+    }
+}

@@ -1,0 +1,14 @@
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // Input values
+    int a, b, x, y;
+    cin >> a >> b >> x >> y;
+
+    // Output the maximum of a and b based on x and y
+    cout << (x > y ? a : b) << endl;
+
+    return 0;
+}

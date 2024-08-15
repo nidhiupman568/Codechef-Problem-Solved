@@ -1,0 +1,28 @@
+#include <iostream>
+
+const long long MODULUS = 1'000'000'007;
+const long long INFINITY = 1'000'000'000'000'000'000LL;
+
+long long process_input() {
+    long long x, y;
+    std::cin >> x >> y;
+    return (x > y) ? (y << 1) + 1 : -1;
+}
+
+void execute_test_cases(int count) {
+    for (int i = 0; i < count; ++i) {
+        std::cout << process_input() << '\n';
+    }
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int num_tests;
+    std::cin >> num_tests;
+    
+    execute_test_cases(num_tests);
+    
+    return 0;
+}

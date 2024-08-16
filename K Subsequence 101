@@ -1,0 +1,86 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+    int n, k;
+    cin >> n >> k;
+    vector<int> v(n);
+    map<int, vector<int>> m;
+
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+        m[v[i]].push_back(i);
+    }
+
+    if(k==1)
+    {
+        auto it=max_element(v.begin(), v.end());
+        cout<<*it<<endl;
+        return;
+    }
+
+    int ans = 0;
+
+    for (int i = 1; i <= 50; i++) {
+        for (int j = 1; j <= 50; j++) {
+            if (i == j) {
+                if (m[i].size() <= 1) {
+                    continue; // Not enough elements to form a valid pair (i, i)
+                }
+            }
+
+            int sum = 0;
+            int rem = k - 2; // Remaining slots for other elements
+            if(m[i].empty() || m[j].empty())
+            {
+                continue;
+            }
+            int l_lim = *m[i].begin(); // Left limit for i
+            int r_lim = m[j].back();   // Right limit for j
+            
+            if (l_lim > r_lim) continue; // No valid range
+            sum += i + j; // Add i and j to the sum
+
+
+            // Iterate over possible values from 50 down to 0
+            for (int l = 50; l >= 0; l--) {
+                // if (l == i || l == j) continue; // Skip if l is i or j as we are handling those separately
+
+                auto it1 = upper_bound(m[l].begin(), m[l].end(), l_lim);
+                auto it2 = lower_bound(m[l].begin(), m[l].end(), r_lim);
+                int temp = it2 - it1; // Count of elements in the range [l_lim, r_lim)
+
+                if (temp > rem) {
+                    sum += 2 * rem * l; // Use all remaining slots with value l
+                    rem = 0; // All remaining slots are used
+                } else {
+                    sum += 2 * temp * l; // Use temp slots with value l
+                    rem -= temp; // Decrease remaining slots
+                }
+            }
+
+            ans = max(sum, ans); // Update the maximum sum found
+        }
+    }
+    cout << ans << endl;
+}
+
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    freopen("error.txt", "w", stderr);
+#endif
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+        solve();
+    }
+
+    return 0;
+}

@@ -1,0 +1,54 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define ld long double
+#define X real()
+#define Y imag()
+#define F first
+#define S second
+
+typedef complex<double> point;
+const double PI=acos(-1),EPS=1e-10;
+const int N=2e6+5,mod= 1e9+7;
+
+void solve() {
+
+    int n, a, ans = 1, m = 0;
+    cin >> n;
+    vector<int> freq(n + 5);
+    for (int i = 0; i < n; i++) {
+        cin >> a;
+        freq[a]++;
+    }
+    for (int i = n; i >= 1; i--) {
+        if (freq[i] > 2)ans = 0;
+        else if (freq[i] == 2) {
+            ans *= 2;
+            m++;
+        } else if (freq[i] == 1) {
+            ans *= (((m + 1) * 2 % mod - 1 + mod) % mod);
+        } else ans *= ((m * m) % mod), m--;
+        ans %= mod;
+    }
+    cout << ans;
+}
+
+signed main() {
+
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+
+    int tests = 1;
+    cin >> tests;
+    while (tests--) {
+        solve();
+        cout << '\n';
+    }
+    return 0;
+}

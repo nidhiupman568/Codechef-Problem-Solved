@@ -1,0 +1,33 @@
+#include <iostream>
+
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T;
+
+    while (T--) {
+        int A, B;
+        cin >> A >> B;
+
+        int totalSlicesEaten = 0;
+
+        while (A != B) {
+            if (A > B) {
+                int slicesToEat = ceil(A / 2.0);
+                A -= slicesToEat;
+                totalSlicesEaten += slicesToEat;
+            } else {
+                int slicesToEat = ceil(B/ 2.0);
+                B -= slicesToEat;
+                totalSlicesEaten += slicesToEat;
+            }
+        }
+
+        cout << totalSlicesEaten << endl;
+    }
+
+    return 0;
+}

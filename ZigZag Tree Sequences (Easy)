@@ -1,0 +1,118 @@
+#include <bits/stdc++.h>
+#define fi first
+#define se second
+#define mp make_pair
+#define pb push_back
+#define all(v) v.begin(), v.end()
+#define sz(x) ((int) (x).size())
+using namespace std;
+using ll = long long;
+using pii = pair<int,int>;
+using pll = pair<ll,ll>;
+using vi = vector<int>;
+using vp = vector<pii>;
+using vl = vector<ll>;
+using vvi = vector<vi>;
+using vvl = vector<vl>;
+using vb = vector<bool>;
+
+template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p){return os << '(' << p.fi << ", " << p.se << ')';}
+template<typename C, typename T = typename enable_if<!is_same<C, string>::value, typename C::value_type>::type>
+ostream& operator<<(ostream &os, const C &v){string sep; for(const T &x : v) os << sep << x, sep = " "; return os;}
+#define deb(...) logger(#__VA_ARGS__, __VA_ARGS__)
+template<typename ...Args>
+void logger(string vars, Args&&... values){
+    cout << "[Debug]\n\t" << vars << " = ";
+    string d = "[";
+    (..., (cout << d << values, d = "] ["));
+    cout << "]\n";
+}
+
+constexpr int mod = 7 + int(1e9);
+
+void solve(){
+    int n;
+    cin >> n;
+    vi a(n + 1);
+    for(int i=1; i<=n; i++){
+        cin >> a[i];
+        a[i]--;
+    }
+
+    vvi T(n + 1);
+    for(int i=2; i<=n; i++){
+        int pi;
+        cin >> pi;
+        T[pi].pb(i);
+        T[i].pb(pi);
+    }
+
+    int ways = 0;
+
+    vector< array<int,2> > dp(n + 1, {0, 0});
+
+    auto dfs = [&](auto self, int u, int pu) -> void{
+        array<int,2> sum = {0, 0};
+
+        for(auto v : T[u]){
+            if(v == pu) continue;
+            self(self, v, u);
+
+            dp[u][0] += dp[v][0];
+            if(dp[u][0] >= mod) dp[u][0] -= mod;
+
+            dp[u][1] += dp[v][1];
+            if(dp[u][1] >= mod) dp[u][1] -= mod;
+
+            dp[u][ a[u] ] += dp[v][ 1 - a[u] ];
+            if(dp[u][ a[u] ] >= mod) dp[u][ a[u] ] -= mod;
+
+            ways += 1LL*dp[v][0]*sum[1]%mod;
+            if(ways >= mod) ways -= mod;
+
+            ways += 1LL*dp[v][1]*sum[0]%mod;
+            if(ways >= mod) ways -= mod;
+
+            sum[0] += dp[v][0];
+            if(sum[0] >= mod) sum[0] -= mod;
+
+            sum[1] += dp[v][1];
+            if(sum[1] >= mod) sum[1] -= mod;
+
+            sum[ a[u] ] += dp[v][ 1 - a[u] ];
+            if(sum[ a[u] ] >= mod) sum[ a[u] ] -= mod;
+        }
+
+        dp[u][ a[u] ]++;
+        if(dp[u][ a[u] ] >= mod) dp[u][ a[u] ] -= mod;
+        return;
+    };
+
+    dfs(dfs, 1, 1);
+
+    ways += dp[1][0];
+    if(ways >= mod) ways -= mod;
+
+    ways += dp[1][1];
+    if(ways >= mod) ways -= mod;
+
+    ways -= n;
+    if(ways < 0) ways += mod;
+
+    cout << ways << "\n";
+
+    return;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0); cin.tie(0);
+
+    int t = 1;
+    cin >> t;
+    while(t--){
+        solve();
+    }
+
+    return 0;
+}

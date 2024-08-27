@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+	
+	while (t--) {
+	    int n;
+	    cin >> n;
+	    std::vector<int> nums;
+	    for (int i = 0; i < n; i++) {
+	        int temp;
+	        cin >> temp;
+	        nums.push_back(temp);
+	    }
+	    
+	    long long ans = (long long)n * (n + 1) / 2;
+	    for (int x : {1, 2, 3}) {
+	        int dont_want = x - 1;
+	        if (dont_want == 0) dont_want = 3;
+	        
+	        long long subbable = 0;
+	        bool will_replace = false;
+	        
+	        long long left = n;
+	        long long right = 0;
+	        
+	        for (long long i = 0; i < n; i++) {
+	            if (nums[i] == x) {
+	                left = min(i, left);
+	                right = i;
+	            }
+	        }
+	        
+	        for (int i = left; i < right; i++) {
+	            if (nums[i] == dont_want) {
+	                will_replace = true;
+	                break;
+	            }
+	        }
+	        
+	        if (will_replace == false) {
+	            long long l2 = left, r2 = right;
+	            while (l2 >= 0 && nums[l2] != dont_want) {
+	                l2--;
+	            }
+	            while (r2 < n && nums[r2] != dont_want) {
+	                r2++;
+	            }
+	            
+	            ans -= (left - l2) * (r2 - right);
+	        }
+	    }
+	    cout << ans << endl;
+	}
+    return 0;
+}

@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int countNegativesInPositiveRange(const vector<int>& arr) {
+    auto firstPositive = find_if(arr.begin(), arr.end(), [](int x) { return x > 0; });
+    auto lastPositive = find_if(arr.rbegin(), arr.rend(), [](int x) { return x > 0; }).base();
+
+    if (firstPositive >= lastPositive) {
+        return 0;
+    }
+
+    return count_if(firstPositive, lastPositive, [](int x) { return x < 0; });
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> a(n);
+        for (int& x : a) {
+            cin >> x;
+        }
+
+        cout << countNegativesInPositiveRange(a) << '\n';
+    }
+
+    return 0;
+}

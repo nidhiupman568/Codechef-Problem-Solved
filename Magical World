@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+
+int min_cost(int A, int B, int X) {
+    int square_area = X * X;
+    int rectangle_area = A * B;
+    
+    if (rectangle_area <= square_area) {
+        return 0;
+    }
+    
+  
+    if (min(A, B) <= square_area) {
+        return 1;
+    }
+    
+   
+    return 2;
+}
+
+
+vector<int> process_test_cases(int T, vector<tuple<int, int, int>> cases) {
+    vector<int> results;
+    for (int i = 0; i < T; ++i) {
+        int A, B, X;
+        tie(A, B, X) = cases[i];
+        results.push_back(min_cost(A, B, X));
+    }
+    return results;
+}
+
+
+int main() {
+    int T;
+    cin >> T;  
+    vector<tuple<int, int, int>> cases(T);
+    
+    for (int i = 0; i < T; ++i) {
+        int A, B, X;
+        cin >> A >> B >> X;
+        cases[i] = make_tuple(A, B, X);
+    }
+    
+    vector<int> results = process_test_cases(T, cases);
+
+    
+    for (int result : results) {
+        cout << result << endl;
+    }
+
+    return 0;
+}

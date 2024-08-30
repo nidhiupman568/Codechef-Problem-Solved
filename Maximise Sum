@@ -1,0 +1,25 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int t;
+    for (std::cin >> t; t--; ) {
+        int n, neg_count = 0, min_abs = 1e9;
+        long long sum = 0;
+        std::cin >> n;
+
+        for (int x, i = 0; i < n; ++i) {
+            std::cin >> x;
+            neg_count += x < 0;
+            sum += std::abs(1LL * x);
+            min_abs = std::min(min_abs, std::abs(x));
+        }
+
+        std::cout << (neg_count % 2 ? sum - 2 * min_abs : sum) << '\n';
+    }
+    return 0;
+}

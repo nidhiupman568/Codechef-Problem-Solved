@@ -1,0 +1,71 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct SequenceInfo {
+    int length;
+    std::string sequence;
+    int transitions;
+};
+
+SequenceInfo read_sequence() {
+    SequenceInfo info;
+    std::cin >> info.length >> info.sequence;
+    return info;
+}
+
+int count_transitions(const std::string& seq) {
+    int transitions = 0;
+    for (size_t i = 1; i < seq.length(); ++i) {
+        transitions += (seq[i] != seq[i-1]);
+    }
+    return transitions;
+}
+
+std::vector<int> analyze_sequences(const std::vector<SequenceInfo>& sequences) {
+    std::vector<int> transition_counts;
+    for (const auto& seq : sequences) {
+        transition_counts.push_back(count_transitions(seq.sequence));
+    }
+    return transition_counts;
+}
+
+long long calculate_result(int seq_length, int transitions) {
+    return static_cast<long long>(seq_length - transitions - 1) * transitions + 
+           static_cast<long long>(transitions) * (transitions - 1) / 2;
+}
+
+std::vector<long long> calculate_results(const std::vector<SequenceInfo>& sequences, 
+                                         const std::vector<int>& transition_counts) {
+    std::vector<long long> results;
+    for (size_t i = 0; i < sequences.size(); ++i) {
+        results.push_back(calculate_result(sequences[i].length, transition_counts[i]));
+    }
+    return results;
+}
+
+void print_results(const std::vector<long long>& results) {
+    for (const auto& result : results) {
+        std::cout << result << '\n';
+    }
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int num_cases;
+    std::cin >> num_cases;
+
+    std::vector<SequenceInfo> sequences;
+    for (int i = 0; i < num_cases; ++i) {
+        sequences.push_back(read_sequence());
+    }
+
+    std::vector<int> transition_counts = analyze_sequences(sequences);
+    std::vector<long long> results = calculate_results(sequences, transition_counts);
+
+    print_results(results);
+
+    return 0;
+}

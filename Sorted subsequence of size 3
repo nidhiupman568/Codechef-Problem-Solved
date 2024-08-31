@@ -1,0 +1,152 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+// using namespace __gnu_pbds;
+  
+// template <typename T>
+// using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+// template <typename T>
+// using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>; 
+
+#define FAST ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+#define pb push_back
+#define nl '\n'
+#define ff first
+#define ss second
+#define umap unordered_map
+#define uset unordered_set
+#define ftr for(ll i = 0; i<n; i++)
+#define rep(i,a,b) for(ll i = a; i<b; i++)
+#define rrep(i,a,b) for(ll i = a; i>=b; i--)
+#define YES cout<<"YES"<<nl
+#define NO  cout<<"NO"<<nl
+#define pi 3.14159265358979323846264338327
+#define popcnt __builtin_popcountll
+#define all(vec) vec.begin(), vec.end()
+#define sortv(vec) sort(vec.begin(), vec.end())
+#define revv(vec) reverse(vec.begin(), vec.end())
+#define MOD 1000000007
+// #define MOD 998244353
+
+typedef long long ll;
+typedef long double ld;
+typedef vector <long long> vll;
+typedef vector<long double> vld;
+typedef pair<long long, long long> pll;
+typedef vector<pair<long long, long long>> vpll;
+typedef vector<vector<long long>> vvll;
+typedef vector<vector<pair<long long, long long>>> vvpll;
+
+
+#ifndef ONLINE_JUDGE
+#define dbg(x) cerr << #x <<' '; _print(x); cerr << endl;
+void _print(ll t) {cerr << t;}
+void _print(int t) {cerr << t;}
+void _print(string t) {cerr << t;}
+void _print(char t) {cerr << t;}
+void _print(ld t) {cerr << t;}
+void _print(double t) {cerr << t;}
+void _print(unsigned long long t) {cerr << t;}
+ 
+template <class T, class V> void _print(pair <T, V> p);
+template <class T> void _print(vector <T> v);
+template <class T> void _print(set <T> v);
+template <class T, class V> void _print(map <T, V> v);
+template <class T> void _print(multiset <T> v);
+ 
+template <class T, class V> void _print(pair <T, V> p) {cerr << '{'; _print(p.first); cerr << ','; _print(p.second); cerr << '}';}
+template <class T> void _print(vector <T> v) {cerr << '['; for (T i : v) {_print(i); cerr << ' ';} cerr << ']';}
+template <class T> void _print(set <T> v) {cerr << '['; for (T i : v) {_print(i); cerr << ' ';} cerr << ']';}
+template <class T> void _print(multiset <T> v) {cerr << '['; for (T i : v) {_print(i); cerr << ' ';} cerr << ']';}
+template <class T, class V> void _print(map <T, V> v) {cerr << '['; for (auto i : v) {_print(i); cerr << ' ';} cerr << ']';}
+#else
+#define dbg(x)
+#endif
+
+// ----------------------------Happy Ending-----------------------------------------------------------------------------------
+
+
+void solve()
+{
+  ll n, h, k;
+  cin>>n>>h>>k;
+
+  vll v(n);
+  map<ll, ll> mp;
+  ftr
+  {
+    cin>>v[i];
+    mp[v[i]]++;
+    if(mp[v[i]] > 2) mp[v[i]] = 2;
+  }
+
+  vll v1, vfs, vs;
+  ll fs = 0, s = 0;
+
+  for(auto&x: mp)
+  {
+    v1.pb(x.first);
+    if(x.second >= 1) fs++;
+    vfs.push_back(fs);
+    if(x.second == 2) s++;
+    vs.push_back(s);
+  }
+
+  ll h1 = h*k;
+
+  ll c = lower_bound(v1.begin(), v1.end(), h1) - v1.begin();
+  c--;
+
+  if(c < 0) 
+  {
+    cout<<0<<nl;
+    return;
+  }
+
+  ll ans = vfs[c];
+
+  for(ll i = v1.size()-1; i>=0; i--)
+  {
+    if(v1[i] >= h) continue;
+    c = lower_bound(v1.begin(), v1.end(), h) - v1.begin() - 1;
+    ll e = c;
+    if(c < 0) break;
+    ll temp = vfs[c];
+    h1 = v1[i]*k;
+    c = lower_bound(v1.begin(), v1.end(), h1) - v1.begin() - 1;
+
+    if(h1 > h)
+    {
+      temp += vfs[c] + vs[e] - vfs[e];
+      if(i > 0) temp -= vs[i-1];
+    }
+
+    else
+    {
+      temp += vs[c];
+      if(i > 0) temp -= vs[i-1];
+    }
+    
+    ans = max(ans, temp);
+  }
+
+  cout<<ans<<nl;
+
+
+}
+ 
+int main()
+{
+  FAST
+  ll testcase = 1;
+  cin>>testcase;
+
+  for(ll i = 1; i<=testcase; i++)
+  {
+    // cout<<"Case "<<i<<": ";
+    solve();
+  }
+  return 0;
+}

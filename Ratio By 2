@@ -1,0 +1,19 @@
+#include <iostream>
+#include <algorithm>
+int main() {
+    int T;
+    std::cin >> T;
+    
+    while (T--) {
+        int X, Y;
+        std::cin >> X >> Y;
+        int xpn = (X < 2 * Y) ? (2 * Y - X) : 0;
+        int ynx = (Y > X / 2) ? (Y - X / 2) : 0;
+        int y2xp = (Y < 2 * X) ? (2 * X - Y) : 0;
+        int xny = (X > Y / 2) ? (X - Y / 2) : 0;
+        int result = std::min({xpn,ynx,y2xp,xny});
+        std::cout << result << std::endl;
+    }
+
+    return 0;
+}

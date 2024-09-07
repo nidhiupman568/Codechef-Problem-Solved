@@ -1,0 +1,91 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#ifndef ONLINE_JUDGE
+#include <debug-template.hpp>
+#define debug(...) cerr << "[ " << #__VA_ARGS__ << " ]: ", debug_out(__VA_ARGS__)
+#else
+#define debug(...) 42
+#endif
+
+#define int long long
+
+signed main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0), cout.tie(0);
+	
+	int T; cin >> T;
+	while (T--) {
+		int N, M; cin >> N >> M;
+		vector<int> A(N+1), dp(N+1), sz(N+1), usz(N+1); for (int i = 1; i <= N; i++) cin >> A[i];
+		vector<vector<int>> adj(N+1), par(N+1, vector<int>(20));
+		for (int i = 1; i < N; i++) {
+			int u, v; cin >> u >> v;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+		function<void(int, int)> DFS = [&](int u, int p) {
+			dp[u] = dp[p] + 1; par[u][0] = p; sz[u] = 1;
+			for (int i = 1; i < 20; i++) par[u][i] = par[par[u][i-1]][i-1];
+			for (int& v : adj[u]) if (v != p) DFS(v, u), sz[u] += sz[v];
+		}; DFS(1, 0);
+		auto LCA = [&](int u, int v) {
+			if (dp[u] < dp[v]) swap(u, v);
+			for (int i = 19; i >= 0; i--) if (dp[u] >= dp[v] + (1<<i)) u = par[u][i];
+			if (u == v) return u;
+			for (int i = 19; i >= 0; i--) if (par[u][i] != par[v][i]) u = par[u][i], v = par[v][i];
+			return par[u][0];
+		};
+		vector<vector<pair<int, int>>> conds(N+1); conds[1].push_back({1, 0});
+		for (int i = 1; i <= M; i++) {
+			int u, r, k; cin >> u >> r >> k;
+			int anc = LCA(u, r);
+			if (u == r) conds[1].push_back({0, k});
+			else if (u == anc) {
+				for (int j = 19; j >= 0; j--) if (dp[r] > dp[u] + (1<<j)) r = par[r][j];
+				conds[r].push_back({1, -k});
+			} else conds[u].push_back({0, k});
+		}
+		debug("ok");
+		debug(conds);
+		int st = 1, ed = N;
+		vector<int> a(N+1), b(N+1);
+		vector<vector<int>> vals(N+1);
+		function<void(int, int, int)> dfs = [&](int u, int p, int anc) {
+			vals[anc].push_back(A[u]);
+			for (int& v : adj[u]) if (v != p) dfs(v, u, conds[v].empty() ? anc : v), a[u] += a[v], b[u] += b[v], usz[u] += usz[v];
+			if (conds[u].size()) usz[u] = sz[u];
+			while (conds[u].size() > 1 && conds[u][0] == conds[u].back()) conds[u].pop_back();
+			if (conds[u].size() > 1) {
+				auto [x1, y1] = conds[u][0];
+				auto [x2, y2] = conds[u].back();
+				st = ed = (y2 - y1) / (x1 - x2);
+			}
+			if (conds[u].size()) tie(a[u], b[u]) = conds[u][0];
+		}; dfs(1, 0, 1);
+		debug("ok");
+		vector<int> rdp(N+1); int init = 0;
+		for (int i = 1; i <= N; i++) if (vals[i].size()) {
+			sort(vals[i].begin(), vals[i].end());
+			int x = a[i], y = b[i], sn = sz[i];
+			for (int& j : adj[i]) if (j != par[i][0]) x -= a[j], y -= b[j], sn -= usz[j];
+			// 0 <= x * S + y <= sn
+			vector<int> sum = {0};
+			for (int& x : vals[i]) sum.push_back(sum.back() + x);
+			if (x == 0) init += sum[y];
+			else {
+				if (x > 0) st = max(st, (-y + x - 1) / x), ed = min(ed, (sn - y) / x);
+				if (x < 0) st = max(st, (y - sn - x - 1) / (-x)), ed = min(ed, y / (-x));
+				for (int j = st; j <= ed; j++) rdp[j] += sum[j*x+y];
+			}
+		}
+		debug(st, ed);
+		debug("ok");
+		debug(rdp);
+		debug(init);
+		debug(*min_element(rdp.begin()+st, rdp.begin()+ed+1) + init);
+		cout << *min_element(rdp.begin()+st, rdp.begin()+ed+1) + init << "\n";
+	}
+	
+	return 0;
+}

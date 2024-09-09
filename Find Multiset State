@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+void fun(deque<int>&pq,int K){
+   while(!pq.empty() && K--) {
+    int n =pq.front();
+    int m=pq.back();
+    pq.pop_back();
+    pq.pop_front();
+    pq.push_back(n+m);
+}
+}
+
+int main() {
+
+int T,N,K;
+cin>>T;
+deque<int>pq;
+for(int j=0;j<T;j++){
+    cin>>N>>K;
+int A[N];
+
+
+for(int i=0;i<N;i++){
+    cin>>A[i];
+   pq.push_back(A[i]); 
+}
+
+fun(pq,K);
+while(!pq.empty()){
+    cout<<pq.front()<<" ";
+    pq.pop_front();
+}
+cout<<endl;
+}
+return 0;
+}

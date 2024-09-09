@@ -1,0 +1,41 @@
+
+#include <bits/stdc++.h>
+#define INT long long
+#define pii pair<int, int>
+#define pb push_back
+using namespace std;
+const int NN = 2e6 + 10;
+int a[NN];
+INT dp[NN], suf[NN];
+
+void solve(int n){
+	suf[n + 1] = 0;
+	for(int i = n; i >= 1; i --) suf[i] = suf[i + 1] + a[i];
+	dp[n] = 0;
+	for(int i = n - 1; i >= 1; i --){
+		dp[i] = dp[i + 1] + 2 * suf[i + 1];
+		INT mn = 1e18;
+		INT val = 0;
+		for(int j = i + 1; j <= n; j ++){
+			if(a[j] > a[i]) val -= a[j] - a[i];
+			mn = min(mn, dp[i] + val + 1ll * a[i] * (j - i));
+		}
+		dp[i] = min(dp[i], mn);
+	}
+	cout << dp[1] << endl;
+}
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+//	freopen("out.out", "w", stdout);
+#endif
+	int t;
+	cin >> t;
+	while(t --){
+		int n;
+		cin >> n;
+		for(int i = 1; i <= n; i ++) cin >> a[i];
+		solve(n);
+	}
+	return 0;
+}

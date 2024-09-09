@@ -1,0 +1,152 @@
+//KH_F
+#include <bits/stdc++.h>
+using namespace std;
+const int NN = 2e5 + 10;
+
+#define INT long long
+#define pii pair <int, int>
+const INT inf = 1e18 + 10;
+int A[NN];
+vector <int> adj[NN], adj_t[NN];
+int st[NN], ed[NN], nm = 0;
+int p[NN][21], deep[NN];
+struct LCA {
+	void dfs(int u, int fa=0){
+		p[u][0]=fa;
+		deep[u]=deep[fa]+1;
+		st[u] = ++nm;
+		for(int i=1; i<=18; i++) p[u][i]=p[p[u][i-1]][i-1];
+		for(int v : adj[u]){
+			if(v==fa) continue;
+			dfs(v, u);
+		}
+		ed[u] = nm;
+	}
+	int k_th(int u, int k){
+		for(int i=0; i<=18; i++){
+			if(k&(1<<i)) u=p[u][i];
+		}
+		return u;
+	}
+	int kth(int u, int r){
+		if(u == r) return u;
+		return k_th(r, deep[r] - deep[u] - 1);
+	}
+} lca;
+vector <int> S[NN];
+vector <INT> S1[NN];
+pii B[NN], C[NN];
+void make(int u, int rot){
+	S[rot].push_back(A[u]);
+	for(int v : adj[u]){
+		if(deep[v] < deep[u]) continue;
+		if(C[v].first == 0 and C[v].second == 0) make(v, rot);
+		else {
+			adj_t[rot].push_back(v);
+			make(v, v);
+		}
+	}
+}
+pii add(pii p, pii q){
+	return {p.first + q.first, p.second + q.second};
+}
+pii del(pii p, pii q){
+	return {p.first - q.first, p.second - q.second};
+}
+void dfs(int u){
+	pii p = {0, 0};
+	for(int v : adj_t[u]){
+		dfs(v);
+		B[u] = add(B[u], C[v]);
+	}
+	B[u] = del(C[u], B[u]);
+}
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+	freopen("out.out", "w", stdout);
+#endif
+	int t; cin >> t;
+	while(t --){
+		int n, m;
+		scanf("%d%d", &n, &m);
+		for(int i = 1; i <= n; i ++) scanf("%d", A + i);
+		for(int i = 2; i <= n; i ++){
+			int u, v; scanf("%d%d", &u, &v);
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+		nm = 0;
+		lca.dfs(1);
+		int range = 0;
+		for(int i = 1; i <= m; i ++){
+			int u, r, k; scanf("%d%d%d", &u, &r, &k);
+			if(u == r){
+				range = k;
+			}else if(st[u] <= st[r] and st[r] <= ed[u]){
+				int id = lca.kth(u, r);
+				if(C[id].first == 0 and C[id].second == 0){
+					C[id] = {1, -k};
+				}else if(C[id].first == 1 and C[id].second == -k) {
+					continue;
+				}else{
+					range = ((-k) - C[id].second) / (C[id].first - 1);
+				}
+			}else{
+				if(C[u].first == 0 and C[u].second == 0){
+					C[u] = {0, k};
+				}else if(C[u].first == 0 and C[u].second == k) {
+					continue;
+				}else{
+					range = (k - C[u].second) / C[u].first;
+				}
+			}
+		}
+		C[1] = {1, 0};
+		make(1, 1);
+		dfs(1);
+		for(int i = 1; i <= n; i ++) sort(S[i].begin(), S[i].end());
+		for(int i = 1; i <= n; i ++){
+			for(int u : S[i]){
+				if(S1[i].empty()) {
+					S1[i].push_back(u);
+				}
+				else {
+					S1[i].push_back(S1[i].back() + u);
+				}
+			}
+		}
+		int mn = n, mx = 0; INT tot = 0;
+		vector <int> id;
+		for(int i = 1; i <= n; i ++) if(B[i].first or B[i].second){
+			int a = B[i].first, b = B[i].second;
+			if(a == 0){
+				if(b) tot += S1[i][b-1];
+			}else if(a > 0){
+				mx = max(mx, (-b + a - 1) / a);
+				mn = min(mn, (-b + (int)S[i].size()) / a);
+				id.push_back(i);
+			}else{
+				mn = min(mn, b / (-a));
+				a = abs(a);
+				mx = max(mx, (b - (int)S[i].size() + a - 1) / a);
+				id.push_back(i);
+			}
+		}
+		if(range) mn = mx = range;
+		INT ans = inf;
+		for(int x = mx; x <= mn; x ++){
+			INT sum = 0;
+			for(int i : id){
+				int cnt = B[i].first * x + B[i].second;
+				if(cnt) sum += S1[i][cnt-1];
+			}
+			ans = min(ans, sum);
+		}
+		if(ans == inf) ans = 0;
+		printf("%lld\n", ans + tot);
+		for(int i = 1; i <= n; i ++) adj[i].clear(), adj_t[i].clear(), S[i].clear(), S1[i].clear();
+		for(int i = 1; i <= n; i ++) C[i].first = C[i].second = B[i].first = B[i].second = 0;
+	}
+	return 0;
+}

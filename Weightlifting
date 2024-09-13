@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() 
+{
+    int A1, A2, B1, B2, C1, C2, X, Y, Z, TOTAL;
+    
+    scanf("%d %d %d %d %d %d", &A1, &A2, &B1, &B2, &C1, &C2);
+    
+    if(200<=A1, A2, B1, B2, C1, C2<=300);
+    {
+        
+    X = max(A1, A2);
+    Y = max(B1, B2);
+    Z = max(C1, C2);
+	
+	TOTAL = X + Y + Z;
+	
+	printf("%d", TOTAL);
+	
+    }
+	return 0;
+
+}

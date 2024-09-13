@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios_base::sync_with_stdio(0); 
+    cin.tie(0); 
+    cout.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        int d, x, y; 
+        cin >> d >> x >> y;
+        
+        if (x <= y) {
+            cout << 0 << endl;
+            continue;
+        }
+        
+        int cnt = 0;
+        int p = x;
+        
+        while (true) {
+            y--;
+            cnt++;
+            
+            if (p*(100-cnt*d) <= y*100) {
+                cout << cnt << endl;
+                break;
+            }
+            
+            if (y == 0 && p*(100-cnt*d) > y*100) {
+                cout << -1 << endl;
+                break;
+            }
+        }
+    }
+    return 0;
+}

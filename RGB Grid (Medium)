@@ -1,0 +1,92 @@
+
+#include<bits/stdc++.h>
+#define INF LONG_LONG_MAX
+#define inf INT_MAX
+#define bctz __builtin_ctz
+#define bclz __builtin_clz
+#define bpt __builtin_popcount
+#define pb push_back
+#define x first
+#define y second
+
+using namespace std;
+
+typedef long long INT;
+typedef pair<int,int> pii;
+typedef pair<int,pii> pi3;
+
+template<class T,class U>inline void smax(T&a,U b){if(a<b)a=b;}
+template<class T,class U>inline void smin(T&a,U b){if(a>b)a=b;}
+
+const int NN = 650;
+
+int dp[51][NN][NN], arr[NN][7], tmp[7];
+int mod, n, m, nn, cnt, pw;
+vector <short> vec[NN][NN];
+
+void find_all(int u){
+	if(u == n + 1){
+		nn++;
+		for(int i = 1; i <= n; i++) arr[nn][i] = tmp[i];
+		return;
+	}
+	for(int i = 0; i < 3; i++){
+		tmp[u] = i;
+		if(u < 3){
+			find_all(u + 1);
+			continue;
+		}
+		if(tmp[u - 2] == 0 && tmp[u - 1] == 1 && tmp[u] == 2) continue;
+		if(tmp[u - 2] == 2 && tmp[u - 1] == 1 && tmp[u] == 0) continue;
+		find_all(u + 1);
+	}
+}
+
+void build(){
+	for(int i = pw = 1; i <= n * m; i++) pw = 3ll * pw % mod;
+	for(int i = 1; i <= nn; i++)
+		for(int j = 1; j <= nn; j++)
+			for(int k = 1; k <= nn; k++){
+				int flag = 0;
+				for(int u = 1; u <= n; u++){
+					if(arr[i][u] == 0 && arr[j][u] == 1 && arr[k][u] == 2) flag = 1;
+					if(arr[i][u] == 2 && arr[j][u] == 1 && arr[k][u] == 0) flag = 1;
+				}
+				if(!flag) vec[i][j].pb(k), cnt++;
+			}
+}
+
+void add(int &u, int x){
+	u += x;
+	if(u >= mod) u -= mod;
+	if(u < 0) u += mod;
+}
+
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.in", "r", stdin);
+	freopen("out.out", "w", stdout);
+#endif
+	cin >> n >> m >> mod;
+	find_all(1);
+	build();
+	cerr << cnt << endl;
+	if(m < 2){
+		cout << pw - nn << endl;
+		return 0;
+	}
+	for(int i = 1; i <= nn; i++) for(int j = 1; j <= nn; j++) dp[2][i][j] = 1;
+	for(int i = 2; i < m; i++){
+		for(int j = 1; j <= nn; j++){
+			for(int k = 1; k <= nn; k++){
+				for(int u : vec[j][k]){
+					add(dp[i + 1][k][u], dp[i][j][k]);
+				}
+			}
+		}
+	}
+	int ans = pw;
+	for(int i = 1; i <= nn; i++) for(int j = 1; j <= nn; j++) add(ans, -dp[m][i][j]);
+	cout << ans << endl;
+	return 0;
+}

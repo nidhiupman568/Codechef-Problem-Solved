@@ -1,0 +1,124 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+int n,m,p;
+
+bool check(int x)
+{
+    if(n<3)return 1;
+    int y1=0;
+    for(int i=0;i<n;++i)
+    {
+        y1=y1*10+x%3;
+        x/=3;
+    }
+    if(y1==210||y1%1000==210||(n==4&&y1/10==210))return 0;
+    if(y1==12||y1%1000==12||(n==4&&y1/10==12))return 0;
+    //cout<<1<<endl;
+    return 1;
+}
+bool check2(int a,int b,int c,int f=0)
+{
+    //if(a==0&&b==1&&c==2)
+    //cout<<a<<" "<<b<<" "<<c<<endl;
+    while(a||b||c){
+        int y=a%3*100+b%3*10+c%3;
+        a/=3,b/=3,c/=3;
+        //if(f)cout<<f<<" "<<y<<endl;
+        if(y==12||y==210)return 0;
+    }
+    //cout<<a<<" "<<b<<" "<<c<<" "<<1<<endl;
+    return 1;
+}
+int dp[52][100][100];
+int qmi(int a,int b,int mod)
+{
+    int res=1;
+    while(b)
+    {
+        if(b&1)(res*=a)%=mod;
+        b>>=1;
+        (a*=a)%=mod;
+    }
+    return res;
+}
+void solve(){
+    cin>>n>>m>>p;
+    int mod=p;
+    // RGB -> 123
+    //dfs(0,min(3,m)*n);
+    int up=pow(3,n);
+    for(int i=1;i<=m;++i)
+    {
+        if(i==1)
+        {
+            for(int j=0;j<up;++j)
+            {
+                if(check(j))
+                    dp[i][j][0]=1;
+            }
+        }
+        if(i==2)
+        {
+            for(int j=0;j<up;++j)
+            {
+                if(check(j))
+                for(int k=0;k<up;++k)
+                {
+                    if(check(k))
+                        dp[i][j][k]+=dp[i-1][k][0];
+                    dp[i][j][k]%=mod;
+                }
+            }
+        }
+        else{
+            
+            for(int j=0;j<up;++j)
+            {
+                if(check(j))
+                for(int k=0;k<up;++k)
+                {
+                    if(check(k))
+                    for(int z=0;z<up;++z)
+                    {
+                        if(check(z))
+                        {
+                            bool f1=check2(j,k,z),f2=check2(z,k,j);
+                            if(f1!=f2)
+                            {
+                                cout<<j<<" "<<k<<" "<<z<<endl;
+                                cout<<f1<<" "<<f2<<endl;
+                                check2(j,k,z,1);check2(z,k,j,2);
+                            }
+                            if(check2(j,k,z)||check2(z,k,j))
+                            {
+                                dp[i][j][k]+=dp[i-1][k][z];
+                                dp[i][j][k]%=mod;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+    int ans=0;
+    for(int j=0;j<up;++j)
+    {
+        for(int k=0;k<up;++k)
+        {
+            if(check(j)&&check(k))
+                ans+=dp[m][j][k];
+            ans%=mod;
+        }
+    }
+    int res=((qmi(3,n*m,mod)%mod-ans)%mod+mod)%mod;
+    cout<<res<<endl;
+}
+signed  main() {
+	// your code goes here
+    int t;
+    t=1;
+    while(t--)solve();
+    return 0;
+}

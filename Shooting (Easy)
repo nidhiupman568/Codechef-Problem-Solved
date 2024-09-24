@@ -1,0 +1,127 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef priority_queue<int> pq;
+typedef priority_queue<int, vector<int>, greater<int>> pqg;
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL);
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define pb push_back
+#define mp make_pair
+#define fi first
+#define se second
+#define sz(x) (int)(x).size()
+#define rep(i, a, b) for(int i = a; i < b; ++i)
+#define repr(i, a, b) for(int i = a; i >= b; --i)
+#define deb(x) cout << #x << " = " << x << endl;
+#define INF 1e9
+#define LINF 1e18
+#define MOD 1000000007
+#define MOD2 998244353
+#define endl '\n'
+#define dbg(x) cerr << #x << " = " << x << endl;
+#define dbg2(x, y) cerr << #x << " = " << x << ", " << #y << " = " << y << endl;
+#define dbg3(x, y, z) cerr << #x << " = " << x << ", " << #y << " = " << y << ", " << #z << " = " << z << endl;
+
+template<typename T>
+void print_vector(const vector<T>& v) {
+    for(const auto& i : v) cout << i << " ";
+    cout << endl;
+}
+
+template<typename T>
+void print_set(const set<T>& s) {
+    for(const auto& i : s) cout << i << " ";
+    cout << endl;
+}
+
+template<typename T1, typename T2>
+void print_map(const map<T1, T2>& m) {
+    for(const auto& p : m) cout << p.fi << ": " << p.se << endl;
+}
+
+template<typename T1, typename T2>
+void print_pair(const pair<T1, T2>& p) {
+    cout << "(" << p.fi << ", " << p.se << ")";
+}
+
+// Math utilities
+vector<int> sieve(int n) {
+    vector<int> primes;
+    vector<bool> is_prime(n + 1, true);
+    is_prime[0] = is_prime[1] = false;
+    for (int i = 2; i <= n; ++i) {
+        if (is_prime[i]) {
+            primes.pb(i);
+            for (int j = 2 * i; j <= n; j += i) {
+                is_prime[j] = false;
+            }
+        }
+    }
+    return primes;
+}
+
+ll gcd(ll a, ll b) { return b == 0 ? a : gcd(b, a % b); }
+ll lcm(ll a, ll b) { return a / gcd(a, b) * b; }
+ll power(ll a, ll b, ll m = MOD) { ll res = 1; while (b > 0) { if (b % 2) res = (res * a) % m; a = (a * a) % m; b /= 2; } return res; }
+ll mod_inv(ll a, ll m = MOD) { return power(a, m - 2, m); }
+
+void printMatrix(const vector<vector<int>>& matrix) {
+    for (const auto& row : matrix) {
+        for (const auto& element : row) {
+            cout << element << " ";
+        }
+        cout << endl;
+    }
+}
+void solve() {
+    int m, n;
+    cin >> m >> n;
+    vi a(n);
+    for(int i = 0; i < n; i++) cin >> a[i];
+
+    vll dp1(n + 1, 0), dp2(n + 1, 0), dp3(n + 1, 0), dp4(n + 1, 0);
+    ll cur = 0;
+
+    for(int i = 0; i < n; i++) {
+        dp1[i] = cur + (i > 0 ? dp1[i - 1] : 0);
+        if (a[i] == 1 || a[i] == 3) ++cur;
+    }
+    cur = 0;
+    for(int i = n - 1; i >= 0; i--) {
+        dp2[i] = cur + (i < n - 1 ? dp2[i + 1] : 0);
+        if (a[i] == 1 || a[i] == 3) ++cur;
+    }
+
+    cur = 0;
+    for(int i = 0; i < n; i++) {
+        dp3[i] = cur + (i > 0 ? dp3[i - 1] : 0);
+        if (a[i] == 2 || a[i] == 3) ++cur;
+    }
+    cur = 0;
+    for(int i = n - 1; i >= 0; i--) {
+        dp4[i] = cur + (i < n - 1 ? dp4[i + 1] : 0);
+        if (a[i] == 2 || a[i] == 3) ++cur;
+    }
+    for(int i = 0; i < n; i++) {
+        ll ar = dp1[i] + dp2[i];
+        ll sr = dp3[i] + dp4[i];
+        cout << abs(sr - ar) << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    fastio;
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

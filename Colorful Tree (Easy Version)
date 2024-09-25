@@ -1,0 +1,122 @@
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+
+class TreeBeautyCalculator {
+private:
+    int N;
+    std::vector<std::vector<int>> adj;
+
+    void validateInput(int node) const {
+        if (node <= 0 || node > N) {
+            throw std::out_of_range("Node index out of range");
+        }
+    }
+
+    bool isLeaf(int node) const {
+        validateInput(node);
+        return adj[node].size() == 1;
+    }
+
+    int countLeaves() const {
+        int leaves = 0;
+        for (int i = 1; i <= N; ++i) {
+            if (isLeaf(i)) {
+                leaves++;
+            }
+        }
+        return leaves;
+    }
+
+    int countInternalNodes() const {
+        return N - countLeaves();
+    }
+
+    void addEdge(int u, int v) {
+        validateInput(u);
+        validateInput(v);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    int calculateLeafBeauty(int leafCount) const {
+        return leafCount * 3;
+    }
+
+    int calculateInternalBeauty(int internalCount) const {
+        return internalCount * 2;
+    }
+
+public:
+    TreeBeautyCalculator() : N(0) {}
+
+    void readInput() {
+        std::cin >> N;
+        if (N <= 0) {
+            throw std::invalid_argument("Number of nodes must be positive");
+        }
+        adj.clear();
+        adj.resize(N + 1);
+        
+        for (int i = 0; i < N - 1; ++i) {
+            int U, V;
+            std::cin >> U >> V;
+            addEdge(U, V);
+        }
+    }
+
+    int calculateBeauty() const {
+        int leafCount = countLeaves();
+        int internalCount = countInternalNodes();
+        return calculateLeafBeauty(leafCount) + calculateInternalBeauty(internalCount);
+    }
+
+    void printAdjacencyList() const {
+        for (int i = 1; i <= N; ++i) {
+            std::cout << "Node " << i << " is connected to: ";
+            for (int neighbor : adj[i]) {
+                std::cout << neighbor << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    int getNodeCount() const {
+        return N;
+    }
+
+    int getDegree(int node) const {
+        validateInput(node);
+        return adj[node].size();
+    }
+
+    bool areNodesConnected(int u, int v) const {
+        validateInput(u);
+        validateInput(v);
+        return std::find(adj[u].begin(), adj[u].end(), v) != adj[u].end();
+    }
+};
+
+void solveTestCase() {
+    try {
+        TreeBeautyCalculator calculator;
+        calculator.readInput();
+        std::cout << calculator.calculateBeauty() << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int T;
+    std::cin >> T;
+    while (T--) {
+        solveTestCase();
+    }
+    return 0;
+}

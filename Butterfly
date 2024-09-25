@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <functional>
+
+class Tree {
+private:
+    std::vector<std::vector<int>> adjacency_list;
+
+public:
+    explicit Tree(int num_nodes) : adjacency_list(num_nodes + 1) {}
+
+    void add_edge(int u, int v) {
+        adjacency_list[u].push_back(v);
+        adjacency_list[v].push_back(u);
+    }
+
+    int calculate_beauty() const {
+        auto leaf_count = std::count_if(adjacency_list.begin() + 1, adjacency_list.end(),
+            [](const auto& neighbors) { return neighbors.size() == 1; });
+
+        auto internal_count = adjacency_list.size() - 1 - leaf_count;
+
+        return leaf_count * 3 + internal_count * 2;
+    }
+};
+
+class TestCase {
+private:
+    Tree tree;
+
+public:
+    TestCase() : tree(read_tree_size()) {
+        read_tree_edges();
+    }
+
+    int solve() const {
+        return tree.calculate_beauty();
+    }
+
+private:
+    static int read_tree_size() {
+        int N;
+        std::cin >> N;
+        return N;
+    }
+
+    void read_tree_edges() {
+        auto edge_count = tree.adjacency_list.size() - 2;
+        std::generate_n(std::default_insert_iterator(tree), edge_count, []() {
+            int U, V;
+            std::cin >> U >> V;
+            return std::make_pair(U, V);
+        });
+    }
+};
+
+class TestSuite {
+public:
+    static void run() {
+        int T;
+        std::cin >> T;
+        std::generate_n(std::ostream_iterator<int>(std::cout, "\n"), T, []() {
+            return TestCase().solve();
+        });
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    TestSuite::run();
+    
+    return 0;
+}

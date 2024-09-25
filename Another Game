@@ -1,0 +1,70 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits>
+
+class ContestProblemSolver {
+private:
+    struct TestCase {
+        int size;
+        std::vector<int> sequence;
+    };
+
+    static TestCase readTestCase() {
+        TestCase tc;
+        std::cin >> tc.size;
+        tc.sequence.resize(tc.size);
+        for (int& num : tc.sequence) {
+            std::cin >> num;
+        }
+        return tc;
+    }
+
+    static std::vector<int> createSortedCopy(const std::vector<int>& original) {
+        std::vector<int> sorted = original;
+        std::sort(sorted.begin(), sorted.end());
+        return sorted;
+    }
+
+    static int findMinimum(const std::vector<int>& sequence) {
+        return *std::min_element(sequence.begin(), sequence.end());
+    }
+
+    static int findMaximumMismatch(const std::vector<int>& original, const std::vector<int>& sorted) {
+        int maxMismatch = -1;
+        for (size_t i = 0; i < original.size(); ++i) {
+            if (original[i] != sorted[i]) {
+                maxMismatch = std::max(maxMismatch, original[i]);
+            }
+        }
+        return maxMismatch;
+    }
+
+    static int calculateResult(int maxMismatch, int minElement) {
+        return (maxMismatch == -1) ? 0 : maxMismatch + minElement;
+    }
+
+public:
+    static void solveTestCases(int testCaseCount) {
+        while (testCaseCount--) {
+            TestCase tc = readTestCase();
+            std::vector<int> sortedSequence = createSortedCopy(tc.sequence);
+            int minElement = findMinimum(tc.sequence);
+            int maxMismatch = findMaximumMismatch(tc.sequence, sortedSequence);
+            int result = calculateResult(maxMismatch, minElement);
+            std::cout << result << std::endl;
+        }
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int testCaseCount;
+    std::cin >> testCaseCount;
+
+    ContestProblemSolver::solveTestCases(testCaseCount);
+
+    return 0;
+}

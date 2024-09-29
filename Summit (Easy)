@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define N 2001
+int a[N], l[N], r[N];
+void solve() {
+	int n; cin >> n;
+	for(int i = 1; i <= n; i++) cin >> a[i];
+	l[1] = r[n] = 1;
+	for(int i = 2; i <= n; i++) l[i] = (a[i] > a[i - 1] ? l[i - 1] + 1 : 1);
+	for(int i = n - 1; i >= 1; i--) r[i] = (a[i] < a[i + 1] ? r[i + 1] + 1 : 1);
+	ll ans = 0;
+	for(int i = 1; i <= n; i++) ans += l[i];
+	ll root = ans;
+	a[n + 1] = 1e9;
+	l[0] = r[n + 1] = a[0] = 0;
+	for(int i = 1; i <= n; i++) {
+		for(int j = i + 2; j <= n; j++) {
+			int m = j - i - 1;
+			int x = 0, y = 0, z = 0, t = 0;
+			ll res = root;
+			res -= l[i] * r[i];
+			res -= min(m + 1, l[j]) * r[j];
+			if(a[j] > a[i - 1]) x = l[i - 1];
+			if(a[j] < a[i + 1]) y = min(r[i + 1], m);
+			if(a[i] > a[j - 1]) z = min(l[j - 1], m);
+			if(a[i] < a[j + 1]) t = r[j + 1];
+			res += (x + 1) * (y + 1);
+			res += (z + 1) * (t + 1);
+			if(y == z && z == m) res += (x + 1) * (t + 1);
+			ans = max(ans, res);
+		}
+	}
+	for(int i = 1; i < n; i++) {
+		int x = 0, y = 0;
+		if(a[i + 1] > a[i - 1]) x = l[i - 1];
+		if(a[i] < a[i + 2]) y = r[i + 2];
+		long long res = root;
+		res -= l[i] * r[i];	res -= r[i + 1];
+		res += (x + 1);	res += (y + 1);
+		if(a[i] > a[i + 1]) res += (x + 1) * (y + 1);
+		ans = max(ans, res);
+	}
+	cout << ans << '\n';
+}
+int main() {
+	int t; cin >> t;
+	while(t--)	solve();
+}

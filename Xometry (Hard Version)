@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+int cnt[5000000],mp[5000000],a[10000];
+set<int> s;
+vector<int> v;
+int n,nn;
+long long res;
+void solve(){
+    cin>>n;
+    for(int i=0;i<n;i++)cin>>a[i];
+    
+    for(int i=0;i<n;i++){
+        cnt[a[i]]++;
+        s.insert(a[i]);
+    }
+    for(int x:s)v.push_back(x);
+    res=0;
+    nn=n;
+    n=v.size();
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            mp[v[i]^v[j]]+=cnt[v[i]]*cnt[v[j]];
+        }
+    }
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            res+=cnt[v[i]]*cnt[v[j]]*(mp[v[i]^v[j]]-cnt[v[i]]*cnt[v[j]])*2+
+            cnt[v[i]]*cnt[v[j]]*(cnt[v[i]]-1)*(cnt[v[j]]-1);
+        }
+    }
+    
+    cout<<res*2<<"\n";
+    s.clear();
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            mp[v[i]^v[j]]-=cnt[v[i]]*cnt[v[j]];
+        }
+    }
+    v.clear();
+    for(int i=0;i<nn;i++){
+        cnt[a[i]]--;
+    }
+}
+int main() {
+    int t;
+    cin>>t;
+    while(t--)solve();
+}

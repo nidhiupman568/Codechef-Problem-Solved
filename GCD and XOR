@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+long long gcd(long long a, long long b) {
+    while (b != 0) {
+        long long temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int calculateOperations(const vector<long long>& arr, long long k) {
+    if (all_of(arr.begin(), arr.end(), [k](long long x) { return x == k; })) {
+        return 0;
+    }
+
+    auto start = find_if(arr.begin(), arr.end(), [k](long long x) { return x != k; });
+    auto end = find_if(arr.rbegin(), arr.rend(), [k](long long x) { return x != k; }).base() - 1;
+
+    if (start == end) {
+        return 1;
+    }
+
+    bool allMultiples = all_of(start, end + 1, [k](long long x) { return x % k == 0; });
+    long long firstXOR = (*start) ^ k;
+    bool sameXOR = all_of(start, end + 1, [k, firstXOR](long long x) { return (x ^ k) == firstXOR; });
+
+    return (allMultiples || sameXOR) ? 1 : 2;
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        long long k;
+        cin >> n >> k;
+
+        vector<long long> arr(n);
+        for_each(arr.begin(), arr.end(), [](long long& x) { cin >> x; });
+
+        cout << calculateOperations(arr, k) << endl;
+    }
+
+    return 0;
+}

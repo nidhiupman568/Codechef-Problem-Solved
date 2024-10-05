@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long int ll;
+#define endl "\n"
+#define take(x)       \
+    for (auto &y : x) \
+        cin >> y;
+#define show(x)           \
+    for (auto y : x)      \
+        cout << y << " "; \
+    cout << endl;
+#define pb push_back
+#define max3(a, b, c) max(max((a), (b)), (c))
+#define max4(a, b, c, d) max(max((a), (b)), max((c), (d)))
+#define min3(a, b, c) min(min((a), (b)), (c))
+#define min4(a, b, c, d) min(min((a), (b)), min((c), (d)))
+#define all(v) v.begin(), v.end()
+ll M = 998244353;
+ll mod = 1e9 + 7;
+
+void solve()
+{
+    ll n;
+    cin>>n;
+    vector<vector<ll>> adj(n+1);
+    vector<ll> deg(n+1,0);
+    for(int i = 0 ;i<n-1;i++)
+    {
+        ll a,b;
+        cin>>a>>b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+        deg[a]++;
+        deg[b]++;
+    }
+    if(n == 2)
+    {
+        cout<<1<<endl;
+        cout<<1<<" "<<2<<" "<<1<<endl;
+        return;
+    }
+    queue<int> q;
+    vector<int> vis(n+1,0);
+    vector<int> par(n+1,0);
+    vector<int> ans;
+    vis[1] = 1;
+    q.push(1);
+    while(q.size()>0)
+    {
+        int v = q.front();
+        q.pop();
+        ans.pb(v);
+        for(auto i:adj[v])
+        {
+            if(!vis[i])
+            {
+                vis[i] = 1;
+                q.push(i);
+                par[i] = v;
+            }
+        }
+    }
+    
+    if(n%2!=0)
+    {
+        cout<<0<<endl;
+        for(int i = n-1;i>0;i--)
+        {
+            cout<<ans[i]<<" "<<par[ans[i]]<<" "<<ans[i]<<endl;
+        }
+    }
+    else
+    {
+        cout<<0<<endl;
+        for(int i = n-1;i>0;i--)
+        {
+            ll x = ans[i];
+            if(i<=3)
+            {
+                x = par[ans[i]];
+            }
+            cout<<ans[i]<<" "<<par[ans[i]]<<" "<<x<<endl;
+        }
+    }
+
+    return;
+}
+
+int main()
+{
+    int tt;
+    cin >> tt;
+    while (tt--)
+    {
+        solve();
+    }
+
+    return 0;
+}

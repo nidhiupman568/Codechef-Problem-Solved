@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int mod = 1000000007;
+
+int32_t main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0), cout.tie(0);
+    int tt;
+    cin >> tt;
+    while (tt--)
+    {
+        int n, ans = 0;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++)
+            cin >> a[i];
+        if (n == 1)
+            continue;
+        set<pair<int, int>> rngs;
+        set<int> ele;
+        ele.insert(a[0]);
+        for (int i = 1; i < n; i++)
+        {
+            int c = 1;
+            vector<pair<int, int>> rng;
+            auto it = ele.lower_bound(a[i]);
+            if (it == ele.end())
+                rng.push_back({a[i] - *(--it) + 1, a[i] + *it - 1});
+            else if (it == ele.begin())
+                rng.push_back({*it - a[i] + 1, *it + a[i] - 1});
+            else
+            {
+                c++;
+                rng.push_back({*it - a[i] + 1, *it + a[i] - 1});
+                rng.push_back({a[i] - *(--it) + 1, a[i] + *it - 1});
+            }
+            ele.insert(a[i]);
+            for (int j = 0; j < c; j++)
+            {
+                auto itt = rngs.lower_bound({rng[j].first, rng[j].second});
+                ans += rng[j].second - rng[j].first + 1;
+                vector<pair<int, int>> temp;
+                while (itt != rngs.end())
+                {
+                    if ((*itt).second <= rng[j].second)
+                    {
+                        temp.push_back(*itt);
+                        ans -= (*itt).second - (*itt).first + 1;
+                    }
+                    else if ((*itt).first <= rng[j].second + 1)
+                    {
+                        temp.push_back(*itt);
+                        ans -= rng[j].second - (*itt).first + 1;
+                        rng[j].second = (*itt).second;
+                    }
+                    else
+                        break;
+                    itt++;
+                }
+                itt = rngs.lower_bound({rng[j].first, rng[j].second});
+                if (itt != rngs.begin())
+                {
+                    itt--;
+                    if (rng[j].second <= (*itt).second)
+                    {
+                        ans -= rng[j].second - rng[j].first + 1;
+                        rng[j].first = (*itt).first;
+                        rng[j].second = (*itt).second;
+                        temp.push_back(*itt);
+                    }
+                    else if (rng[j].first <= (*itt).second + 1)
+                    {
+                        ans -= (*itt).second - rng[j].first + 1;
+                        rng[j].first = (*itt).first;
+                        temp.push_back(*itt);
+                    }
+                }
+                for (auto er : temp)
+                    rngs.erase(er);
+                rngs.insert({rng[j].first, rng[j].second});
+            }
+            cout << ans << " ";
+        }
+        cout << endl;
+    }
+}

@@ -1,0 +1,95 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#ifndef ONLINE_JUDGE
+#include <debug-template.hpp>
+#define debug(...) cerr << "[ " << #__VA_ARGS__ << " ]: ", debug_out(__VA_ARGS__)
+#else
+#define debug(...) 42
+#endif
+
+struct BIT {
+	vector<int> bit; int sz;
+	BIT(int N) : bit(N+1, 0), sz(N) {}
+	inline int Get(int i) { int r = 0; for (; i; i -= (i & (-i))) r += bit[i]; return r; }
+	inline void Add(int i, int x) { for (; i <= sz; i += (i & (-i))) bit[i] += x; }
+};
+
+signed main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0), cout.tie(0);
+	
+	int T; cin >> T;
+	while (T--) {
+		int N, Q; cin >> N >> Q;
+		vector<vector<int>> adj(2*N+1), par(2*N+1, vector<int>(20));
+		for (int i = 1; i < 2*N; i++) {
+			int u, v; cin >> u >> v;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+		vector<int> st(N+1), ed(N+1), dp(2*N+1), tin(2*N+1), tout(2*N+1), cnt(2*N+1), A(2*N+1);
+		for (int i = 1; i <= 2*N; i++) {
+			cin >> A[i];
+			if (st[A[i]]) ed[A[i]] = i;
+			else st[A[i]] = i;
+		}
+		int timer = 0;
+		function<void(int, int)> DFS = [&](int u, int p) {
+			dp[u] = dp[p] + 1; par[u][0] = p; tin[u] = ++timer;
+			for (int i = 1; i < 20; i++) par[u][i] = par[par[u][i-1]][i-1];
+			for (int& v : adj[u]) if (v != p) DFS(v, u); tout[u] = timer;
+		}; DFS(1, 0);
+		auto LCA = [&](int u, int v) -> int {
+			if (dp[u] < dp[v]) swap(u, v);
+			for (int i = 19; i >= 0; i--) if (dp[u] >= dp[v] + (1<<i)) u = par[u][i];
+			if (u == v) return u;
+			for (int i = 19; i >= 0; i--) if (par[u][i] != par[v][i]) u = par[u][i], v = par[v][i];
+			return par[u][0];
+		};
+		BIT bit1(timer), bit2(timer+1);
+		auto AddPath = [&](int u, int v, int x) {
+//			debug(u, v, x);
+			int anc = LCA(u, v);
+//			debug(anc);
+			cnt[anc] += x;
+			bit1.Add(tin[u], x);
+			bit1.Add(tin[v], x);
+			bit1.Add(tin[anc], -2*x);
+			bit2.Add(tin[anc], x);
+			bit2.Add(tout[anc]+1, -x);
+		};
+		auto GetPath = [&](int u, int v) {
+//			debug(u, v);
+			int anc = LCA(u, v), ans = cnt[anc];
+//			debug(anc);
+			// anc on other path
+			ans += bit1.Get(tout[anc]) - bit1.Get(tin[anc]-1);
+			// some LCA on this path
+			ans += bit2.Get(tin[u]) + bit2.Get(tin[v]) - 2 * bit2.Get(tin[anc]);
+			return ans;
+		};
+		for (int i = 1; i <= N; i++) AddPath(st[i], ed[i], 1);
+		while (Q--) {
+			int type; cin >> type;
+			if (type == 1) {
+				int u, v; cin >> u >> v;
+				if (A[u] == A[v]) continue;
+				AddPath(st[A[u]], ed[A[u]], -1);
+				AddPath(st[A[v]], ed[A[v]], -1);
+				if (st[A[u]] == u) st[A[u]] = v;
+				else ed[A[u]] = v;
+				if (st[A[v]] == v) st[A[v]] = u;
+				else ed[A[v]] = u;
+				swap(A[u], A[v]);
+				AddPath(st[A[u]], ed[A[u]], 1);
+				AddPath(st[A[v]], ed[A[v]], 1);
+			} else {
+				int k; cin >> k;
+				cout << N - GetPath(st[k], ed[k]) << "\n";
+			}
+		}
+	}
+	
+	return 0;
+}

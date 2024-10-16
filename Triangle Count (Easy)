@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    // your code goes here
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+       
+        vector<long long> v(n);  // Use long long for the array elements
+        for (int i = 0; i < n; i++) {
+            long long e;
+            cin >> e;
+            v[i] = e;
+        }
+        if(v.size()==1)
+        {
+            cout<<0<<endl;
+            continue;
+        }
+        sort(v.begin(), v.end());
+        
+        vector<vector<long long>> intervals;  // Use long long for intervals
+        for (int i = 1; i < v.size(); i++) {
+            long long diff = v[i] - v[i - 1];  // Difference between elements
+            long long summ = v[i] + v[i - 1];  // Sum of elements
+            vector<long long> v1(2);
+            v1[0] = diff;
+            v1[1] = summ;
+            intervals.push_back(v1);
+        }
+        
+        if (intervals.size() <= 1) {
+            cout << (intervals[0][1] - intervals[0][0] - 1) << endl;  // Single interval case
+        } else {
+            sort(intervals.begin(), intervals.end());
+            
+            vector<vector<long long>> output;
+            output.push_back(intervals[0]);
+            
+            for (int i = 1; i < intervals.size(); i++) {
+                if (output.back()[1] > intervals[i][0]) {
+                    output.back()[1] = max(output.back()[1], intervals[i][1]);
+                } else {
+                    output.push_back(intervals[i]);
+                }
+            }
+            
+            long long pp = 0;
+            for (int i = 0; i < output.size(); i++) {
+                pp += output[i][1] - output[i][0] - 1;  // Calculate the valid X count in each interval
+            }
+            cout << pp << endl;
+        }
+    }
+}

@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <functional>
+
+class SequenceAnalyzer {
+private:
+    std::vector<int> data;
+    long long total;
+
+    void analyze_sequence() {
+        for (size_t idx = 0; idx < data.size(); ++idx) {
+            process_element(idx, 1);  // Forward direction
+            process_element(idx, -1); // Backward direction
+        }
+    }
+
+    void process_element(size_t idx, int direction) {
+        for (int offset = (direction == 1 ? 0 : 1); offset <= 99; ++offset) {
+            size_t partner_idx = idx + direction * offset;
+            if (partner_idx >= data.size()) break;
+            
+            int delta = std::abs(data[idx] - data[partner_idx]);
+            
+            if (delta < offset) continue;
+            
+            if (delta == offset) {
+                total += offset + 1;
+            } else if (delta > offset && (delta - offset) % 2 == 0) {
+                check_middle_points(idx, partner_idx, delta);
+            }
+        }
+    }
+
+    void check_middle_points(size_t i, size_t k, int delta) {
+        auto check_point = [this, i, k, delta](long long point) {
+            if ((i + k - delta) % 2 == 0 && point >= 0 && point < data.size()) {
+                ++total;
+            }
+        };
+
+        check_point((i + k - delta) / 2);
+        check_point((i + k + delta) / 2);
+    }
+
+public:
+    long long compute_result(const std::vector<int>& input) {
+        data = input;
+        total = 0;
+        analyze_sequence();
+        return total;
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int test_count;
+    std::cin >> test_count;
+
+    SequenceAnalyzer analyzer;
+
+    while (test_count--) {
+        int seq_length;
+        std::cin >> seq_length;
+
+        std::vector<int> sequence(seq_length);
+        for (int& element : sequence) {
+            std::cin >> element;
+        }
+
+        std::cout << analyzer.compute_result(sequence) << '\n';
+    }
+
+    return 0;
+}

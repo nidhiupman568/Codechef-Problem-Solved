@@ -1,0 +1,12 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+    int pl,me;
+    cin >> pl >> me;
+    if(me <= 2*pl)
+        cout << "METAL\n";
+    else
+        cout << "PLASTIC\n";
+}

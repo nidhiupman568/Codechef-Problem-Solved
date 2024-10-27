@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <set>
+#include <map>
+#include <algorithm>
+#include <climits>
+#include <cmath>
+#include <numeric>
+#include <string>
+#include <bitset>
+#include <assert.h>
+#include <iomanip>
+using namespace std;
+
+template <typename T>
+using pqg = priority_queue<T, vector<T>, greater<T>>;
+
+const long long infl = 1e18;
+const int inf = 1e9;
+
+void solve()
+{
+	int n;
+	cin >> n;
+	vector<pair<int, int>> a(n);
+	for(auto &[f, s]: a)
+		cin >> f >> s;
+	sort(a.begin(), a.end());
+	vector<int> dp;
+	for(auto [f, s]: a)
+	{
+		int idx = lower_bound(dp.begin(), dp.end(), s) - dp.begin();
+		if(idx == (int)dp.size())
+			dp.push_back(s);
+		else
+			dp[idx] = s;
+	}
+
+	cout << (int)dp.size();
+}
+
+int main()
+{
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int t;
+	cin >> t;
+
+	while (t--)
+	{
+		solve();
+		cout << (t ? "\n" : "");
+	}
+}

@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    long long sum = 0, ans = 0;
+    vector<pair<int, int>> a(n);
+    for (auto& [x, y] : a) {
+        cin >> x;
+    }
+    for (auto& [x, y] : a) {
+        cin >> y;
+        x -= y;
+        sum += y;
+    }
+    sort(a.begin(), a.end());
+    ans = sum;
+    sum += a[0].first;
+    
+    for (int i = 1; i < n; i++) {
+        sum += a[i].first;
+        ans = min(ans, sum);
+    }
+    cout << ans << "\n";
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

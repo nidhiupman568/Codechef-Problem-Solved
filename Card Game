@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T; // Number of test cases
+    
+    while (T--) {
+        int N, X;
+        cin >> N >> X; // Number of cards and the card thrown by Chef
+        
+        // Count the number of even and odd cards
+        int evenCount = N / 2;
+        int oddCount = (N + 1) / 2;
+        
+        // Determine the parity of X
+        if (X % 2 == 0) {
+            // X is even, choose from even cards
+            cout << evenCount - (X % 2 == 0) << endl;
+        } else {
+            // X is odd, choose from odd cards
+            cout << oddCount - (X % 2 != 0) << endl;
+        }
+    }
+    
+    return 0;
+}

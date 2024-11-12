@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using vl = vector<ll>;
+
+ll mod_exp(ll base, ll exp, ll mod) {
+    ll result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+
+ll mod_div(ll x, ll y, ll m) {
+    ll y_inv = mod_exp(y, m - 2, m);
+    return (x * y_inv) % m;
+}
+
+void My_program() {
+    int n, d;
+    cin >> n >> d;
+    
+    vl v(n);
+    for (ll i = 0; i < n; i++) {
+        cin >> v[i];
+    }
+
+    ll val = 0;
+    for (ll i = 0; i < n; i++) {
+        val ^= v[i];
+    }
+
+    ll x, y = 2 * d;
+    if (val != 0) {
+        x = d + 1;
+    } else {
+        x = d - 1;
+    }
+
+    ll m = 1e9 + 7; // Modulo value
+    ll ans = mod_div(x, y, m);
+    cout << ans << endl;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        My_program();
+    }
+    return 0;
+}

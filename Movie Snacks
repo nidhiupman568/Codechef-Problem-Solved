@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+
+
+    int X, Y, Z;
+    cin >> X >> Y >> Z;
+
+    // Strategy 1: Buying everything individually
+    int cost1 = 2 * X + 3 * Y;
+
+    // Strategy 2: Using two combos and one extra drink
+    int cost2 = 2 * Z + Y;
+
+    // Strategy 3: Using three combos
+    int cost3 = 3 * Z;
+
+    // Minimum cost of all strategies
+    int min_cost = min({cost1, cost2, cost3});
+
+    cout << min_cost << endl;
+
+    return 0;
+}

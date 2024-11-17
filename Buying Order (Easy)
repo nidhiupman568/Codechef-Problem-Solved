@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int maxItems(int N, const vector<int>& B) {
+    vector<int> itemsWithOne, itemsWithZero;
+
+    // Separate items based on B
+    if(B[N-1]==1){
+    for (int i = N - 1; i >= 0; i--) {
+        if (B[i] == 1)
+            itemsWithOne.push_back(i + 1); // Item numbers are 1-based
+    }
+    for (int i = 0; i < N; i++) {
+        if (B[i] == 0) {
+            itemsWithZero.push_back(i + 1);
+        }
+    }
+
+    int totalItems = 0;
+
+    if (!itemsWithZero.empty() && !itemsWithOne.empty()) {
+        // Check if itemsWithZero[0] > itemsWithOne.back()
+        if (itemsWithZero.front() > itemsWithOne.back()) {
+            totalItems = 2 * itemsWithZero.size() + 2 * (itemsWithOne.size() - 1) + 1;
+        } else {
+            totalItems = (2 * (itemsWithZero.size() - 1) + 1) + (2 * (itemsWithOne.size() - 1) + 1);
+        }
+    } else {
+        // If one of the vectors is empty
+        if (!itemsWithZero.empty()) {
+            totalItems = 2 * itemsWithZero.size()-1;
+        } else if (!itemsWithOne.empty()) {
+            totalItems = 2 * itemsWithOne.size()-1;
+        }
+    }
+
+    return totalItems;
+    }
+    
+    
+    
+    else
+    {
+        for (int i = N - 1; i >= 0; i--) {
+        if (B[i] == 1)
+            itemsWithOne.push_back(i + 1); // Item numbers are 1-based
+    }
+    for (int i = 0; i < N; i++) {
+        if (B[i] == 0) {
+            itemsWithZero.push_back(i + 1);
+        }
+    }
+
+    int totalItems = 0;
+
+    if (!itemsWithZero.empty() && !itemsWithOne.empty()) {
+        // Check if itemsWithZero[0] > itemsWithOne.back()
+        if (itemsWithZero.back() > itemsWithOne.front()) {
+            totalItems = 2 *( itemsWithZero.size()-1)+1 + 2 * (itemsWithOne.size());
+        } else {
+            totalItems = (2 * (itemsWithZero.size() - 1) + 1) + (2 * (itemsWithOne.size() - 1) + 1);
+        }
+    } else {
+        // If one of the vectors is empty
+        if (!itemsWithZero.empty()) {
+            totalItems = 2 * itemsWithZero.size()-1;
+        } else if (!itemsWithOne.empty()) {
+            totalItems = 2 * itemsWithOne.size()-1;
+        }
+    }
+
+    return totalItems;
+    }
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> v(n);
+        for (int i = 0; i < n; i++) {
+            cin >> v[i];
+        }
+        cout << maxItems(n, v) << endl;
+    }
+}

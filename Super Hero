@@ -1,0 +1,31 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+using namespace std;
+
+
+int main() {
+    int t;
+    int health;
+    long long k;
+    int factors;
+    cin>>t;
+    while(t--) {
+        cin>>health>>k;
+        factors = 0;
+        int curr = health;
+        for(int i=2;i<=sqrt(health);i++) {
+            while(curr%i == 0) {
+                curr/=i;
+                factors++;
+            }
+        }
+        if(curr > 1) {
+            factors++; //1 is also a factor
+        }
+        factors += log2(k);
+        cout<<factors<<endl;
+    }
+    return 0;
+}

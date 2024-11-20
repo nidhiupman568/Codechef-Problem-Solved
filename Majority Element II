@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T;  // Read number of test cases
+
+    while (T--) {
+        int N;
+        cin >> N;  // Read the size of the array
+
+        vector<int> A(N);
+        for (int i = 0; i < N; ++i) {
+            cin >> A[i];  // Read the elements of the array
+        }
+        
+        bool changed = true;
+        while (changed) {
+            changed = false;
+            for (int i = 1; i < N - 1; ++i) {
+                if (A[i - 1] + A[i + 1] == 4) {
+                    if (A[i] == 3) {
+                        A[i] = 1;
+                        changed = true;
+                    }
+                }
+            }
+        }
+
+        // Calculate the minimum possible sum
+        int sum = 0;
+        for (int i = 0; i < N; ++i) {
+            sum += A[i];
+        }
+        
+        cout << sum << endl;  // Print the result for this test case
+    }
+    
+    return 0;
+}

@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool feasible(int d,const vector<int>& a,int n,int k) {
+    int ch=0,cl=a[0]-d,chigh=a[0]+d;
+    int i=0;
+    while(i<n)
+    {
+        int nl=a[i]-d,nh=a[i]+d;
+        if(nh<cl||nl>chigh){
+            ++ch;
+            cl=nl;
+            chigh=nh;
+        }
+        else
+        {
+            cl=max(cl,nl);
+            chigh=min(chigh,nh);
+        }
+        if(ch>k){
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
+int main() {
+    int t;
+    cin>>t;
+    while(t--){
+        int n,k;
+        cin>>n>>k;
+        vector<int> a(n);
+        for (int i=0;i<n;i++){
+            cin>>a[i];
+        }
+        int l=0, r=*max_element(a.begin(), a.end())-*min_element(a.begin(), a.end());
+        int res=r;
+        while(l<=r)
+        {
+            int mid=l+(r-l)/2;
+            bool isFeasible=feasible(mid,a,n,k);
+            if(isFeasible)
+            {
+                res = mid;
+                r=mid-1;
+            }
+            else{
+                l=mid+1;
+            }
+        }
+        cout<<res<<endl;
+    }
+    return 0;
+}

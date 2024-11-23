@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve(int total_donut_types, int total_cust, int donut_available[], int customer_need[]) {
+    int sad = 0;
+    for(int i=0; i<total_cust; i++) {
+        if (donut_available[customer_need[i] -1] > 0) {
+            donut_available[customer_need[i] - 1] -= 1; // -1 to compensate indexing
+        }
+        else {
+            ++sad;
+        }
+    }
+
+    cout<<sad<<endl;
+}
+
+
+
+void gen_input() {
+    int total_donut_types, total_cust;
+    cin>>total_donut_types>>total_cust;
+    int donut_available[total_donut_types] ;
+    int customer_need[total_cust] ;
+    for(int i=0; i< total_donut_types; ++i) {
+        cin>>donut_available[i];
+    }
+    for(int i=0; i< total_cust; ++i) {
+        cin>>customer_need[i];
+    }
+
+    solve(total_donut_types, total_cust, donut_available, customer_need);
+    
+}
+
+
+int main() {
+	// your code goes here
+	int T;
+	cin>>T;
+	while(T--) {
+	    gen_input();
+	}
+}

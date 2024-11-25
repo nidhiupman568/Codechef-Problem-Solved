@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;        
+
+
+int32_t main() {
+    cin.tie(0)->sync_with_stdio(false);
+
+    function<void()> M_test_case = [&]() {
+        int n; cin >> n;
+        vector<int> ar(n);
+        for(int i = 0; i < n; i++) {
+            cin >> ar[i];
+        }
+        if(is_sorted(ar.begin(), ar.end())) {
+            cout << n << '\n'; return;
+        }
+        int cnt = 0;
+        for(int i = 0; i < n; i++) {
+            cnt += ar[i] == (i + 1);
+        }
+        cout << (cnt ? n - 1 : n - 2) << '\n';
+    };
+
+    int32_t _ = 1;    cin >> _;
+    for (int T = 1; T <= _; T++) {
+        M_test_case();
+    }
+    return _ ^ _;
+}

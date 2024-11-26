@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+bool isPal(string &ans,int i,int j)
+{
+    while(i<j)
+    {
+        if(ans[i]!=ans[j])
+        return false;
+        i++;
+        j--;
+    }
+    return true;
+}
+void solve()
+{
+  int n;
+  cin>>n;
+  string ans;
+  cin>>ans;
+  
+  if(n==1)
+  {
+    cout<<0<<endl;
+    return;
+  }
+  if(n==2)
+  {
+    if(ans[0]!=ans[1])
+    {
+      cout<<-1<<endl;
+      return;
+    }
+    else
+    cout<<0<<endl;
+    return;
+  }
+
+  
+  if(isPal(ans,0,n-1))
+  cout<<0<<endl;
+  else
+  {
+    if(ans[0]==ans[n-1])
+    cout<<1<<endl;
+    else if(!isPal(ans,0,n-2))
+    cout<<1<<endl;
+    else if(!isPal(ans,1,n-1))
+    cout<<1<<endl;
+    else
+    cout<<-1<<endl;
+  }
+}
+int main() 
+{
+  int t;
+  cin>>t;
+  for(int i=0; i<t; i++)
+  solve();
+}

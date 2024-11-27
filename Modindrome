@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int int64_t
+const int M = 998244353;
+
+int power(int x, int y)
+{
+    x %= M;
+    int res = 1;
+    while (y)
+    {
+        if (y & 1)
+            res = res * x % M;
+        x = x * x % M;
+        y /= 2;
+    }
+    return res;
+}
+
+void solve()
+{
+    int n, m;
+    cin >> n >> m;
+    int tot = power(m, n);
+    int extra = power(m, (n + 1) / 2);
+    int ans = 0;
+    for (int x = 1; x < m; x++)
+    {
+        int cur = 0;
+        int k = m - (m - 1) / x * x;
+        int hm = (m - 1) / x + 1;
+        cur = k * hm * hm + (x - k) * (hm - 1) * (hm - 1);
+        ans += power(cur, n / 2);
+    }
+    if (n % 2)
+        ans *= m;
+    cout << ((ans % M - extra * m) % M + M) % M;
+}
+
+signed main()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int t = 1;
+    cin >> t;
+    while (t--)
+        solve(), cout << '\n';
+    return 0;
+}

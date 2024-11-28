@@ -1,0 +1,77 @@
+#pragma GCC optimize("O3")
+// #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,fma,abm,mmx,avx,avx2,tune=native")
+#pragma GCC optimize ("unroll-loops")
+
+#define _CRT_SECURE_NO_WARNINGS
+#define what_is(x) cerr << #x << " is " << x << endl;
+
+// Leetcode
+//static const auto speedup =[]() {std::ios::sync_with_stdio(false); std::cin.tie(NULL); return 0;}();
+//__builtin_popcount()
+
+typedef long long ll;
+typedef long double ld;
+
+#include <bits/stdc++.h>
+
+#define endl '\n'
+#define INF (long long)1e18 + 5 //Infinity
+#define MOD 1000000007
+// #define M_PI 3.141592653589793
+#define f(i,a,b) for ( int i = a; i < b; i++)
+#define rv(i,a,b) for (int i = a; i >= b; i--)
+#define pb push_back
+#define mp make_pair
+#define vi vector<int>
+#define vl vector<ll>
+#define ss second
+#define ff first
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define sz(a) (ll)a.size()
+#define all(a) a.begin(), a.end()
+#define tri pair<ll, pll>
+#define vii vector<pii>
+#define vll vector<pll>
+#define vlll vector<tri>
+#define vvi vector<vi>
+#define vvl vector<vl>
+#define clear(arr) memset(arr, 0, sizeof (arr))
+
+using namespace std;
+
+
+void solve()
+{
+   int n; cin>>n;  vi v(n-1);
+   
+   f(i,0,n-1)cin>>v[i];
+   
+   sort(all(v));
+   
+   vi ans(n);
+   
+   ans[0]=1;
+   
+   f(i,0,n-1)
+   {
+       ans[i+1]=v[i]-ans[i];
+   }
+   
+   
+   for(auto it:ans)
+   {
+       cout<<it<<" ";
+   }
+   cout<<endl;
+}
+int main() {
+	// your code goes here
+	std::ios::sync_with_stdio(false); std::cin.tie(NULL);
+	int t;cin>>t;
+	while(t--)
+	{
+	    solve();
+	}
+
+}

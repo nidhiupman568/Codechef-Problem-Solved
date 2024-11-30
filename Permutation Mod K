@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin>>t;
+	while(t--){
+	    int n, k;
+	    cin>>n>>k;
+	    if(k==1){
+	        cout<<-1<<'\n';
+	    } else if((k==2) && (n%2==1)){
+	        cout<<-1<<'\n';
+	    } else if(n%k!=1){
+	        for(int i=1; i<=n; i++){
+	            if(i==1){
+	                cout<<n<<' ';
+	            } else{
+	                cout<<i-1<<' ';
+	            }
+	        }
+	        cout<<'\n';
+	    } else{
+	        for(int i=1; i<=n; i++){
+	            if(i==1){
+	                cout<<2<<' ';
+	            } else if(i==2){
+	                cout<<1<<' ';
+	            } else if(i==3){
+	                cout<<n<<' ';
+	            } else{
+	                cout<<i-1<<' ';
+	            }
+	        }
+	        cout<<'\n';
+	    }
+	}
+    return 0;
+}

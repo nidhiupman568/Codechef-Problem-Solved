@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        long long l, r, x;
+        cin >> l >> r >> x;
+
+        long long ans = 0; // Start with the answer as 0
+
+        // Iterate over bits from 30 down to 0
+        for (int b = 30; b >= 0; --b) {
+            long long mask_b = (ans ^ x) & ~((1LL << b) - 1); // Keep higher bits fixed
+
+            // Minimum value among all (ans ^ i ^ x) for i < 2^b
+            long long min_val = mask_b;
+
+            // Maximum value among all (ans ^ i ^ x) for i < 2^b
+            long long max_val = mask_b + (1LL << b) - 1;
+
+            // Check if [min_val, max_val] lies completely within [l, r]
+            if (min_val >= l && max_val <= r) {
+                ans += (1LL << b); // Set bit b in the answer
+            }
+        }
+
+        cout << ans << endl;
+    }
+
+    return 0;
+}

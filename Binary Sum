@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define ll long long int
+#define max_heap priority_queue<int> 
+#define min_heap priority_queue<int,vector<int>,greater<int>> 
+#define un_map unordered_map<int,int>
+#define  loop(i,a,n)  for(int i=a;i<n;i++)  
+#define v(arr,n) vector <int> arr(n)
+#define srt(arr) sort(arr.begin(),arr.end())
+#define rev(arr) reverse(arr.begin(),arr.end())
+ 
+void solve(){
+    int n, k;
+    cin>>n>>k;
+    int a = 0, b = 1;
+    int cnt1 = 0, cnt2 = 0;
+    loop(i,0,n){
+        cnt1 +=a; 
+        cnt2 +=b;
+        a = 1-a;
+        b = 1-b; 
+    }
+    if(cnt1==k || cnt2==k){
+        cout<<"YES"<<'\n';
+    }else{
+        cout<<"NO"<<'\n';
+    }
+}
+ 
+int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+    return 0;
+}

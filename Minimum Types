@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+#define endl '\n'
+#define ll long long
+#include<string.h>
+#include<string>
+using namespace std;
+
+void solve() 
+{
+    int N, X;
+    cin >> N >> X;
+
+    vector<int> A(N), B(N);
+    for (int i = 0; i < N; i++) cin >> A[i];
+    for (int i = 0; i < N; i++) cin >> B[i];
+
+    priority_queue<int> pq;
+    for(int i=0;i<N;i++)
+    {
+        pq.push(A[i]*B[i]);
+    }
+    int need = pq.size();
+    while(X>0 && !pq.empty())
+    {
+        X -= pq.top();
+        pq.pop();
+    }
+    if(X>0) cout << -1 << endl;
+    else
+    {
+        int ans = need - pq.size();
+        cout << ans << endl;
+    }
+}
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    while(t--)
+    {
+        solve();
+    }
+
+    return 0;
+}

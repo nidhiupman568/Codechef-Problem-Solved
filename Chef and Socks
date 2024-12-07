@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int A,X,Y;
+    cin>>A>>X>>Y;
+
+if(A<=X+Y)
+{
+    cout<<"YES";
+}
+else
+{
+    cout<<"NO";
+}
+}

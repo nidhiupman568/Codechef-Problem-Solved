@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int T;
+    cin >> T;
+
+    while (T--) {
+        int N, P;
+        int K;
+        cin >> N >> K >> P;
+
+        vector<int> chair(N);
+        for (int i = 0; i < N; i++) {
+            cin >> chair[i];
+        }
+
+        sort(chair.rbegin(), chair.rend());
+
+        int vedHeight = K + chair[0];
+
+        int varunHeight = P;
+        for (int i = 1; i < N; i++) {
+            varunHeight += chair[i];
+        }
+
+        if (vedHeight > varunHeight) {
+            cout << "Ved" << endl;
+        } else if (varunHeight > vedHeight) {
+            cout << "Varun" << endl;
+        } else {
+            cout << "Equal" << endl;
+        }
+    }
+
+    return 0;
+
+}

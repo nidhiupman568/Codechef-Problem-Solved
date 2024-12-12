@@ -1,0 +1,19 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int N,M;
+    float res;
+    cin>>N>>M;
+    
+res=(float)N/2;
+if(M>=res)
+{
+    cout<<"NEWBIE";
+}
+else
+{
+    cout<<"PRO";
+}
+
+}

@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define  endl "\n"
+#define  vi vector<int>
+#define  vvi vector<vector<int>>
+#define  all(v) v.begin(),v.end()
+#define  SORT(v) sort(all(v))
+#define  RSORT(v) sort(v.rbegin(),v.rend())
+#define  MAXI(a) (*max_element((a).begin(), (a).end()))
+#define  MINI(a) (*min_element((a).begin(), (a).end()))
+#define  MOD 1000000007
+#define  int long long int
+#define  INT_MAX LLONG_MAX
+#define  INT_MIN LLONG_MIN
+#define read(a) for(auto &i: a) cin >> i
+#define print(a) for(auto &i: a) cout << i << " "; cout << "\n"
+#define read2(a, n, m) for (int i = 0; i < (n); ++i) for (int j = 0; j < (m); ++j) cin >> (a)[i][j]
+#define print2(a, n, m) for (int i = 0; i < (n); ++i) { for (int j = 0; j < (m); ++j) cout << (a)[i][j] << " "; cout << endl; }
+
+int32_t main() {
+	
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    
+	int T;
+	cin>> T;
+	while(T--){
+	    int n;
+        cin >> n;
+        
+        int l, r;
+        cin >> l >> r;
+        
+        vi v(n);
+        read(v);
+
+        unordered_map<int, int> mp;
+        bool flg = false;
+        
+        for (int i = 0; i < n; ++i) {
+            mp[v[i]]++;
+            if (mp[v[i]] > 1) {
+                flg = true;
+                break;
+            }
+        }
+        
+        if (flg) {
+            if (0 >= l && 0 <= r) {
+                cout << "YES" << endl;
+            } else {
+                cout << "NO" << endl;
+            }
+            continue;
+        }
+
+        int p = 1;
+        bool overflow = false;
+
+        for (int i = 0; i < n - 1; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                p *= (v[i] ^ v[j]);
+
+                if (p == 0) {
+                    overflow = true;
+                    break;
+                }
+                if (p > r) {
+                    overflow = true;
+                    break;
+                }
+            }
+            if (overflow) break;
+        }
+
+        if (p >= l && p <= r) {
+            cout << "YES" << endl;
+        } 
+        else {
+            cout << "NO" << endl;
+        }
+    }
+    return 0;
+}

@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+#define int long long
+using namespace std;
+
+signed main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  int t;
+  cin >> t;
+  while (t--) {
+    int n, m;
+    cin >> n >> m;
+    string a;
+    cin >> a;
+    string b;
+    cin >> b;
+    vector<pair<int, int>> c, d;
+    for (int i = 0; i < n; ++i) {
+      if (c.empty() || c.back().first ^ (a[i] - 'A')) {
+        c.push_back({a[i] - 'A', 1});
+      } else {
+        c.back().second += 1;
+      }
+    }
+    for (int i = 0; i < m; ++i) {
+      if (d.empty() || d.back().first ^ (b[i] - 'A')) {
+        d.push_back({b[i] - 'A', 1});
+      } else {
+        d.back().second += 1;
+      }
+    }
+    if ((int)c.size() != (int)d.size()) {
+      cout << "NO" << "\n";
+    } else {
+      bool ok = true;
+      for (int i = 0; i < (int)c.size(); ++i) {
+        if (c[i].first != d[i].first) {
+          ok = false;
+          break;
+        }
+        if (c[i].second < d[i].second) {
+          ok = false;
+          break;
+        }
+        int dif = c[i].second - d[i].second;
+        if (dif & 1) {
+          ok = false;
+          break;
+        }
+        if (dif > 0 && (int)c.size() == 1) {
+          ok = false;
+          break;
+        }
+      }
+      cout << (ok ? "YES" : "NO") << "\n";
+    }
+  }
+  return 0;
+}

@@ -1,0 +1,113 @@
+#include "bits/stdc++.h"
+
+using namespace std;
+
+#define max(a, b) (a < b ? b : a)
+#define min(a, b) ((a > b) ? b : a)
+#define mod 1e9 + 7
+#define read(x) \
+    for (auto &zu : (x)) cin >> zu;
+#define FOR(a, c) for (int(a) = 0; (a) < (c); (a)++)
+#define FORL(a, b, c) for (int(a) = (b); (a) <= (c); (a)++)
+#define FORR(a, b, c) for (int(a) = (b); (a) >= (c); (a)--)
+#define INF 1000000000000000003
+typedef long long int ll;
+typedef vector<int> vi;
+typedef pair<int, int> pi;
+typedef vector<pair<int, int>> vpi;
+#define F first
+#define S second
+#define PB push_back
+#define POB pop_back
+#define MP make_pair
+#define ll long long
+#define vi vector<int>
+#define vll vector<ll>
+#define pii pair<int, int>
+#define pb push_back
+#define all(v) v.begin(), v.end()
+#define rep(i, a, b) for (int i = a; i < b; i++)
+
+struct Edge {
+    int to;
+    ll weight;
+};
+
+void display(vector<vector<Edge>> &graph) {
+    for (int i = 0; i < graph.size(); i++) {
+        cout << i << " -> ";
+        for (auto &edge : graph[i]) {
+            cout << edge.to << "(" << edge.weight << ") ";
+        }
+        cout << "\n";
+    }
+}
+
+ll primsAlgorithm(vector<vector<Edge>> &graph, int N) {
+    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>>
+        pq;
+    vector<bool> visited(N, false);
+    ll totalWeight = 0;
+    pq.push({0, 0});
+    while (!pq.empty()) {
+        pair<ll, int> current = pq.top();
+        pq.pop();
+        ll weight = current.first;
+        int node = current.second;
+
+        if (visited[node]) continue;
+        visited[node] = true;
+        totalWeight = max(totalWeight, weight);
+
+        for (auto &edge : graph[node]) {
+            if (!visited[edge.to]) {
+                pq.push({edge.weight, edge.to});
+            }
+        }
+    }
+    return totalWeight;
+}
+ll computeCost(pii a, pii b) {
+    ll xAxisDifference = abs(a.first - b.first);
+    ll yAxisDifference = abs(a.second - b.second);
+    if (a.second == b.second)
+        return (xAxisDifference + 1) / 2;
+    else if (a.first == b.first)
+        return (yAxisDifference + 1) / 2;
+    else
+        return max(xAxisDifference, yAxisDifference);
+}
+void solve() {
+    int N;
+    cin >> N;
+    vector<pii> wells(N);
+
+    for (int i = 0; i < N; i++) {
+        cin >> wells[i].first >> wells[i].second;
+    }
+
+    vector<vector<Edge>> graph(N);
+
+    for (int i = 0; i < N; i++) {
+        for (int j = i + 1; j < N; j++) {
+            ll cost = computeCost(wells[i], wells[j]);
+            // cout << cost << endl;
+            graph[i].pb({j, cost});
+            graph[j].pb({i, cost});
+        }
+    }
+    // display(graph);
+    cout << primsAlgorithm(graph, N) << "\n";
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int T;
+    cin >> T;
+
+    while (T--) {
+        solve();
+    }
+    return 0;
+}

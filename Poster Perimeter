@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+using LL = long long;
+
+void solve(){
+    // your code goes here
+    int t;
+    cin >> t;
+    while(t--){
+        int n,m,k;
+        cin >> n >> m >> k;
+        int ans = INT_MAX;
+        for(int i = 1; i <= n; ++i){
+            for(int j = 1; j <= m; ++j){
+                //if(k-2*(i+j) >= 0)
+                ans = min(ans,abs(k-2*(i+j)));
+            }
+        }
+        cout << ans << endl;
+    }
+}
+
+int main()
+{
+    solve();
+    return 0;
+}

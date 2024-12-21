@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+using LL = long long;
+
+void solve(){
+    // your code goes here
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        int arr[n];
+        for(int i = 0; i < n; ++i){
+            cin >> arr[i];
+        }
+        sort(arr,arr+n);
+        int p = 0,cost = 0;
+        for(int i : arr){
+            cost+=max(0,i-p);
+            p++;
+        }
+        cout << cost << endl;
+    }
+}
+
+int main()
+{
+    solve();
+    return 0;
+}

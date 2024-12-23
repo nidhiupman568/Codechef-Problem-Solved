@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+#define endl '\n'
+typedef long long ll;
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    int ones = 0;
+    int zeros = 0;
+    int consectiveZeroes = 0;
+    int consectiveOnes = 0;
+    
+    for(int i=0;i<n;i++)
+    {
+        if(s[i] == '0')zeros++;
+        else ones++;
+    }
+    if(n % 2 == 0)
+    {
+        if(zeros!=ones)cout << "No" << endl;
+        
+        else
+        {
+            
+            for(int i=1;i<n;i++)
+            {
+                if(s[i] == s[i-1] && s[i] == '0')
+                {
+                    consectiveZeroes++;
+                }
+                else if(s[i] == s[i-1] && s[i] == '1')
+                {
+                    consectiveOnes++;
+                }
+            }
+            if(max(consectiveOnes,consectiveZeroes) >= 2)cout << "No" << endl;
+            
+            else cout << "Yes" << endl;
+            
+        }
+    }
+    else
+    {
+        if(min(zeros,ones)!=max(zeros,ones)-1)cout << "No" << endl;
+        
+        else
+        {
+            
+            for(int i=1;i<n;i++)
+            {
+                if(s[i] == s[i-1] && s[i] == '0')
+                {
+                    consectiveZeroes++;
+                }
+                else if(s[i] == s[i-1] && s[i] == '1')
+                {
+                    consectiveOnes++;
+                }
+            }
+            if(max(consectiveOnes,consectiveZeroes) >= 2)cout << "No" << endl;
+            
+            else cout << "Yes" << endl;
+            
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1; 
+    cin >> t;
+    while (t--) solve();
+    return 0;
+}

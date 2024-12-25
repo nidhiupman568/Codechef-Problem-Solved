@@ -1,0 +1,98 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+#define ll long long
+#define f(i, n) for (ll i = 0; i < n; i++)
+#define nline '\n'
+
+// Function to solve the problem
+void solve() {
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    vector<pair<ll, ll>> v;
+
+    // Identify consecutive '00' and '11' pairs
+    f(i, n - 1) {
+        if (s[i] == '0' && s[i + 1] == '0') {
+            v.push_back({i, 0});
+        } else if (s[i] == '1' && s[i + 1] == '1') {
+            v.push_back({i, 1});
+        }
+    }
+
+    ll ans = 0;
+
+    // If there are no consecutive pairs
+    if (v.size() == 0) {
+        cout << n * (n + 1) / 2 << nline;
+        return;
+    }
+
+    // Processing pairs of '00' and '11'
+    for (ll i = 0; i < v.size() - 1; i++) {
+        if (v[i].second + v[i + 1].second == 1) {
+            ll prod = 1;
+            if (i == v.size() - 2) {
+                prod *= (n - 1 - v[i + 1].first);
+            } else {
+                prod *= v[i + 2].first - v[i + 1].first;
+            }
+            if (i == 0) {
+                prod *= v[i].first + 1;
+            } else {
+                prod *= v[i].first - v[i - 1].first;
+            }
+            ans += prod;
+        }
+    }
+
+    // Calculate the final answer using the intervals
+    f(i, v.size()) {
+        ll p1, p2;
+        if (i != 0) {
+            p1 = v[i].first - v[i - 1].first;
+        } else {
+            p1 = v[i].first + 1;
+        }
+        if (i != v.size() - 1) {
+            p2 = v[i + 1].first - v[i].first;
+        } else {
+            p2 = n - 1 - v[i].first;
+        }
+        ans += p1 * p2 - ((p1 + 1) / 2) * ((p2 + 1) / 2);
+    }
+
+    // Helper function for sum of first n numbers
+    auto nc = [&](ll n) {
+        return n * (n + 1) / 2;
+    };
+
+    ans += nc(v[0].first + 1);
+
+    for (ll i = 0; i < v.size() - 1; i++) {
+        ans += nc(v[i + 1].first - v[i].first);
+    }
+
+    ans += nc(n - 1 - v.back().first);
+
+    cout << ans << nline;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    long long t = 1;
+    cin >> t;
+
+    while (t--) {
+        solve();
+    }
+
+    return 0;
+}

@@ -1,0 +1,20 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	// your code goes here
+	
+	int X;
+//	num=3;
+	cin>>X;
+	if(X>=7){
+	    cout<<3;
+	}
+	else if(X==2 ||  X==1){
+	    cout<<1;
+	}
+	else{
+	    cout<<2;
+	}
+
+}

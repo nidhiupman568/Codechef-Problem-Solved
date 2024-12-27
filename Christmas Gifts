@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t,h,l,w;
+    cin>>t;
+    while(t--){
+        cin>>h>>l>>w;
+        int a=(h*l+h*w+l*w)*2;
+        int b=1000/a;
+        cout<<b<<endl;
+    }
+    return 0;
+	// your code goes here
+
+}

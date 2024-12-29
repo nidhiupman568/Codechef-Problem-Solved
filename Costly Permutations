@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+long long calculateMinimumCost(int N, const vector<int>& P) {
+    vector<bool> visited(N, false);
+    unordered_map<int, int> cycle_lengths;
+    
+    
+    for (int i = 0; i < N; i++) {
+        if (!visited[i]) {
+            int current = i, length = 0;
+            while (!visited[current]) {
+                visited[current] = true;
+                current = P[current] - 1;  
+                length++;
+            }
+            cycle_lengths[i] = length;
+        }
+    }
+
+    
+    if (cycle_lengths.size() == 1) return 0;
+
+   
+    priority_queue<int, vector<int>, greater<int>> pq;
+    for (auto it = cycle_lengths.begin(); it != cycle_lengths.end(); it++) {
+        pq.push(it->second);
+    }
+
+    long long minCost = 0;
+    while (pq.size() > 1) {
+        int smallest = pq.top(); pq.pop();
+        int second_smallest = pq.top(); pq.pop();
+        
+      
+        minCost += smallest + second_smallest;
+        
+       
+        pq.push(smallest + second_smallest);
+    }
+
+    return minCost;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int T;
+    cin >> T;
+    while (T--) {
+        int N;
+        cin >> N;
+        vector<int> P(N);
+        for (int i = 0; i < N; i++) {
+            cin >> P[i];
+        }
+        cout << calculateMinimumCost(N, P) << '\n';
+    }
+    return 0;
+}
+

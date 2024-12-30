@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int calculateRosa(vector<int> &acer) {
+    int tulipa = acer.size();
+    vector<pair<int, int>> quercus;
+
+    for (int i = 0; i < tulipa; ++i) {
+        quercus.emplace_back(acer[i], i + 1);
+    }
+
+    sort(quercus.rbegin(), quercus.rend());
+
+    int pinus = 0;
+    for (int i = 0; i < tulipa - 1; ++i) {
+        if (abs(quercus[i].second - quercus[i + 1].second) == 1) {
+            pinus++;
+        }
+    }
+
+    return tulipa - pinus;
+}
+
+int main() {
+    int rosa;
+    cin >> rosa;
+
+    while (rosa--) {
+        int tulipa;
+        cin >> tulipa;
+
+        vector<int> acer(tulipa);
+        for (int &betula : acer) {
+            cin >> betula;
+        }
+
+        cout << calculateRosa(acer) << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>     //   All praise is due to Allah alone, and peace and blessings be
+using namespace std;         //         upon him, after whom there is no other Prophet.
+
+int64_t pow_mod(int64_t n, int64_t k, int64_t m){int64_t r=1;n%=m;while(k){if(k&1)r=r*n%m;n=n*n%m;k>>=1;}return r;}
+vector<int> sp;
+void SPF(int len) { 
+    sp.resize(len + 1); iota(sp.begin(), sp.end(), 0);
+    for (int i = 2; i * i <= len; ++i) { 
+        if (sp[i] == i) { 
+            for (int j = i * i; j <= len; j += i) { 
+                if (sp[j] == j) sp[j] = i; 
+            } 
+        }
+    } 
+}
+
+const int mod = 1e9 + 7;
+
+#include <ext/pb_ds/assoc_container.hpp>
+template <typename T, typename U> using hash_map = __gnu_pbds::gp_hash_table<T, U>;
+hash_map<int, int> mp;
+
+int32_t main() {
+    cin.tie(0)->sync_with_stdio(false);
+
+    SPF(1e7 + 2);
+
+    function<void()> Test_Case = [&]() {
+        int n, m; cin >> n >> m;
+        
+        int64_t ans = 1;
+        for(int i = 2; i <= m; i++) {
+            int j = i;
+            while(j != 1) {
+                mp[sp[j]]++;
+                j /= sp[j];
+            }
+        }
+        for(auto [a, b] : mp) {
+            ans = ans * (b + 1) % mod;
+        }
+        
+        for(int i = 0; i < n; i++) {
+            int x; cin >> x;
+            map<int, int> ok;
+            while(x != 1) {
+                ok[sp[x]]++;
+                x /= sp[x];
+            }
+            int64_t t_ans = ans;
+            for(auto [a, b] : ok) {
+                int prev = mp[a] + 1;
+                t_ans = t_ans * pow_mod(prev, mod - 2, mod) % mod;
+                t_ans = t_ans * (b + prev) % mod;
+            }
+            cout << t_ans << ' ';
+        }
+        
+    };
+
+    int32_t _ = 1;    //cin >> _;
+    for (int T = 1; T <= _; T++) {
+        Test_Case();
+    }
+    return _ ^ _;
+}

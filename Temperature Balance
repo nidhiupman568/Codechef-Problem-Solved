@@ -1,0 +1,90 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <limits.h>
+#include <queue>
+#include <stack>
+#include <set>
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
+#include <deque>
+#include <cstring>
+#include <cassert>
+#include <bitset>
+#include <functional>
+#include <numeric>
+#define nl "\n"
+
+using namespace std;
+using ll =long long ; 
+using vi = vector <int>; 
+
+bool even(ll n) {
+    return n % 2 == 0;
+}
+
+bool odd(ll n) {
+    return n % 2 != 0;
+}
+
+bool Prime(ll n) {
+
+    if (n <= 1) return false; 
+    if (n <= 3) return true;  
+
+   
+    if (n % 2 == 0 || n % 3 == 0) return false;
+
+    
+    for (int i = 5; i * i <= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int gcd(int a, int b) {
+    while (b != 0) {
+        a = a % b;
+        swap(a, b);
+    }
+    return a;
+}
+
+
+void solve() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int N;
+        cin >> N;
+
+       vector<int> A(N);
+        for (int i = 0; i < N; i++) {
+            cin >> A[i];
+        }
+
+         long long totalSeconds = 0; // Total time required
+        long long imbalance = 0;   // Running imbalance
+        
+        for (int i = 0; i < N; i++) {
+            imbalance += A[i];
+            totalSeconds += abs(imbalance); // Add the absolute imbalance at each step
+        }
+
+        // Output the result for this test case
+        cout << totalSeconds << "\n";
+    }
+}
+
+
+
+int main() {
+    solve();
+    return 0;
+}

@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        set<int> s;
+        int ticket;
+        for (int i = 0; i < n; i++) {
+            int x;
+            cin >> x;
+            if (i == 0) ticket = x;
+            s.insert(x);
+        }
+        
+        auto it = s.find(ticket);
+        
+        // Check if it's the first element
+        if (it == s.begin()) {
+            auto next_it = std::next(it);
+            cout << ticket + (*next_it - *it) / 2 << endl;
+        }
+        // Check if it's the last element
+        else if (it == --s.end()) {
+            cout << 1000000 - (*it - 1) + (*it - *(std::prev(it))) / 2 << endl;
+        }
+        // For elements in the middle
+        else {
+            auto prev_it = std::prev(it);
+            auto next_it = std::next(it);
+            cout << (*it - *prev_it) / 2 + (*next_it - *it) / 2 + 1 << endl;
+        }
+    }
+}

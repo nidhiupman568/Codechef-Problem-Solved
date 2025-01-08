@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	int t;
+	cin >> t;
+	while(t--)
+	{
+	    int n;
+	    cin >> n;
+	    int arr[n][n];
+	    for(int i = 0; i < n; i++)
+	    {
+	        int cnt = 1, cntt = n;
+	        for(int j = 0; j < n; j++)
+	        {
+	            if(i % 2 == 0)
+	            arr[i][j] = cnt++;
+	            else 
+	            arr[i][j] = cntt--;
+	        }
+	    }
+	    for(int i = 0; i < n; i++)
+	    {
+	        int cnt = 1, cntt = n;
+	        for(int j = 0; j < n; j++)
+	        {
+	            cout << arr[i][j] << " ";
+	        }
+	        cout << endl;
+	    }
+	}
+}

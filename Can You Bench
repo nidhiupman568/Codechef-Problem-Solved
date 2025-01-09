@@ -1,0 +1,11 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+    int weight;
+    std::cin >> weight;
+    
+    std::cout << weight+10+10;
+    return 0;
+}

@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector < int > nums(n);
+        unordered_map < int, int > lastIdx, seen;
+        
+        for (int i = 0; i < n; i++) {
+            cin >> nums[i];
+            lastIdx[nums[i]] = i;
+        }
+
+
+        int i = 0, ans = 0;
+        while (i < n) {
+            int j = lastIdx[nums[i]];
+            while (i < n && i < j) {
+                j = max(j, lastIdx[nums[i]]);
+                if (seen[nums[i]] == 0) {
+                    seen[nums[i]] = 1;
+                    ans++;
+                }
+                i++;
+            }
+            i++;
+        }
+        cout << ans << endl;
+    }
+
+    return 0;
+}

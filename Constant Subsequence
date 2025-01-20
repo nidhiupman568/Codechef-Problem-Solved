@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+#define mod 1000000007 
+using namespace std;
+bool possible(long long mid, deque<long long> posi, deque<long long> nega)
+{
+    if(posi.empty()) return true;
+    long long sum = posi.front();
+    posi.pop_front();
+    while(!posi.empty())
+    {
+        if(sum > mid) return false;
+        if(posi.front() + sum <= mid)
+        {
+            sum = max(sum + posi.front(), posi.front());
+            posi.pop_front();
+        }
+        else
+        {
+            if(nega.empty()) return false;
+            sum += nega.front();
+            nega.pop_front();
+        }
+    }
+    return sum <= mid;
+}
+void solve()
+{
+    int n;
+    cin >> n;
+    vector<long long> v(n);
+    deque<long long> posi, nega;
+    long long sum = 0, maxi = 0;
+    for(int i = 0; i < n; i++)
+    {
+        cin >> v[i];
+        if(v[i] >= 0) posi.push_back(v[i]);
+        else nega.push_back(v[i]);
+    }
+    for(int i = 0; i < n; i++)
+    {
+        maxi = max(maxi, v[i]);
+        if(v[i] >= 0)
+        sum += v[i];
+    }
+    long long low = maxi, high = sum, ans = high;
+    while(low <= high)
+    {
+        long long mid = (low) + (high - low)/2;
+        if(possible(mid, posi, nega))
+        {
+            high = mid - 1;
+            ans = mid;
+        }
+        else
+            low = mid + 1;
+    }
+    cout << ans << endl;
+}
+
+signed main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int q=1;
+    cin >> q;
+    while(q--)
+    {
+        solve();
+    }
+}

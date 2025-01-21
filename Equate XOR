@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin>>t;
+	while(t--){
+	    int n;
+	    cin>>n;
+	    
+	    //for storing prefix xor till i.We only need last index of a particular xor if xor(100) is at 2,4,6 . We only need xor(100)at 6 . 2,4 are useless for us. Remember. 
+	    map<int,int>m;
+	    
+	    // For storing score till index i.
+	    std::vector<long long>score(n,0);
+	    
+	    //to take input.
+	    vector<int>input(n);
+	    for(auto &x :input)
+	    cin>>x;
+	    
+	    //taking prefix xor in x.We are starting loop from second element so prefix xor of second element will be first element.
+	    int x=input[0];
+	    
+	    //prefix xor of first element will always be 0 so m[xor]=firstidex0
+	    m[0]=0;
+	    
+	    //i<n+1 becoz we want to update score of last element also .last i=n . last score updation score[i=n-1]
+	    for(int i=1;i<n+1;i++){
+	        
+	        //if prefix xor is there update score.
+	        if(m.find(x)!=m.end())
+	        score[i-1]=score[m[x]]+input[i-1];
+	        else score[i-1]=input[i-1];
+	        
+	        //update xor latest index
+	        m[x]=i;
+	        
+	        //if i!=n take xor of every element one by one .input[n] is not present soo excluding it.
+	        if(i!=n)
+	        x^=input[i];
+	    }
+	    
+	    //maximum score in our vector will be out answer.
+	      cout << *max_element(score.begin(), score.end())<<endl;;
+	}
+
+}

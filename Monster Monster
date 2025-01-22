@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define mod ((ll)1e9+7)
+#define test ll t; cin>>t; while(t--)
+#define speed ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define F first
+#define S second
+#define pb push_back
+#define all(v) v.begin(),v.end(),greater<ll>()
+
+void fileIO() {
+#ifndef ONLINE_JUDGE
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+#endif
+}
+
+int main() {
+    speed
+    test {
+       //   ll n,x;
+       // cin >> n >> x;
+       // vector<ll>v(n);
+       // ll w=0;
+
+       // for (ll k=0; k <n;k++){
+       //  cin >> v[k];
+       //  w +=v[k];
+       // }
+
+       // ll m = (w + x -1)/x;
+
+       // cout << m << endl;
+
+        
+       ll n,x;
+       cin >> n >> x;
+       vector<ll>v(n);
+     
+
+       for (ll k=0; k <n;k++){
+        cin >> v[k];
+
+       }
+
+       sort(all(v));
+    
+
+
+       ll pushkar = 0;
+       for (ll z =0;z<n;z++){
+        ll r= v[z]+ z*x;
+        pushkar= max(pushkar,r);
+       }
+
+       cout << pushkar << endl;
+
+        
+    }
+
+
+
+
+
+    return 0;
+}

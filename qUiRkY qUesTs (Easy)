@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <algorithm>
+using namespace std;
+#define ll long long
+#define vi vector<int>
+#define vll vector<long long>
+#define MOD 1000000007
+#define in(v, n) for (int i = 0; i < n; i++) cin >> v[i]
+#define prnt(txt) cout << (txt) << '\n';
+#define all(x) (x).begin(), (x).end()
+
+
+void fvck() {
+    
+    
+ ll n;
+        cin >> n;
+        vector<ll> sortedArr(n);
+        for (ll i = 0; i < n; ++i) {
+            cin >> sortedArr[i];
+        }
+ 
+
+    sort(sortedArr.begin(), sortedArr.end());
+
+  
+    ll currentSum = accumulate(sortedArr.begin(), sortedArr.end(), 0LL);
+    ll maxSum = currentSum;
+
+    for (ll i = 0; i < n; ++i) {
+        currentSum -= sortedArr[i];
+        ll mex = i + 1;
+        ll potentialSum = currentSum + mex * mex;
+        maxSum = max(maxSum, potentialSum);
+    }
+
+    ll maxWithAllReplaced = n * n;
+    maxSum = max(maxSum, maxWithAllReplaced);
+
+    cout<< maxSum<<endl;
+}
+
+int main() {
+
+
+    ll t;
+    cin >> t;
+    while (t--) {
+       
+        fvck();
+    }
+
+    return 0;
+}

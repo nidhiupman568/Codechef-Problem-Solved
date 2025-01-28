@@ -1,0 +1,91 @@
+// #include <bits/allocator.h>
+// #pragma GCC optimize("O3,unroll-loops")
+// #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#include "bits/stdc++.h"
+using namespace std;
+using ll = long long int;
+mt19937_64 RNG(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+int main()
+{
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int t; cin >> t;
+    while (t--) {
+        int n; cin >> n;
+        string s; cin >> s;
+        vector<int> freq(26);
+        for (auto c : s) freq[c - 'a'] ^= 1;
+
+        int odds = accumulate(begin(freq), end(freq), 0);
+        if (odds > 1) {
+            cout << 0 << '\n';
+            continue;
+        }
+        if (ranges::min(s) == ranges::max(s)) {
+            cout << -1 << '\n';
+            continue;
+        }
+        
+        string ans = "";
+        vector<vector<int>> pos(26);
+        for (int i = 0; i < n; ++i)
+            pos[s[i] - 'a'].push_back(i);
+        for (int i = 0; i < 26; ++i)
+            ranges::reverse(pos[i]);
+        
+        int L = 0, done = 0;
+        while (!done) {
+            for (int c = 0; c < 26; ++c) {
+                while (!pos[c].empty()) {
+                    if (pos[c].back() < L) pos[c].pop_back();
+                    else break;
+                }
+                if (pos[c].empty()) continue;
+                
+                int i = pos[c].back();
+                odds -= freq[c];
+                freq[c] ^= 1;
+                odds += freq[c];
+
+                if (odds == 2) {
+                    ans += 'a' + c;
+                    done = 1;
+                    break;
+                }
+
+                int good = 0;
+                if (odds == 1) {
+                    // There must be an even char after i
+                    for (int c2 = 0; c2 < 26; ++c2) {
+                        if (freq[c2]) continue;
+                        if (pos[c2].empty()) continue;
+                        if (pos[c2][0] <= i) continue;
+                        good = 2;
+                    }
+                }
+                else {
+                    // There must be two distinct chars after i
+                    for (int c2 = 0; c2 < 26; ++c2) {
+                        if (pos[c2].empty()) continue;
+                        if (pos[c2][0] <= i) continue;
+                        ++good;
+                    }
+                }
+                if (good >= 2) {
+                    // Possible
+                    ans += c + 'a';
+                    L = i+1;
+                    break;
+                }
+                else {
+                    odds -= freq[c];
+                    freq[c] ^= 1;
+                    odds += freq[c];
+                }
+            }
+        }
+
+        cout << size(ans) << '\n' << ans << '\n';
+    }
+}

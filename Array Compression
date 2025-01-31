@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+	
+	// Count frequencies like Python's Counter
+	map<int, int> freq;
+	for (int x : a) {
+		freq[x]++;
+	}
+	
+	// Calculate minimum of three approaches
+	// Approach 1: Count singles + 5
+	int ans = 5;
+	for (auto [val, count] : freq) {
+		if (count == 1) ans++;
+	}
+	
+	// Approach 2: Count remainders when divided by 2
+	int x = 2;
+	for (auto [val, count] : freq) {
+		x += count % 2;
+	}
+	ans = min(ans, x);
+	
+	// Approach 3: Count remainders when divided by 3
+	x = 3;
+	for (auto [val, count] : freq) {
+		x += count % 3;
+	}
+	ans = min(ans, x);
+	
+	// Final answer is minimum of all approaches and n
+	ans = min(ans, n);
+	
+	cout << ans << "\n";
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	
+	int t;
+	cin >> t;
+	while (t--) {
+		solve();
+	}
+	return 0;
+}

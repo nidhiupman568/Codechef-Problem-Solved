@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    int T = 1;
+    // cin >> T;
+    
+    while (T--) {
+        int N, k;
+        cin >> N >> k;
+        
+        cout << (N - k) * 10000 << endl;
+    }
+    
+    return 0;
+}

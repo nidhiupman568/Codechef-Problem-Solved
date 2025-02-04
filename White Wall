@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        string s;
+        cin >> s;
+        
+        string a[6]={"RGB","RBG","BGR","BRG","GBR","GRB"};
+        int    c[6]={0};
+        
+        for(int i=0;i<n;i++){
+            if(a[0][i%3]!=s[i]) c[0]++;
+            if(a[1][i%3]!=s[i]) c[1]++;
+            if(a[2][i%3]!=s[i]) c[2]++;
+            if(a[3][i%3]!=s[i]) c[3]++;
+            if(a[4][i%3]!=s[i]) c[4]++;
+            if(a[5][i%3]!=s[i]) c[5]++;
+        }
+        cout<<*min_element(c,c+6)<<endl;
+    }
+}

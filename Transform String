@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+vector<int> getMatchingIndices(const string &a, const string &b) {
+    unordered_map<char, int> countA, countB;
+    for (char ch : a) countA[ch]++;
+    for (char ch : b) countB[ch]++;
+    for (const auto &entry : countB) {
+        if (countA[entry.first] < entry.second) {
+            return {}; 
+        }
+    }
+    vector<int> indices; 
+    int n = a.size(), m = b.size();
+    int j = m - 1; 
+    for (int i = n - 1; i >= 0 && j >= 0; --i) {
+        if (a[i] == b[j]) {
+            indices.push_back(i + 1); 
+            j--;
+        }
+    }
+    if (j >= 0) return {}; 
+    reverse(indices.begin(), indices.end());
+    return indices; 
+}
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t;
+    cin >> t; 
+    while (t--) {
+        string a, b;
+        cin >> a >> b; 
+        vector<int> result = getMatchingIndices(a, b); 
+        if (result.empty()) {
+            cout << -1 << endl; 
+        } else {
+            long long baseCost = (long long)result.size() * a.length() + a.length() - result.size() - ((long long)result.size() * (result.size() - 1)) / 2;
+            long long totalCost = 0; 
+            int currentIdx = a.length();
+            for (int i = 0; i < result.size(); i++) {
+                int idx = result[i];
+                totalCost += idx; 
+            }
+            cout << baseCost - totalCost << endl; 
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,132 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+ 
+// Fenwick tree for integer counts
+struct Fenw {
+    int n;
+    vector<int> fenw;
+    Fenw(int n): n(n) {
+        fenw.assign(n+1, 0);
+    }
+    void update(int i, int delta) {
+        for (; i <= n; i += i & -i)
+            fenw[i] += delta;
+    }
+    int query(int i) const {
+        int s = 0;
+        for (; i > 0; i -= i & -i)
+            s += fenw[i];
+        return s;
+    }
+};
+ 
+// Fenwick tree for long long sums
+struct FenwLL {
+    int n;
+    vector<long long> fenw;
+    FenwLL(int n): n(n) {
+        fenw.assign(n+1, 0LL);
+    }
+    void update(int i, long long delta) {
+        for (; i <= n; i += i & -i)
+            fenw[i] += delta;
+    }
+    long long query(int i) const {
+        long long s = 0;
+        for (; i > 0; i -= i & -i)
+            s += fenw[i];
+        return s;
+    }
+};
+ 
+// Binary search: find smallest x in [1, N] such that 
+// x - count(x) >= target, where count(x) = BIT_count.query(x).
+int find_x(int target, int N, const Fenw &bitCount) {
+    int lo = 1, hi = N;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        int cnt = bitCount.query(mid);
+        if (mid - cnt >= target)
+            hi = mid;
+        else
+            lo = mid + 1;
+    }
+    return lo;
+}
+ 
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+ 
+    int T;
+    cin >> T;
+    while(T--){
+        int N, K;
+        cin >> N >> K;
+        vector<int> P(N);
+        for (int i = 0; i < N; i++)
+            cin >> P[i];
+ 
+        int M = N - K; // size of remaining array S
+        // For computing Bob's score we need:
+        // if M is even: we want sum of first (M/2) smallest elements in S.
+        // if M is odd: we want sum of first ((M-1)/2) smallest and then the ((M+1)/2)-th element.
+        bool even = (M % 2 == 0);
+        int target1, target2;
+        if(even) {
+            target1 = M / 2;
+        } else {
+            target1 = (M - 1) / 2; // sum of smallest target1 numbers
+            target2 = target1 + 1; // the (target2)-th smallest element
+        }
+ 
+        // Build BITs for the current window R (the removed block)
+        Fenw bitCount(N);
+        FenwLL bitSum(N);
+        // Initially, the window is P[0..K-1]
+        for (int i = 0; i < K; i++) {
+            int x = P[i];
+            bitCount.update(x, 1);
+            bitSum.update(x, x);
+        }
+ 
+        long long ans = 0;
+        int windowCount = N - K + 1;
+        // Try every candidate contiguous block R (sliding window)
+        for (int i = 0; i < windowCount; i++){
+            long long candidate = 0;
+            if(even) {
+                // For M even, if target1==0 (M==0) score is 0; else:
+                if(target1 > 0) {
+                    int X = find_x(target1, N, bitCount);
+                    long long sumSmall = (long long)X * (X + 1) / 2 - bitSum.query(X);
+                    candidate = 2LL * sumSmall;
+                }
+            } else {
+                long long sumSmall = 0;
+                if(target1 > 0) {
+                    int X = find_x(target1, N, bitCount);
+                    sumSmall = (long long)X * (X + 1) / 2 - bitSum.query(X);
+                }
+                int X2 = find_x(target2, N, bitCount);
+                candidate = 2LL * sumSmall + X2;
+            }
+            ans = max(ans, candidate);
+ 
+            // Slide the window: remove P[i] and add P[i+K] if exists.
+            if(i + K < N){
+                int outVal = P[i];
+                bitCount.update(outVal, -1);
+                bitSum.update(outVal, -outVal);
+                int inVal = P[i + K];
+                bitCount.update(inVal, 1);
+                bitSum.update(inVal, inVal);
+            }
+        }
+ 
+        cout << ans << "\n";
+    }
+    return 0;
+}

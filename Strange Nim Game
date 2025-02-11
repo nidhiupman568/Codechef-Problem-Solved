@@ -1,0 +1,151 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long int
+#define ull unsigned ll
+#define vl vector <ll>
+#define vb vector <bool>
+#define pl pair <ll, ll>
+#define vpl vector <pl>
+#define fi first
+#define se second
+
+const ll MOD = 1e9 + 7;
+
+ll power(ll n, ll k, ll MOD){
+    n %= MOD;
+    ll res = 1;
+    while(k){
+        if(k&1){
+            res = (res * n) % MOD;
+        }
+        n = (n * n) % MOD;
+        k /= 2;
+    }
+    return res;
+}
+
+ll max_val = 2 * 1e5;
+vl g(max_val + 1, 0);
+vector <vl> seg(4 * max_val, vl (7, 0));
+
+void build(int seg_index, int low, int high){
+    if(low == high){
+        ll num;
+        cin >> num;
+
+        seg[seg_index][g[num]]++;
+        return;
+    }
+
+    ll mid = (low + high) / 2;
+    build(2 * seg_index + 1, low, mid);
+    build(2 * seg_index + 2, mid + 1, high);
+
+    for(ll j = 0; j <= 6; j++){
+        seg[seg_index][j] = seg[2 * seg_index + 1][j] + seg[2 * seg_index + 2][j];
+    }
+}
+
+vl get(int index, int seg_index, int low, int high){
+    if(high <= index) return seg[seg_index];
+    ll mid = (low + high)/2;
+    if(index <= mid) return get(index, 2 * seg_index + 1, low, mid);
+    vl f2 = get(index, 2*seg_index + 2, mid + 1, high);
+    for(ll i = 0; i < 7; i++){
+        f2[i] += seg[2 * seg_index + 1][i];
+    }
+    return f2;
+}
+
+ll count(vl& freq, ll index, ll curr_xor, ll num_ways){
+    if(index == 7){
+        if(curr_xor == 0) return num_ways;
+        return 0;
+    }
+    if(freq[index] == 0) return count(freq, index + 1, curr_xor, num_ways);
+    return (count(freq, index + 1, curr_xor, power(2, freq[index] - 1, MOD) * num_ways % MOD) + count(freq, index + 1, curr_xor ^ (index), power(2, freq[index] - 1, MOD) * num_ways % MOD)) % MOD;
+}
+
+void update(ll seg_index, vl& new_freq, ll index, ll low, ll high){
+    if(low == high && low == index){
+        seg[seg_index] = new_freq;
+        return;
+    }
+    if(index < low || index > high) return;
+
+    ll mid = (low + high) / 2;
+    update(2 * seg_index + 1, new_freq, index, low, mid);
+    update(2 * seg_index + 2, new_freq, index, mid + 1, high);
+
+    for(ll j = 0; j < 7; j++){
+        seg[seg_index][j] = seg[2 * seg_index + 1][j] + seg[2 * seg_index + 2][j];
+    }
+}
+
+void solve(){
+    g[0] = 0;
+    for(ll ele = 1; ele <= max_val; ele++){
+        ll num = ele;
+        vl mex(7, true);
+        while(num > 0){
+            if(num % 10 != 0) mex[g[ele - num % 10]] = false;
+            num /= 10;
+        }
+        for(ll j = 0; j < 7; j++){
+            if(mex[j]){
+                g[ele] = j;
+                break;
+            }
+        }
+    }
+
+    ll n;
+    cin >> n;
+
+    build(0, 0, n-1);
+    
+    ll q;
+    cin >> q;
+
+    while(q--){
+        ll t;
+        cin >> t;
+
+        if(t == 1){
+            ll l, r;
+            cin >> l >> r;
+
+            vl fr = get(r-1, 0, 0, n-1);
+            vl fl(7, 0);
+            if(l != 1) fl = get(l-2, 0, 0, n-1);
+            for(ll i = 0; i < 7; i++) fr[i] -= fl[i];
+
+            vl curr = fr;
+            ll zero_xor = count(curr, 0, 0, 1);
+
+            cout << (power(2, r - l + 1, MOD) - zero_xor + MOD) % MOD << "\n";
+        }else{
+            ll i, x;
+            cin >> i >> x;
+
+            vl new_freq(7, 0);
+            new_freq[g[x]]++;
+            update(0, new_freq, i-1, 0, n-1);
+        }
+    }
+}
+
+int main(){
+    cin.tie(nullptr);  // Untie cin from cout
+    cout.tie(nullptr); // Optional: Untie cout from cin
+
+    // Disable synchronization with C-style IO
+    ios_base::sync_with_stdio(false);
+
+    int t = 1;
+    // cin >> t;
+
+    while(t--) solve();
+}
